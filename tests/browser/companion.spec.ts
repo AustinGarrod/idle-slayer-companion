@@ -50,7 +50,7 @@ test('craft observations share ownership while planning never spends material st
   const before = (await progress(page))!.modules.material
   await entry.getByRole('textbox', { name: `Planned quantity for ${recipe.title}` }).fill('2')
   await entry.getByRole('button', { name: 'Update plan', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Gather for the next adventure', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Shopping list', exact: true })).toBeVisible()
   expect((await progress(page))!.modules.material).toEqual(before)
   await page.reload()
   await page.getByRole('searchbox', { name: 'Search visible crafting & materials' }).fill(recipe.title)

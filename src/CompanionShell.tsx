@@ -3,13 +3,13 @@ import type { ReactNode } from 'react'
 import './CompanionShell.css'
 
 export const companionSections = [
-  { id: 'overview', title: 'Overview', short: 'Home', symbol: '◈', description: 'Your next adventure' },
-  { id: 'ascension', title: 'Ascension', short: 'Map', symbol: '✧', description: 'Explore the skill tree' },
-  { id: 'achievements', title: 'Achievements', short: 'Achievements', symbol: '♜', description: 'Every milestone counts' },
-  { id: 'crafting', title: 'Crafting & materials', short: 'Crafting', symbol: '⚒', description: 'Prepare your next craft' },
-  { id: 'quests', title: 'Quests & Village', short: 'Quests', symbol: '⚑', description: 'Keep the story moving' },
-  { id: 'bestiary', title: 'Bestiary', short: 'Bestiary', symbol: '♞', description: 'Know your enemies' },
-  { id: 'divinities', title: 'Divinities', short: 'Divinities', symbol: '☼', description: 'Plan your powers' },
+  { id: 'overview', title: 'Overview', short: 'Home', symbol: '◈', description: 'Progress summary' },
+  { id: 'ascension', title: 'Ascension', short: 'Map', symbol: '✧', description: 'Upgrade map and planning' },
+  { id: 'achievements', title: 'Achievements', short: 'Achievements', symbol: '♜', description: 'Earned achievements' },
+  { id: 'crafting', title: 'Crafting & materials', short: 'Crafting', symbol: '⚒', description: 'Items, materials, and recipes' },
+  { id: 'quests', title: 'Quests & Village', short: 'Quests', symbol: '⚑', description: 'Quests and Village tasks' },
+  { id: 'bestiary', title: 'Bestiary', short: 'Bestiary', symbol: '♞', description: 'Enemies, kills, and mastery' },
+  { id: 'divinities', title: 'Divinities', short: 'Divinities', symbol: '☼', description: 'Selected Divinities and wishlist' },
 ] as const
 
 export type CompanionSection = typeof companionSections[number]['id']
@@ -85,7 +85,7 @@ export function CompanionShell({ section, onNavigate, children, ascension, onImp
         <span className="companion-emblem" aria-hidden="true">✦</span>
         <span><strong>Idle Slayer</strong><span>COMPANION</span></span>
       </button>
-      <span className="companion-unofficial">Unofficial · made for the journey</span>
+      <span className="companion-unofficial">Unofficial</span>
       <div className="companion-global-actions">
         <button type="button" className="companion-import" onClick={onImport}><span aria-hidden="true">↥</span> Import save</button>
         <button type="button" onClick={onBackup}><span aria-hidden="true">⇄</span> <span className="companion-backup-label">Backup & transfer</span><span className="companion-backup-short">Backup</span></button>
@@ -100,7 +100,7 @@ export function CompanionShell({ section, onNavigate, children, ascension, onImp
         </button>)}
       </nav>
       <div className="companion-sidebar-bottom">
-        <div className="companion-local-note"><span aria-hidden="true">◉</span><span>Yours, on this device<small>Save a backup for safekeeping.</small></span></div>
+        <div className="companion-local-note"><span aria-hidden="true">◉</span><span>Stored in this browser<small>Export a backup.</small></span></div>
         {onSettings && <button type="button" onClick={() => openFromNavigation(onSettings)} title={collapsed ? 'Settings & privacy' : undefined}><span aria-hidden="true">⚙</span><span className="companion-nav-label">Settings & privacy</span></button>}
         {onHelp && <button type="button" onClick={() => openFromNavigation(onHelp)} title={collapsed ? 'Help & sources' : undefined}><span aria-hidden="true">?</span><span className="companion-nav-label">Help & sources</span></button>}
       </div>
