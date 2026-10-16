@@ -79,7 +79,7 @@ def main():
         'inputs': [{'kind': kind, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()} for kind, path in [('definitions', args.definitions), ('ascension', args.ascension_export), ('questBindings', args.quest_bindings)]],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+    args.output.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8', newline='\n')
     print(f"Normalized {len(data['quests'])} quest policies, {len(data['upgrades'])} observed upgrade policies and {len(data['materialReward']['upgrades'])} material reward sources.")
 
 

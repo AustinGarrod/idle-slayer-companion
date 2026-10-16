@@ -48,6 +48,6 @@ git remote -v
 
 ## Rollback
 
-Disable project deployment, restore the prior reviewed static release at the appropriate path, and retain both same-origin data documents. Do not roll back by clearing storage or rewriting Companion progress into the legacy key. Older map code cannot represent the new modules. Keep Companion JSON and intentions exports available through the staged site or bridge, and preserve repository redirects. Reversing the repository rename is a deliberate operator action; first inspect which name owns each redirect and Pages path.
+Disable project deployment, restore the prior reviewed static release only at `/idle-slayer-ascension-map/` through the user site, and retain both same-origin data documents. Never publish that old-base artifact at `/idle-slayer-companion/`: its absolute asset paths point to the old address. Keep the staged current Companion at the new path while disabling its project site. Do not roll back by clearing storage or rewriting Companion progress into the legacy key. Older map code cannot represent the new modules. Keep Companion JSON and intentions exports available through the staged site or bridge, and preserve repository redirects. Reversing the repository rename is a deliberate operator action; first inspect which name owns each redirect and Pages path.
 
 This change has not performed any of the remote rollout steps. Local/CI success does not establish deployment, manual production readback, analytics ingestion, or physical installation behavior.

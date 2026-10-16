@@ -26,7 +26,7 @@ if (createHash('sha256').update(saveReceiptBytes).digest('hex') !== '785adda9708
 for (const [file, expected] of [
   ['data/companion-native-rules.json', 'b3a43365e4ded79fd47fce56e9a257efc887045592e801f404b397c516816467'],
   ['data/companion-native-method-receipt.json', '5effd56bfa7c429b261e72d2e05c3d5f30a7b98df1763a3e467c155597dda732'],
-  ['src/data/companion-reset-rules.json', 'e3ac81d85e908be710a8d1b34846b0c1f7f94ce1b0fd03ea4e3a3ca3fb315145'],
+  ['src/data/companion-reset-rules.json', '777bc43e62b7ce4587824cc1cefd8579364508f5805ec8c19b63d5c169dc9fe1'],
 ]) {
   const bytes = readFileSync(file), contract = JSON.parse(bytes)
   if (createHash('sha256').update(bytes).digest('hex') !== expected || contract.gameVersion !== catalog.gameVersion || contract.steamBuild !== catalog.steamBuild) throw new Error('Companion native contract requires renewed review: ' + file)
