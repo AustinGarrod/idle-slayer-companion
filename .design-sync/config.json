@@ -1,0 +1,127 @@
+{
+  "projectId": "b8a01056-a516-469f-ad12-c8fd51f5377f",
+  "pkg": "idle-slayer-companion",
+  "globalName": "IdleSlayerCompanion",
+  "shape": "package",
+  "buildCmd": "node .design-sync/build-ds.mjs",
+  "entry": ".design-sync/.cache/ds-pkg/index.js",
+  "srcDir": "../../../src",
+  "cssEntry": "index.css",
+  "componentSrcMap": {
+    "ReactFlow": null,
+    "ReactFlowProvider": null,
+    "Background": null
+  },
+  "docsDir": "../../docs",
+  "overrides": {
+    "CompanionShell": {
+      "cardMode": "single",
+      "primaryStory": "Overview",
+      "viewport": "1280x800"
+    },
+    "EntityCard": {
+      "viewport": "900x1300"
+    },
+    "Dialog": {
+      "cardMode": "single",
+      "viewport": "900x800",
+      "primaryStory": "RecordPurchase"
+    },
+    "MapHelpPanel": {
+      "cardMode": "single",
+      "viewport": "900x900",
+      "primaryStory": "MapHelp"
+    },
+    "RecommendationPanel": {
+      "cardMode": "single",
+      "viewport": "900x900",
+      "primaryStory": "EarlyRunSuggestions"
+    },
+    "ReferenceSheetPanel": {
+      "cardMode": "single",
+      "viewport": "900x900",
+      "primaryStory": "FourSelected"
+    },
+    "RecentUpgrades": {
+      "cardMode": "single",
+      "viewport": "900x800",
+      "primaryStory": "InspectedThisVisit"
+    },
+    "PrivacyPanel": {
+      "cardMode": "single",
+      "viewport": "900x900",
+      "primaryStory": "TrackingEnabled"
+    },
+    "InstallPanel": {
+      "cardMode": "single",
+      "viewport": "900x900",
+      "primaryStory": "ReadyToInstall"
+    },
+    "GoalsPanel": {
+      "cardMode": "single",
+      "viewport": "900x900",
+      "primaryStory": "SavedGoals"
+    },
+    "PriorAscensionsForm": {
+      "cardMode": "single",
+      "viewport": "900x700",
+      "primaryStory": "ExistingHistory"
+    },
+    "CompanionModules": {
+      "cardMode": "single",
+      "viewport": "1280x900",
+      "primaryStory": "Achievements"
+    },
+    "SearchPanel": {
+      "cardMode": "single",
+      "viewport": "1280x700",
+      "primaryStory": "TitleQuery"
+    },
+    "UpgradeCard": {
+      "cardMode": "single",
+      "viewport": "900x600",
+      "primaryStory": "DetailedLayout"
+    },
+    "ShoppingList": {
+      "cardMode": "column",
+      "viewport": "1100x800"
+    },
+    "RequirementView": {
+      "viewport": "900x800",
+      "cardMode": "column"
+    },
+    "EntityIcon": {
+      "viewport": "900x240"
+    },
+    "CounterEditor": {
+      "viewport": "900x320"
+    },
+    "ObservationSelect": {
+      "viewport": "900x320"
+    },
+    "SessionHistoryControls": {
+      "viewport": "900x320",
+      "cardMode": "column"
+    },
+    "ExactCostDetails": {
+      "cardMode": "column"
+    },
+    "Icon": {
+      "cardMode": "column"
+    },
+    "ReadOnlyRequirement": {
+      "cardMode": "column"
+    },
+    "SPCost": {
+      "cardMode": "column"
+    },
+    "UpgradeReference": {
+      "cardMode": "column"
+    }
+  },
+  "dtsPropsFor": {
+    "RecentUpgrades": "upgrades: Upgrade[];\n  visibleUpgrades: Upgrade[];\n  selected: string | null;\n  onSelect: (id: string) => void;\n  onClear: () => void;",
+    "GoalsPanel": "catalog: Catalog;\n  profile: Profile;\n  targetId: string | null;\n  onInspect: (id: string) => void;\n  intentions: GoalsController;"
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}

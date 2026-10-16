@@ -44,23 +44,23 @@ const numberFormat = new Intl.NumberFormat('en')
 const formatCount = (value: string) => /^\d+$/.test(value) ? numberFormat.format(BigInt(value)) : value
 const goalStatusLabel = (value?: string) => value === 'untracked' ? 'Not recorded' : value === 'incomplete' ? 'In progress' : value === 'complete' ? 'Complete' : value
 
-function EntityIcon({ entity, large = false }: { entity: CompanionEntity; large?: boolean }) {
+export function EntityIcon({ entity, large = false }: { entity: CompanionEntity; large?: boolean }) {
   const symbol = { achievement: '♜', craft: '⚒', material: '◆', quest: '⚑', village: '⌂', enemy: '♞', divinity: '☼' }[entity.system]
   return <span className={`companion-entity-icon${large ? ' companion-entity-icon-large' : ''}`} aria-hidden="true">
     {entity.icon ? <img src={`${import.meta.env.BASE_URL}${entity.icon.replace(/^\//, '')}`} alt="" loading="lazy" /> : symbol}
   </span>
 }
 
-function StatusPill({ status, children }: { status?: string; children: ReactNode }) {
+export function StatusPill({ status, children }: { status?: string; children: ReactNode }) {
   return <span className={`companion-status-pill companion-status-${status ?? 'unknown'}`}>{children}</span>
 }
 
-function ObservationSelect({ label, value, onChange, yes = 'Recorded', no = 'Not yet', disabled }: { label: string; value?: boolean; onChange: (value: boolean) => void; yes?: string; no?: string; disabled?: boolean }) {
+export function ObservationSelect({ label, value, onChange, yes = 'Recorded', no = 'Not yet', disabled }: { label: string; value?: boolean; onChange: (value: boolean) => void; yes?: string; no?: string; disabled?: boolean }) {
   const id = useId()
   return <label className="companion-observation" htmlFor={id}><span>{label}</span><select id={id} disabled={disabled} value={value === undefined ? '' : value ? 'yes' : 'no'} onChange={(event) => { if (event.target.value) onChange(event.target.value === 'yes') }}><option value="" disabled>Not recorded</option><option value="no">{no}</option><option value="yes">{yes}</option></select></label>
 }
 
-function CounterEditor({ label, value, target, onChange }: { label: string; value?: string; target?: string; onChange: (value: string) => void }) {
+export function CounterEditor({ label, value, target, onChange }: { label: string; value?: string; target?: string; onChange: (value: string) => void }) {
   const id = useId()
   const [draft, setDraft] = useState(value ?? '')
   useEffect(() => setDraft(value ?? ''), [value])
@@ -80,7 +80,7 @@ function RelatedLinks({ title, refs, lookup, onNavigate }: { title: string; refs
   return <div className="companion-related"><span>{title}</span><div>{visible.map((entity) => <button type="button" key={companionRefKey(entity.ref)} onClick={() => onNavigate(sectionForSystem[entity.ref.system], entity.ref)}>{entity.title}<span aria-hidden="true"> ↗</span></button>)}</div></div>
 }
 
-function EntityCard({ entity, record, pinned, onPin, onRecord, planned, onPlan, state, lookup, onNavigate, busy }: {
+export function EntityCard({ entity, record, pinned, onPin, onRecord, planned, onPlan, state, lookup, onNavigate, busy }: {
   entity: CompanionEntity; record: CompanionRecord; pinned: boolean; onPin: () => void; onRecord: (patch: CompanionRecord) => void
   planned?: string; onPlan: (quantity: string) => void; state?: CompanionEntityPresentationState
   lookup: ReadonlyMap<string, CompanionReferenceEntry>; onNavigate: CompanionModulesProps['onNavigate']
@@ -118,13 +118,13 @@ function EntityCard({ entity, record, pinned, onPin, onRecord, planned, onPlan, 
   </article>
 }
 
-function TrackingNotice({ systems, progress, onTrack, busy }: { systems: readonly CompanionSystem[]; progress: CompanionProgress; onTrack: CompanionModulesProps['onTrack']; busy?: boolean }) {
+export function TrackingNotice({ systems, progress, onTrack, busy }: { systems: readonly CompanionSystem[]; progress: CompanionProgress; onTrack: CompanionModulesProps['onTrack']; busy?: boolean }) {
   const untracked = systems.filter((system) => !progress.modules[system].tracked)
   if (!untracked.length) return <p className="companion-observation-note"><span aria-hidden="true">◉</span> Your recorded observations. Unknown values stay unknown until you record them.</p>
   return <div className="companion-tracking-notice"><span className="companion-tracking-symbol" aria-hidden="true">✧</span><div><strong>Tracking not started</strong><p>{untracked.length === systems.length ? 'This section has no recorded baseline yet.' : 'Some records in this section have no baseline yet.'} Import a supported save or record individual observations. Nothing is assumed incomplete or zero.</p></div>{untracked.map((system) => <button type="button" key={system} disabled={busy} onClick={() => onTrack(system, true)}>{untracked.length === 1 ? 'Start tracking' : `Track ${system === 'craft' ? 'recipes' : system === 'material' ? 'materials' : system === 'quest' ? 'quests' : system === 'village' ? 'Village' : system}`}</button>)}</div>
 }
 
-function ShoppingList({ entities, progress, plans, onNavigate }: { entities: readonly CompanionEntity[]; progress: CompanionProgress; plans: Readonly<Record<string, string>>; onNavigate: CompanionModulesProps['onNavigate'] }) {
+export function ShoppingList({ entities, progress, plans, onNavigate }: { entities: readonly CompanionEntity[]; progress: CompanionProgress; plans: Readonly<Record<string, string>>; onNavigate: CompanionModulesProps['onNavigate'] }) {
   const materials = entities.filter((entity) => entity.system === 'material')
   const lookup = new Map(materials.map((entity) => [entity.id, entity]))
   const stock = Object.fromEntries(materials.map((entity) => [entity.id, getCompanionRecord(progress, 'material', entity.id).count]))
