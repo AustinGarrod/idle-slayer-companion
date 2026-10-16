@@ -2,13 +2,19 @@ import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync, readdirSync } from 'node:fs'
 import { isAbsolute, relative, resolve, sep } from 'node:path'
 
-const base = '/idle-slayer-ascension-map/'
+const base = '/idle-slayer-companion/'
 const origin = 'https://release.invalid'
 const hash = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex')
 interface ReviewedCatalog { upgrades: { id: string; icon: string }[]; connections: unknown[] }
 interface CatalogReceipt {
   catalogSha256: string; nativeNodeCount: number; nativeEdgeCount: number; spriteCount: number
   nodes: { id: string; icon: { sha256: string } }[]
+}
+interface ReviewedCompanionCatalog { entities: { system: string; id: string; icon?: string }[]; verification: { coverage: boolean; rules: boolean; assets: boolean } }
+interface CompanionReceipt {
+  catalogSha256: string
+  catalogEntities: { system: string; id: string }[]
+  icons: { system: string; id: string; sha256: string }[]
 }
 
 // Reject links before reading any deployed files, including the notice validator's inputs.
@@ -109,4 +115,24 @@ export function validateReleaseArtifact(root: string, directory: string): void {
   }
   const distributedIcons = readdirSync(resolve(dist, 'assets/upgrades')).map((file) => 'assets/upgrades/' + file)
   if (distributedIcons.length !== icons.size || distributedIcons.some((file) => !icons.has(file))) throw new Error('Distributed sprite inventory differs from the reviewed catalog.')
+
+  const companionBytes = read('companion-catalog.json')
+  const companionReceipt = JSON.parse(readFileSync(resolve(root, 'data/companion-catalog-receipt.json'), 'utf8')) as CompanionReceipt
+  if (!companionBytes.equals(readFileSync(resolve(root, 'public/companion-catalog.json'))) || hash(companionBytes) !== companionReceipt.catalogSha256) throw new Error('Distributed companion catalog differs from the reviewed source and receipt.')
+  const companion = JSON.parse(companionBytes.toString('utf8')) as ReviewedCompanionCatalog
+  if (!companion.verification.coverage || !companion.verification.rules || !companion.verification.assets) throw new Error('Companion catalog coverage, rules and assets must be reviewed before release.')
+  const entityKey = (entity: { system: string; id: string }) => `${entity.system}:${entity.id}`
+  const expectedIdentities = companionReceipt.catalogEntities?.map(entityKey).sort()
+  const identities = companion.entities.map(entityKey).sort()
+  if (!expectedIdentities || new Set(identities).size !== identities.length || JSON.stringify(identities) !== JSON.stringify(expectedIdentities)) throw new Error('Distributed companion catalog coverage differs from the reviewed receipt.')
+  const companionIconReceipt = new Map(companionReceipt.icons.map((icon) => [entityKey(icon), icon]))
+  const companionIcons = new Set<string>()
+  for (const entity of companion.entities) {
+    if (!entity.icon) continue
+    const icon = companionIconReceipt.get(entityKey(entity))
+    if (!icon || !/^assets\/companion\/[a-z0-9_-]+\.png$/i.test(entity.icon) || companionIcons.has(entity.icon) || hash(read(entity.icon)) !== icon.sha256) throw new Error('Distributed companion icon differs from its reviewed receipt: ' + entityKey(entity))
+    companionIcons.add(entity.icon)
+  }
+  const distributedCompanionIcons = readdirSync(resolve(dist, 'assets/companion')).map((file) => 'assets/companion/' + file)
+  if (companionIconReceipt.size !== companionIcons.size || distributedCompanionIcons.length !== companionIcons.size || distributedCompanionIcons.some((file) => !companionIcons.has(file))) throw new Error('Distributed companion sprite inventory differs from the reviewed catalog.')
 }

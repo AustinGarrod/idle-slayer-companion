@@ -1,4 +1,4 @@
-name: Validate and publish map
+name: Validate and publish Companion
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: map-${{ github.ref }}
+  group: companion-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -44,12 +44,12 @@ jobs:
           include-hidden-files: false
       - run: node .yarn/releases/yarn-4.13.0.cjs check:release
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.PAGES_DEPLOY_ENABLED == 'true'
         with:
           path: dist
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.PAGES_DEPLOY_ENABLED == 'true'
     needs: validate
     runs-on: ubuntu-latest
     permissions:

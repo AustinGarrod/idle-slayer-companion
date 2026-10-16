@@ -23,7 +23,7 @@ async function seed(page: Page, profile: Profile) {
 }
 
 test('browses every visible upgrade beyond the former 40-result limit and selects the final result', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').focus()
   await expect(page.locator('.search-result')).toHaveCount(visible.total)
   await expect(page.locator('.results-heading')).toContainText(`${visible.total} visible results`)
@@ -37,7 +37,7 @@ test('browses every visible upgrade beyond the former 40-result limit and select
 })
 
 test('discovers native coin effects with status and exact cost while preserving title-first Enter', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const search = page.getByRole('searchbox', { name: 'Search visible upgrade titles and effects' })
   await search.fill('coins')
   for (const title of ['Boost Coin', "Doesn't Matter to Me", 'King of The Sea']) {
@@ -59,7 +59,7 @@ test('filters owned and pending progress separately, keeping spoiler-visible nat
   const pending = catalog.upgrades.find((node) => node.activation === 'after-ultra-ascension')!
   profile.purchases[pending.id] = { epoch: 0, active: false }
   await seed(page, profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').focus()
   const filter = page.getByRole('combobox', { name: 'Progress state' })
   await filter.selectOption('owned')
@@ -83,7 +83,7 @@ test('filters owned and pending progress separately, keeping spoiler-visible nat
 
 test('duplicate titles expose stable IDs and exact costs and select the intended upgrade', async ({ page }) => {
   await seed(page, { ...initial, showSpoilers: true })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').fill('Astral Key')
   const keys = catalog.upgrades.filter((node) => node.title === 'Astral Key')
   await expect(page.locator('.search-result').filter({ has: page.locator('.discovery-title', { hasText: /^Astral Key$/ }) })).toHaveCount(keys.length)
@@ -101,7 +101,7 @@ test('hidden effects, identities and counts never enter discovery; Escape and Ta
   const hidden = catalog.upgrades.find((node) => !visible.ids.has(node.id))!
   const augmented = { ...catalog, upgrades: catalog.upgrades.map((node) => node.id === hidden.id ? { ...node, title: visible.upgrades[0].title, description: 'PRIVATE-HIDDEN-EFFECT-9981' } : node) }
   await page.route('**/catalog.json', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(augmented) }))
-  await page.goto('./')
+  await page.goto('./ascension/')
   const search = page.getByRole('searchbox')
   await search.focus()
   await expect(page.locator('.search-result')).toHaveCount(visible.total)
@@ -123,7 +123,7 @@ test('hidden effects, identities and counts never enter discovery; Escape and Ta
 for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
   test(`discovery scrolls inside ${viewport.width}×${viewport.height} without overflowing the page`, async ({ page }) => {
     await page.setViewportSize(viewport)
-    await page.goto('./')
+    await page.goto('./ascension/')
     await page.getByRole('searchbox').focus()
     const panel = page.getByRole('region', { name: 'Visible upgrade results' })
     await expect(panel).toBeVisible()
@@ -143,7 +143,7 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }
 
 test('native Tab keeps every focused title clear of the sticky header at 320×350', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 350 })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await tabThroughDiscovery(page, visible.upgrades.map((node) => node.id))
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
@@ -157,7 +157,7 @@ test('native Tab keeps every focused title clear of the sticky header at 320×35
 
 test('pointer focus keeps a partially scrolled row stationary until its click selects it', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 350 })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').focus()
   const second = visible.upgrades[1]
   const row = result(page, second.id)

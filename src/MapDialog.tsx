@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 export const DialogFeedbackContext = createContext<{ title: string | null; announcement: string; sequence: number; content: ReactNode; clear: () => void }>({ title: null, announcement: '', sequence: 0, content: null, clear: () => {} })
 
-export function Dialog({ title, children, close, dismissDisabled = false }: { title: string; children: ReactNode; close: () => void; dismissDisabled?: boolean }) {
+export function Dialog({ title, children, close, dismissDisabled = false, returnFocus }: { title: string; children: ReactNode; close: () => void; dismissDisabled?: boolean; returnFocus?: () => HTMLElement | null }) {
   const ref = useRef<HTMLDialogElement>(null)
   const feedbackRef = useRef<HTMLDivElement>(null)
   const feedback = useContext(DialogFeedbackContext)
@@ -15,7 +15,8 @@ export function Dialog({ title, children, close, dismissDisabled = false }: { ti
     dialog?.showModal()
     return () => {
       dialog?.close()
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true })
+      const target = returnFocus?.() ?? (previousFocus instanceof HTMLElement && previousFocus.isConnected ? previousFocus : null)
+      target?.focus({ preventScroll: true })
     }
   }, [])
   useEffect(() => {

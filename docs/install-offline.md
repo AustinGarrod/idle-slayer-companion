@@ -1,5 +1,13 @@
 # Installation and offline use
 
+## Companion identity and URL migration
+
+The start URL and scope are now `/idle-slayer-companion/`; the manifest's stable ID stays `/idle-slayer-ascension-map/` to preserve the existing same-origin installation identity. The inventory includes every static section entry, both reviewed catalogs, all reviewed icons, fonts, notices, and bundled scripts. Companion caches use `idle-slayer-companion-public-`; the legacy bridge has its own cache prefix and scope. No progress data, import file, intentions, or analytics is cached by the worker.
+
+[site-migration.md](site-migration.md) describes the generated old-address launcher and staged user-site release. The old address forwards recognized map transfer/public reference fragments without analytics. Its offline fallback is read-only and can export saved progress; it cannot migrate data between browser storage partitions. Same-origin storage continuity and manifest identity do not prove physical browser/OS installation behavior. Android, iOS and desktop install/update behavior remains unverified on physical devices for this release.
+
+Updates still wait for old windows to close. Export **Companion progress** for all tracked actual state and **intentions** separately; tree checkpoints and comparison have separate recovery/exports. A legacy map JSON/QR contains only Ascension progress/layout.
+
 The static Ascension Map can be installed from a supporting browser. **Install & offline** is available in the desktop footer, **Map options**, and **About & sources**. It offers **Install Ascension Map** only after the browser supplies an installation event. Dismissed prompts fall back to instructions; an installed standalone window shows its installed state. A browser tab cannot reliably detect a separate installation, so browser-menu guidance remains conditional.
 
 | Platform | Installation route |

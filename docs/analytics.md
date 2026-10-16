@@ -1,5 +1,13 @@
 # Umami analytics and operator guide
 
+## Companion additions
+
+The canonical production base is now `/idle-slayer-companion/`. Only its exact root and six static section routes (including `index.html` aliases) are allowed by URL sanitization; arbitrary subpaths, query/hash values, private transfers and references keep the existing cleanup/suspension rules. No new analytics provider, player identity, module record, goal, recipe, counter, or event payload has been added.
+
+All new companion module DOM, private status/error feedback, goals/recipe plans, and global import/backup/reset/recovery contents use both `telemetry-private` and `rr-block` before recorder startup. The bounded existing game-import lifecycle remains supported. Real local recorder checks cover full snapshots and subsequent mutations across all companion pages. Ordinary visible Ascension progress retains its existing disclosure. Coarse heatmap coordinates remain subject to the existing limitation.
+
+Settings & privacy saves actual progress and intentions before reload, offers export-both/discard/cancel if those cannot be saved, and blocks reload while separate tree references need recovery. Old preference keys and the disabled URL marker stay compatible. No live analytics settings or reports were changed for this implementation.
+
 The user authorized usage analytics and session recording for this static app through the self-hosted [Umami instance](https://analytics.garrod.house), website ID `f5c9bfd4-7ab5-4f82-a543-9357dcea1566`. This replaces the original no-analytics boundary only for this integration. It does not add an application backend, accounts, save uploads, game-file access or other analytics services. This analytics scope is a lasting implementation constraint. Authority to commit, push or publish future work must come from the task being performed, under [AGENTS.md](../AGENTS.md) and the [release gate](implementation-plan.md#validation-and-release); a historical deployment receipt does not authorize a new publication. The original authorized deployment and manual production readbacks are dated below.
 
 ## Visitor behavior and privacy

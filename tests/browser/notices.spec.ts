@@ -5,7 +5,7 @@ import type { NoticeManifest } from '../../scripts/runtime-notices'
 
 const manifest = JSON.parse(readFileSync('public/licenses/notices.json', 'utf8')) as NoticeManifest
 test('About opens the deployed index and all complete runtime notices', async ({ page, request }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   const about = page.getByRole('button', { name: 'About & sources', exact: true })
   if (!await about.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()

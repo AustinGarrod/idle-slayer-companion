@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "method": "Independent exhaustive boolean evaluation of reviewed native purchase and reveal control flow; no native method execution",
-  "steamBuild": "25551532",
-  "gameVersion": "7.2.0",
-  "catalogRevision": "steam-25551532-v1",
-  "catalogSha256": "7d69b7808ebef5c1609590328d41c23331ffd81c4b09e3a4fb368d4719722b7b",
-  "assetExportSha256": "dd3d012021948f9e9307bde6de109edacc91f0419831ef88ff536e404dc08d6f",
-  "nativeMethodReceiptSha256": "a592955ed8ec78189bec4aab664fb8f23f9c5182cd1fdfd92873afde36628500",
+  "steamBuild": "25810322",
+  "gameVersion": "7.3.4",
+  "catalogRevision": "steam-25810322-v1",
+  "catalogSha256": "b9ec818c797f959bb3e65b95aba031364c818b88274f5470f525aa639fc67f77",
+  "assetExportSha256": "b2f47313980e0352c5249e7047b02e32017f96ddb026c8f88b3708e4d92dbd99",
+  "nativeMethodReceiptSha256": "f62ab6b37b3efaca35a03e9c52bbb2430c7cda47eec39af45f63cfa441cffcee",
   "validatorSha256": "e3420a9c875f1b0f02822b30897bb36fed62203468fef31e87932ef6c62a402e",
   "checks": {
     "nativeNodes": 288,

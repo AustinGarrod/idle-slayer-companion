@@ -54,7 +54,7 @@ async function webPresentation(page: Page, sampleCounts?: number[]) {
 }
 
 test('Game uses compact native circular tiles without changing any visible center', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Game Layout')
   await expect(page.locator('.map-game')).toBeVisible()
   await expect(page.locator('.react-flow__node')).toHaveCount(visible.upgrades.length)
@@ -93,7 +93,7 @@ test('Game uses compact native circular tiles without changing any visible cente
 })
 
 test('Game connections follow the native center vector and meet each circular border', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Game Layout')
   await expect(page.locator('.native-connection-outline')).toHaveCount(visible.connections.length)
   const connections = await page.locator('.react-flow__edge').evaluateAll((edges) => edges.map((edge) => {
@@ -135,7 +135,7 @@ test('Game connections follow the native center vector and meet each circular bo
 })
 
 test('Game titles appear on hover and keyboard focus while details retain the full name', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Game Layout')
   const node = upgradeNode(page, start.id)
   const title = node.locator('.node-title')
@@ -155,7 +155,7 @@ test('Game titles appear on hover and keyboard focus while details retain the fu
 })
 
 test('selected Game paths expose incoming and outgoing direction with stronger strokes', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Game Layout')
   await selectUpgrade(page, branch.title)
   const incoming = visible.connections.find((edge) => edge.to === branch.id)!
@@ -190,12 +190,12 @@ test('selected Game paths expose incoming and outgoing direction with stronger s
 test('Game switch preserves progress and spoilers and restores Web geometry and routing', async ({ page }) => {
   const seed: Profile = { ...initial, purchases: { [start.id]: { epoch: 0, active: true } } }
   await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: profileKey, profile: seed })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Detailed Layout')
   await selectUpgrade(page, branch.title)
   const before = await webPresentation(page)
   expect(before.nodes.every((node) => node.width === 132 && node.height === 122)).toBe(true)
-  const saved = await page.evaluate((key) => localStorage.getItem(key), profileKey)
+  const saved = await page.evaluate((key) => window.__readMapProfileText(key), profileKey)
   await chooseLayout(page, 'Game Layout')
   await expect(upgradeNode(page, branch.id)).toHaveClass(/selected/)
   await expect(page.locator('.details h2')).toHaveText(branch.title)
@@ -227,7 +227,7 @@ test('Game switch preserves progress and spoilers and restores Web geometry and 
     })
     return { ...structure(after), coordinatesRestored }
   }).toEqual({ ...structure(before), coordinatesRestored: true })
-  expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBe(saved)
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBe(saved)
   await expect(page.locator('.map-summary')).toContainText('1 /')
   await expect(upgradeNode(page, hidden.id)).toHaveCount(0)
 })
@@ -241,7 +241,7 @@ test('compact Game tiles preserve all four progress symbols and accessible state
     [pending.id]: { epoch: 0, active: false },
   } }
   await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: profileKey, profile: seed })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Game Layout')
   for (const fixture of [
     { upgrade: start, state: 'purchased', symbol: '✓' },
@@ -254,14 +254,14 @@ test('compact Game tiles preserve all four progress symbols and accessible state
     await expect(node.locator('.node-symbol')).toHaveText(fixture.symbol)
     await expect(node).toHaveAttribute('aria-label', `${fixture.upgrade.title}, ${fixture.state}, ${BigInt(fixture.upgrade.cost).toLocaleString('en')} Slayer Points`)
   }
-  const saved = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!) as Profile, profileKey)
+  const saved = await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!) as Profile, profileKey)
   expect(saved.purchases[pending.id].active).toBe(false)
 })
 
 for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
   test(`compact Game selection supports hit testing and keyboard at ${viewport.width}×${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport)
-    await page.goto('./')
+    await page.goto('./ascension/')
     await chooseLayout(page, 'Game Layout')
     await page.getByRole('button', { name: 'Return to start', exact: true }).click()
     await selectedNodeIsUsable(page, start.id)

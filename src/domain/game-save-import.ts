@@ -1,9 +1,9 @@
-import { decodeGameSave } from './save-codec'
+import { decodeGameSave, type NativeSaveData } from './save-codec'
 import { conditionallyRetainedPurchases } from './rules'
 import { exportProfileBackup } from './storage'
 import type { Catalog, Profile } from './types'
 
-const SUPPORTED_GAME_VERSION = '7.2.0'
+const SUPPORTED_GAME_VERSIONS = new Set(['7.2.0', '7.3.4'])
 const MAX_IMPORTED_EPOCH = 1_000_000
 const forbiddenIds = new Set(['__proto__', 'constructor', 'prototype'])
 
@@ -56,15 +56,19 @@ const safeId = (id: string) => id.trim().length > 0 && id.length <= 1024 && !for
  * Earlier epochs below are a retained-ownership baseline, not recovered dates.
  */
 export function importGameSave(catalog: Catalog, currentProfile: Profile, bytes: Uint8Array): GameSaveImportResult {
-  if (catalog.gameVersion !== SUPPORTED_GAME_VERSION) return failure('This catalog does not support the reviewed Steam save version. Map progress was not changed.')
+  const decoded = decodeGameSave(bytes)
+  return decoded.ok ? importDecodedGameSave(catalog, currentProfile, decoded.data) : decoded
+}
+
+/** Pure reviewed adapter; the Companion decoder shares one bounded transport read. */
+export function importDecodedGameSave(catalog: Catalog, currentProfile: Profile, data: NativeSaveData): GameSaveImportResult {
+  if (!SUPPORTED_GAME_VERSIONS.has(catalog.gameVersion)) return failure('This catalog does not support the reviewed Steam save version. Map progress was not changed.')
   const catalogIds = [...catalog.upgrades.map((node) => node.id), ...catalog.milestones.map((item) => item.id)]
   if (catalogIds.some((id) => !safeId(id)) || new Set(catalogIds).size !== catalogIds.length) return failure('The catalog has unsafe or duplicate native identities. Map progress was not changed.')
   if (!exportProfileBackup(currentProfile).ok) return failure('Current map progress is not valid for a safe replacement. Map progress was not changed.')
-  const decoded = decodeGameSave(bytes)
-  if (!decoded.ok) return decoded
-  const sourceVersion = decoded.data.StringData.get('Last Played Version')
-  if (sourceVersion !== SUPPORTED_GAME_VERSION) return failure('Only a reviewed Idle Slayer 7.2.0 save can be imported. Map progress was not changed.')
-  const epoch = parseEpoch(decoded.data.StringData.get('Ultra Ascensions'))
+  const sourceVersion = data.StringData.get('Last Played Version')
+  if (typeof sourceVersion !== 'string' || !SUPPORTED_GAME_VERSIONS.has(sourceVersion)) return failure('Only reviewed Idle Slayer 7.2.0 or 7.3.4 Steam saves can be imported. Map progress was not changed.')
+  const epoch = parseEpoch(data.StringData.get('Ultra Ascensions'))
   if (epoch === null) return failure('The save has an unsupported Ultra Ascension counter. Map progress was not changed.')
 
   const knownUpgrades = new Set(catalog.upgrades.map((node) => node.id))
@@ -89,7 +93,7 @@ export function importGameSave(catalog: Catalog, currentProfile: Profile, bytes:
     summary.preservedUnknownMilestones++
   }
   for (const node of catalog.upgrades) {
-    const state = decoded.data.IntData.get(node.id) ?? 0
+    const state = data.IntData.get(node.id) ?? 0
     if (state < 0 || state > 2) return failure('The save has an unsupported Ascension ownership state. Map progress was not changed.')
     if (state === 0) continue
     const locked = node.activation === 'after-ultra-ascension'
@@ -103,7 +107,7 @@ export function importGameSave(catalog: Catalog, currentProfile: Profile, bytes:
     }
   }
   for (const item of catalog.milestones) {
-    const state = decoded.data.IntData.get(item.id) ?? 0
+    const state = data.IntData.get(item.id) ?? 0
     if (state !== 0 && state !== 1) return failure('The save has an unsupported milestone ownership state. Map progress was not changed.')
     if (state === 1) { profile.milestones[item.id] = true; summary.recordedMilestones++ }
   }

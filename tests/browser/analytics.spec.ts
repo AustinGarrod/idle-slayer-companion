@@ -27,6 +27,7 @@ const comparisonKey = 'idle-slayer-ascension-map.comparison.v1'
 const profileKey = 'idle-slayer-ascension-map.profile.v1'
 const fixturePath = '/__analytics-fixture/'
 const appFixturePath = '/__analytics-app/'
+const appMapPath = appFixturePath + 'ascension/'
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
 const initial = emptyProfile(catalog.revision)
 const visible = visibility(catalog, initial)
@@ -44,6 +45,44 @@ const publicMarker = 'PUBLIC-replay-proof-42816'
 let harnessPromise: Promise<string> | undefined
 let applicationPromise: Promise<Map<string, { body: Buffer | string; contentType: string }>> | undefined
 
+test('every Companion tracking page stays blocked in real snapshots and navigation mutations', async ({ page, context, baseURL }) => {
+  const origin = new URL(baseURL!).origin
+  let releaseRecorder!: () => void
+  const recorderReady = new Promise<void>((resolve) => { releaseRecorder = resolve })
+  const capture = await installLocalRoutes(context, origin, { recorderReady })
+  await serveIsolatedApplication(context, origin)
+  await page.goto(`${origin}${appFixturePath}achievements/`)
+  const markers: string[] = []
+  await expect(page.locator('.companion-page')).toBeVisible()
+  await page.evaluate(() => {
+    const button = document.createElement('button'); button.id = 'companion-public-replay-proof'; button.textContent = 'COMPANION_PUBLIC_SNAPSHOT'; document.body.appendChild(button)
+  })
+  const addPrivateMarker = async (name: string) => {
+    const marker = `COMPANION_PRIVATE_${name}_67291384`; markers.push(marker)
+    await page.locator('.companion-page').evaluate((element, value) => { const node = document.createElement('p'); node.textContent = value; element.appendChild(node) }, marker)
+    const search = page.locator('.companion-page').getByRole('searchbox')
+    if (await search.count()) await search.fill(marker)
+  }
+  await addPrivateMarker('achievement-records-and-counter')
+  await waitForActive(page); releaseRecorder()
+  const snapshot = await waitForReplayEvents(capture, (events) => events.some((event) => event.type === 2 && JSON.stringify(event).includes('COMPANION_PUBLIC_SNAPSHOT')))
+  expect(blockedReplayNodes(snapshot).some((node) => node.attributes.class.includes('companion-page') && !node.childNodes?.length)).toBe(true)
+  for (const [name, label] of [['crafting-plans-and-inventory', 'Crafting & materials'], ['quest-and-village-progress', 'Quests & Village'], ['bestiary-kills', 'Bestiary'], ['divinity-selections', 'Divinities'], ['overview-goals', 'Overview']] as const) {
+    const menu = page.getByRole('button', { name: 'Menu', exact: true })
+    if (await menu.isVisible()) await menu.click()
+    await page.getByRole('button', { name: label, exact: true }).click()
+    await expect(page.locator('.companion-page')).toBeVisible()
+    await addPrivateMarker(name)
+    await page.locator('#companion-public-replay-proof').evaluate((element, value) => { element.textContent = value }, `COMPANION_PUBLIC_${name}`)
+    await page.locator('#companion-public-replay-proof').click()
+  }
+  const events = await waitForReplayEvents(capture, (events) => events.some((event) => event.type === 3 && JSON.stringify(event).includes('COMPANION_PUBLIC_overview-goals')))
+  const evidence = JSON.stringify({ submissions: capture.submissions, replay: events })
+  for (const marker of markers) expect(evidence.includes(marker), 'Companion records or plans leaked into telemetry').toBe(false)
+  expect(blockedReplayNodes(events).filter((node) => node.attributes.class.includes('companion-page')).every((node) => !node.childNodes?.length)).toBe(true)
+  expect(capture.unexpected).toEqual([])
+})
+
 test('saved comparison contents stay blocked in real recorder snapshots and mutations without new event payloads', async ({ page, context, baseURL }) => {
   const origin = new URL(baseURL!).origin
   let releaseRecorder!: () => void
@@ -53,7 +92,7 @@ test('saved comparison contents stay blocked in real recorder snapshots and muta
   const privateQuery = 'PRIVATE_COMPARISON_QUERY_87654', privateSnapshot = 'PRIVATE_COMPARISON_SNAPSHOT_87654', privateMutation = 'PRIVATE_COMPARISON_MUTATION_87654'
   const unknown = 'PRIVATE_COMPARISON_UNAVAILABLE_87654', publicSnapshot = 'PUBLIC_COMPARISON_SNAPSHOT_87654', publicMutation = 'PUBLIC_COMPARISON_MUTATION_87654'
   await page.addInitScript(({ key, ids }) => localStorage.setItem(key, JSON.stringify({ kind: 'upgrade-comparison', version: 1, ids })), { key: comparisonKey, ids: [catalog.startId, unknown] })
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   const mobile = page.getByRole('button', { name: 'Map options', exact: true })
   await (await mobile.isVisible() ? mobile : page.getByRole('button', { name: 'Map view…', exact: true })).click()
@@ -114,7 +153,8 @@ async function serveIsolatedApplication(context: BrowserContext, origin: string)
   const assets = await applicationAssets()
   const publicDirectory = resolve('public')
   await context.route(`${origin}${appFixturePath}**`, async (route) => {
-    const path = new URL(route.request().url()).pathname.slice(appFixturePath.length) || 'index.html'
+    const requested = new URL(route.request().url()).pathname.slice(appFixturePath.length)
+    const path = !requested || /^(?:ascension|achievements|crafting|quests|bestiary|divinities)\/(?:index\.html)?$/.test(requested) ? 'index.html' : requested
     const asset = assets.get(path)
     if (asset) { await route.fulfill(asset); return }
     const file = resolve(publicDirectory, path)
@@ -265,9 +305,17 @@ async function waitForActive(page: Page) {
   await expect.poll(() => page.evaluate(() => (window as unknown as { analyticsHarness: { getTrackingStatus: () => { active: boolean } } }).analyticsHarness.getTrackingStatus().active)).toBe(true)
 }
 
+async function chooseCompanionSave(page: Page, options: Parameters<typeof nativeSaveFixture>[0] = {}) {
+  await page.getByRole('button', { name: 'Import save', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Import game save', exact: true })
+  await dialog.getByLabel('Choose game save', { exact: true }).setInputFiles({ name: secrets.file, mimeType: 'application/octet-stream', buffer: Buffer.from(encodeGameSaveFixture(nativeSaveFixture(options))) })
+  await expect(dialog.getByRole('button', { name: 'Apply snapshot', exact: true })).toBeVisible()
+  return dialog
+}
+
 test('local production preview stays untracked and has usable privacy controls', async ({ page, context, baseURL }) => {
   const capture = await installLocalRoutes(context, new URL(baseURL!).origin)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   const action = page.getByRole('button', { name: 'Privacy & tracking', exact: true })
   if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
@@ -653,14 +701,24 @@ for (const startup of ['loading', 'network-error'] as const) {
     await page.goto(`${origin}${fixturePath}`)
     const storedProfile = JSON.stringify(initial)
     await page.evaluate(({ key, profile }) => localStorage.setItem(key, profile), { key: profileKey, profile: storedProfile })
-    await page.goto(`${origin}${appFixturePath}`)
+    await page.goto(`${origin}${appMapPath}`)
     await waitForActive(page)
-    if (startup === 'loading') await expect(page.getByRole('status')).toHaveText('Loading the native Ascension tree…')
-    else await expect(page.getByRole('button', { name: 'Try again', exact: true })).toBeVisible()
-    await expect(page.locator('.startup-disclosure')).toContainText('self-hosted Umami')
-    const privacy = page.locator('details').filter({ has: page.locator('summary').filter({ hasText: 'Privacy & tracking' }) })
-    await privacy.locator('summary').focus()
-    await page.keyboard.press('Enter')
+    if (startup === 'loading') await expect(page.getByRole('status')).toHaveText('Opening your companion…')
+    else await expect(page.getByRole('button', { name: 'Retry catalog', exact: true })).toBeVisible()
+    const openPrivacy = async () => {
+      if (startup === 'loading') {
+        await expect(page.locator('.startup-disclosure')).toContainText('self-hosted Umami')
+        const details = page.locator('.startup-privacy')
+        await details.locator('summary').focus(); await page.keyboard.press('Enter')
+        return details
+      }
+      const menu = page.getByRole('button', { name: 'Menu', exact: true })
+      if (await menu.isVisible()) await menu.click()
+      await page.getByRole('button', { name: 'Settings & privacy', exact: true }).click()
+      return page.getByRole('dialog', { name: 'Settings & privacy', exact: true })
+    }
+    const privacy = await openPrivacy()
+    await expect(privacy).toContainText('self-hosted Umami')
     const disable = privacy.getByRole('button', { name: 'Disable tracking and reload', exact: true })
     await expect(disable).toBeVisible()
     await disable.scrollIntoViewIfNeeded()
@@ -669,13 +727,14 @@ for (const startup of ['loading', 'network-error'] as const) {
     const firstScriptRequests = capture.scriptRequests.length
     await Promise.all([page.waitForEvent('load'), disable.click()])
     expect(await page.evaluate((key) => localStorage.getItem(key), preferenceKey)).toBe('disabled')
-    expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBe(storedProfile)
+    expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBe(storedProfile)
     expect(capture.scriptRequests).toHaveLength(firstScriptRequests)
     expect(await page.evaluate(() => (window as unknown as { analyticsHarness: { getTrackingStatus: () => { enabled: boolean; active: boolean } } }).analyticsHarness.getTrackingStatus())).toMatchObject({ enabled: false, active: false })
-    await privacy.locator('summary').click()
-    await expect(privacy.getByRole('button', { name: 'Enable tracking and reload', exact: true })).toBeVisible()
+    const reloadedPrivacy = await openPrivacy()
+    await expect(reloadedPrivacy.getByRole('button', { name: 'Enable tracking and reload', exact: true })).toBeVisible()
     releaseCatalog()
-    await expect(page.getByRole('button', { name: 'Try again', exact: true })).toBeVisible()
+    if (startup === 'network-error') await reloadedPrivacy.getByRole('button', { name: 'Close dialog', exact: true }).click()
+    await expect(page.getByRole('button', { name: 'Retry catalog', exact: true })).toBeVisible()
     expect(capture.unexpected).toEqual([])
   })
 }
@@ -690,7 +749,7 @@ test('startup privacy disclosure refreshes cross-tab tracking status while the c
     await catalogReady
     await route.fulfill({ status: 503, body: 'Synthetic catalog outage' })
   })
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await waitForActive(page)
   const privacy = page.locator('details')
   await privacy.locator('summary').click()
@@ -713,24 +772,25 @@ test('catalog parsing errors show only fixed public wording in the actual record
   const capture = await installLocalRoutes(context, origin)
   await serveIsolatedApplication(context, origin)
   const marker = 'CATALOG_SECRET'
-  const safeError = 'The verified game catalog could not be loaded. Please try again.'
+  const safeError = 'The reviewed tree could not be loaded. Other companion sections remain available.'
   let releaseCatalog!: () => void
   const catalogReady = new Promise<void>((resolve) => { releaseCatalog = resolve })
   await context.route(`${origin}${appFixturePath}catalog.json`, async (route) => {
     await catalogReady
     await route.fulfill({ contentType: 'application/json', body: marker })
   })
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await waitForActive(page)
   await waitForReplayEvents(capture, (events) => events.some((event) => event.type === 2))
   releaseCatalog()
-  await expect(page.getByRole('button', { name: 'Try again', exact: true })).toBeVisible()
-  const displayedError = (await page.getByRole('status').textContent())!
+  await expect(page.getByRole('button', { name: 'Retry catalog', exact: true })).toBeVisible()
+  const publicError = page.getByText(safeError, { exact: true })
+  const displayedError = (await publicError.textContent())!
   const encodedError = JSON.stringify(displayedError).slice(1, -1)
   const events = await waitForReplayEvents(capture, (events) => JSON.stringify(events).includes(encodedError))
   const evidence = JSON.stringify({ submissions: capture.submissions, replay: events })
   expect(evidence.includes(marker), 'Raw catalog parser detail leaked into telemetry').toBe(false)
-  await expect(page.getByRole('status')).toHaveText(safeError)
+  await expect(publicError).toHaveText(safeError)
   expect(JSON.stringify(events).includes(safeError), 'The fixed public error was absent from the real recording').toBe(true)
   await expect(page.locator('body')).not.toContainText(marker)
   const failures = capture.submissions.filter((item) => item.payload.name === 'catalog_error')
@@ -748,7 +808,7 @@ test('prerequisite route targets, queries and intentions remain blocked in real 
   const snapshotProof = 'ROUTE_PUBLIC_SNAPSHOT_PROOF', mutationProof = 'ROUTE_PUBLIC_MUTATION_PROOF'
   const marker = 'ROUTE_PRIVATE_QUERY_82749'
   const belt = catalog.upgrades.find((upgrade) => upgrade.title === 'Legendary Belt')!
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   const compact = page.getByRole('button', { name: 'Map options', exact: true })
   await (await compact.isVisible() ? compact : page.getByRole('button', { name: 'Map view…', exact: true })).click()
@@ -773,7 +833,7 @@ test('prerequisite route targets, queries and intentions remain blocked in real 
   const events = await waitForReplayEvents(capture, (items) => items.some((event) => event.type === 3 && JSON.stringify(event).includes(mutationProof)))
   const evidence = JSON.stringify({ submissions: capture.submissions, replay: events })
   for (const privateValue of [marker, 'Exact combined catalog cost', 'Mark route 1 as intended', 'Chosen OR alternatives']) expect(evidence).not.toContain(privateValue)
-  expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBeNull()
   expect(capture.unexpected).toEqual([])
 })
 
@@ -783,13 +843,13 @@ test('single-event hypothetical controls and results stay blocked in real replay
   const recorderReady = new Promise<void>((resolve) => { releaseRecorder = resolve })
   const capture = await installLocalRoutes(context, origin, { recorderReady })
   await serveIsolatedApplication(context, origin)
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   await page.locator(`.react-flow__node[data-id="${catalog.startId}"]`).click()
   const toggle = page.getByRole('button', { name: 'Show details', exact: true })
   if (await toggle.isVisible()) await toggle.click()
-  const before = await page.evaluate((key) => localStorage.getItem(key), profileKey)
+  const before = await page.evaluate((key) => window.__readMapProfileText(key), profileKey)
   await page.getByRole('button', { name: 'Analyze forward impact…', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Forward impact', exact: true })
   await expect(dialog.locator('.forward-impact')).toBeVisible()
@@ -815,7 +875,7 @@ test('single-event hypothetical controls and results stay blocked in real replay
   for (const marker of [privateSnapshot, privateMutation]) expect(proof).not.toContain(marker)
   for (const name of ['purchase_started', 'purchase_previewed', 'purchase_applied', 'milestone_changed', 'progress_undo']) expect(capture.submissions.filter((item) => item.payload.name === name)).toHaveLength(0)
   expect(capture.submissions.some((item) => item.payload.name === 'panel_opened' && (item.payload.data as Record<string, unknown>)?.panel === 'forward-impact')).toBe(false)
-  expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBe(before)
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBe(before)
   expect(capture.unexpected).toEqual([])
 })
 
@@ -831,7 +891,7 @@ test('active dialog feedback remains private in actual recorder snapshots and mu
   const mutationProof = 'DIALOG_FEEDBACK_PUBLIC_MUTATION'
   const invalidError = 'The backup is not valid JSON. Progress was not replaced.'
   const readError = 'The backup could not be read. Progress was not replaced.'
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await openProgress(page)
   await page.getByLabel('Map progress JSON backup', { exact: true }).setInputFiles({ name: 'synthetic-invalid.json', mimeType: 'application/json', buffer: Buffer.from(fileMarker) })
@@ -873,7 +933,7 @@ test('named checkpoint snapshots and edits stay excluded from actual recorder sn
     key: CHECKPOINT_STORAGE_KEY,
     text: exportCheckpoints({ ...emptyCheckpoints(), entries: [{ id: 'stored', name: names[0], capturedRevision: catalog.revision, profile: { ...initial, purchases: { [unknown]: { epoch: 0, active: false } } } }] }, catalog.revision)!,
   })
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await (await openProgress(page)).getByRole('button', { name: 'Progress checkpoints…', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Progress checkpoints', exact: true })
   await expect(dialog.locator('.checkpoint-list')).toContainText(names[0])
@@ -913,7 +973,7 @@ test('real recorder proves moderate input masking, blocking and safe application
   await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), {
     key: profileKey, profile: { ...initial, purchases: { [secrets.unknown]: { epoch: 0, active: false } } },
   })
-  await page.goto(`${origin}${appFixturePath}?private=${secrets.url}#${secrets.url}`)
+  await page.goto(`${origin}${appMapPath}?private=${secrets.url}#${secrets.url}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await page.evaluate(({ publicMarker, blocked }) => {
     const fixture = document.createElement('aside')
@@ -931,12 +991,9 @@ test('real recorder proves moderate input masking, blocking and safe application
   await page.getByRole('searchbox').fill(secrets.query)
   await page.getByRole('searchbox').fill('')
   await page.keyboard.press('Escape')
-  await openProgress(page)
-  await page.locator('input[aria-label="Idle Slayer game save"]').setInputFiles({ name: secrets.file, mimeType: 'application/octet-stream', buffer: Buffer.from(encodeGameSaveFixture(nativeSaveFixture({ epoch: '1', integers: { [catalog.startId]: 1, [hidden.id]: 1 }, strings: { 'Fixture account preference': secrets.native } }))) })
-  const preview = page.getByRole('dialog', { name: 'Import game progress', exact: true })
-  await expect(preview.getByRole('button', { name: 'Apply import', exact: true })).toBeVisible()
+  const preview = await chooseCompanionSave(page, { epoch: '1', integers: { [catalog.startId]: 1, [hidden.id]: 1 }, strings: { 'Fixture account preference': secrets.native } })
   await expect(preview).not.toContainText(hidden.title)
-  await preview.getByRole('button', { name: 'Apply import', exact: true }).click()
+  await preview.getByRole('button', { name: 'Apply snapshot', exact: true }).click()
   await page.evaluate(({ secrets, visibleId }) => {
     const controller = (window as unknown as { analyticsHarness: { trackEvent: (name: string, data: Record<string, unknown>) => void } }).analyticsHarness
     controller.trackEvent('search_performed', { query_length: '31+', results: '0', query: secrets.query, file: secrets.file, native: secrets.native })
@@ -952,7 +1009,7 @@ test('real recorder proves moderate input masking, blocking and safe application
   expect(events.some((event) => event.type === 2 && JSON.stringify(event).includes(firstUpgrade.title))).toBe(true)
   expect(events.some((event) => event.type === 3 && event.data?.source === 5 && typeof event.data.text === 'string' && /^\*+$/.test(event.data.text))).toBe(true)
   const blocked = blockedReplayNodes(events)
-  expect(blocked.some((node) => node.tagName === 'table' && node.attributes.class.includes('game-save-import-comparison'))).toBe(true)
+  expect(blocked.some((node) => node.tagName === 'div' && node.attributes.class.includes('companion-operation') && !node.childNodes?.length)).toBe(true)
   expect(blocked.length).toBeGreaterThan(0)
   expect(blocked.every((node) => node.childNodes?.length === 0)).toBe(true)
   const decoded = JSON.stringify({ submissions: capture.submissions, replay: events })
@@ -962,7 +1019,7 @@ test('real recorder proves moderate input masking, blocking and safe application
   expect(JSON.stringify(initialSnapshot).includes(hidden.id), 'Initially hidden upgrade appeared in the initial recording').toBe(false)
   // Owned imports can legitimately reveal a previously hidden upgrade. The
   // preview must exclude it; after applying, the ordinary map visibility wins.
-  const imported = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), profileKey)
+  const imported = await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)
   expect(visibility(catalog, imported).ids.has(hidden.id)).toBe(true)
   expect(decoded.includes('Fixture account preference')).toBe(false)
   expect(capture.submissions.every((item) => item.payload.website === websiteId)).toBe(true)
@@ -981,7 +1038,7 @@ test('actual application handlers count confirmed purchase and recommendation on
   const origin = new URL(baseURL!).origin
   const capture = await installLocalRoutes(context, origin, { recorderBody: '' })
   await serveIsolatedApplication(context, origin)
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   const count = (name: string) => capture.submissions.filter((submission) => submission.type === 'event' && submission.payload.name === name).length
@@ -1019,7 +1076,7 @@ test('actual application handlers count confirmed purchase and recommendation on
   expect(count('recommendation_purchase_started')).toBe(1)
   expect(count('recommendations_viewed')).toBe(1)
   expect(count('purchase_applied')).toBe(2)
-  const current = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), profileKey)
+  const current = await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)
   const currentVisible = visibility(catalog, current)
   const hidden = catalog.upgrades.find((upgrade) => !currentVisible.ids.has(upgrade.id)
     && catalog.upgrades.every((other) => other.id === upgrade.id || !other.title.toLowerCase().includes(upgrade.title.toLowerCase())))!
@@ -1052,7 +1109,7 @@ test('search events count input edits without counting purchase or undo result r
   const origin = new URL(baseURL!).origin
   const capture = await installLocalRoutes(context, origin, { recorderBody: '' })
   await serveIsolatedApplication(context, origin)
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   const searches = () => capture.submissions.filter((submission) => submission.type === 'event' && submission.payload.name === 'search_performed')
@@ -1104,7 +1161,7 @@ test('a pending search uses current visible results and context without restarti
   const capture = await installLocalRoutes(context, origin, { recorderBody: '' })
   await serveIsolatedApplication(context, origin)
   await page.clock.install()
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   const other = await context.newPage()
@@ -1114,12 +1171,12 @@ test('a pending search uses current visible results and context without restarti
   await page.getByRole('searchbox').fill('Astral')
   await expect(page.locator('.results-heading')).toContainText('0 visible results')
   await page.clock.runFor(300)
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: profileKey, profile: { ...initial, showSpoilers: true } })
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: profileKey, profile: { ...initial, showSpoilers: true } })
   await expect(page.locator('.results-heading')).toContainText('17 visible results')
   await page.clock.runFor(200)
   await expect.poll(() => searches().length).toBe(1)
   expect(searches()[0].payload.data).toMatchObject({ query_length: '4-10', results: '6-20', spoilers: true })
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: profileKey, profile: initial })
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: profileKey, profile: initial })
   await expect(page.locator('.results-heading')).toContainText('0 visible results')
   await page.clock.runFor(1000)
   expect(searches()).toHaveLength(1)
@@ -1130,7 +1187,7 @@ test('renamed layout controls retain bounded game and web analytics values', asy
   const origin = new URL(baseURL!).origin
   const capture = await installLocalRoutes(context, origin, { recorderBody: '' })
   await serveIsolatedApplication(context, origin)
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   const events = (name: string) => capture.submissions.filter((submission) => submission.type === 'event' && submission.payload.name === name)
@@ -1145,7 +1202,7 @@ test('renamed layout controls retain bounded game and web analytics values', asy
   await layout.getByRole('button', { name: 'Game Layout', exact: true }).click()
   expect(events('map_layout_changed')).toHaveLength(2)
   expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.layout.v1'))).toBe('native')
-  expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBeNull()
   expect(capture.unexpected).toEqual([])
 })
 
@@ -1153,25 +1210,17 @@ test('actual import cancellation never applies and confirmation emits one applie
   const origin = new URL(baseURL!).origin
   const capture = await installLocalRoutes(context, origin, { recorderBody: '' })
   await serveIsolatedApplication(context, origin)
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   const count = (name: string) => capture.submissions.filter((submission) => submission.type === 'event' && submission.payload.name === name).length
-  await openProgress(page)
-  const choose = async () => {
-    const fileChooser = page.waitForEvent('filechooser')
-    await page.getByRole('button', { name: 'Import game save…', exact: true }).click()
-    await (await fileChooser).setFiles({ name: secrets.file, mimeType: 'application/octet-stream', buffer: Buffer.from(encodeGameSaveFixture(nativeSaveFixture({ integers: { [catalog.startId]: 1 }, strings: { 'Unrelated fixture preference': secrets.native } }))) })
-    const preview = page.getByRole('dialog', { name: 'Import game progress', exact: true })
-    await expect(preview.getByRole('button', { name: 'Apply import', exact: true })).toBeVisible()
-    return preview
-  }
+  const choose = () => chooseCompanionSave(page, { integers: { [catalog.startId]: 1 }, strings: { 'Unrelated fixture preference': secrets.native } })
   const cancelled = await choose()
-  await cancelled.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await cancelled.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await expect.poll(() => count('game_import_cancelled')).toBe(1)
   expect(count('game_import_applied')).toBe(0)
   const confirmed = await choose()
-  await confirmed.getByRole('button', { name: 'Apply import', exact: true }).click()
+  await confirmed.getByRole('button', { name: 'Apply snapshot', exact: true }).click()
   await expect.poll(() => count('game_import_applied')).toBe(1)
   expect(count('game_import_started')).toBe(2)
   expect(count('game_import_previewed')).toBe(2)
@@ -1180,19 +1229,22 @@ test('actual import cancellation never applies and confirmation emits one applie
   expect(capture.unexpected).toEqual([])
 })
 
-test('unsaved progress opt-out preserves cancellation and exports current memory before reload', async ({ page, context, baseURL }) => {
+test('unsaved progress and intentions opt-out preserves cancellation and exports both current documents before reload', async ({ page, context, baseURL }) => {
   const origin = new URL(baseURL!).origin
   const capture = await installLocalRoutes(context, origin, { recorderBody: '' })
   await serveIsolatedApplication(context, origin)
+  const workspaceKey = 'idle-slayer-companion.workspace.v1'
+  const privatePlan = 'SENTINEL-private-recipe-plan-25149'
+  const intentions = { format: 'idle-slayer-companion-workspace', version: 1, goals: [{ ref: { system: 'ascension', id: catalog.startId }, mode: 'acquire' }], recipePlans: { [privatePlan]: '3' } }
   await page.addInitScript(({ key, original }) => {
     localStorage.setItem(key, JSON.stringify(original))
     const originalSet = Storage.prototype.setItem
     Storage.prototype.setItem = function (name, value) {
-      if (name === key) throw new Error('Synthetic profile-only write failure')
+      if ([key, 'idle-slayer-companion.progress.v1', 'idle-slayer-companion.workspace.v1'].includes(name)) throw new Error('Synthetic progress and intentions write failure')
       return originalSet.call(this, name, value)
     }
   }, { key: profileKey, original: initial })
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   await page.locator(`.react-flow__node[data-id="${catalog.startId}"]`).click()
@@ -1200,38 +1252,54 @@ test('unsaved progress opt-out preserves cancellation and exports current memory
   await page.getByRole('dialog', { name: 'Record purchase?', exact: true }).getByRole('button', { name: 'Apply purchases', exact: true }).click()
   const purchased = page.locator(`.react-flow__node[data-id="${catalog.startId}"] .upgrade-node.purchased`)
   await expect(purchased).toBeVisible()
-  await expect(page.getByRole('alert')).toContainText('Progress could not be saved')
+  await expect(page.getByRole('alert')).toContainText('Companion progress could not be saved')
   await expect.poll(() => capture.submissions.some((submission) => submission.payload.name === 'storage_error')).toBe(true)
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), profileKey)).toEqual(initial)
+  expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)).toEqual(initial)
+  await page.locator('.companion-global-actions').getByRole('button', { name: /Backup/ }).click()
+  const backups = page.getByRole('dialog', { name: 'Backup & transfer', exact: true })
+  await backups.getByLabel('Restore intentions', { exact: true }).setInputFiles({ name: 'intentions.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(intentions)) })
+  await backups.getByRole('button', { name: 'Replace intentions', exact: true }).click()
+  await expect(backups.getByRole('status').filter({ hasText: 'Intentions could not be saved' })).toBeVisible()
+  await backups.getByRole('button', { name: 'Close dialog', exact: true }).click()
+  await expect(page.locator('.companion-session-status').getByRole('status').filter({ hasText: 'Intentions could not be saved' })).toBeVisible()
+  expect(await page.evaluate((key) => localStorage.getItem(key), workspaceKey)).toBeNull()
   const action = page.getByRole('button', { name: 'Privacy & tracking', exact: true })
   if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
   await action.click()
   const privacy = page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })
   await privacy.getByRole('button', { name: 'Disable tracking and reload', exact: true }).click()
-  const warning = page.getByRole('dialog', { name: 'Reload with unsaved progress?', exact: true })
-  await expect(warning).toContainText('Reloading may lose these changes')
-  await warning.getByRole('button', { name: 'Cancel', exact: true }).click()
-  await expect(privacy).toBeVisible()
+  const settings = page.getByRole('dialog', { name: 'Settings & privacy', exact: true })
+  const warning = settings.getByRole('region', { name: 'Reload with unsaved progress', exact: true })
+  await expect(warning).toContainText('Companion progress and intentions')
+  await warning.getByRole('button', { name: 'Cancel reload', exact: true }).click()
+  await expect(settings).toBeVisible()
   expect(await page.evaluate((key) => localStorage.getItem(key), preferenceKey)).toBeNull()
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), profileKey)).toEqual(initial)
-  await privacy.getByRole('button', { name: 'Close dialog', exact: true }).click()
+  expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)).toEqual(initial)
+  await settings.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await expect(purchased).toBeVisible()
   if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
   await action.click()
   await privacy.getByRole('button', { name: 'Disable tracking and reload', exact: true }).click()
   await expect(warning).toBeVisible()
   capture.scriptRequests.length = 0
-  const [download] = await Promise.all([
-    page.waitForEvent('download'), page.waitForEvent('load'),
-    warning.getByRole('button', { name: 'Export backup and reload', exact: true }).click(),
+  const downloads: import('@playwright/test').Download[] = []
+  page.on('download', (download) => downloads.push(download))
+  await Promise.all([
+    page.waitForEvent('load'),
+    warning.getByRole('button', { name: 'Export backups and reload', exact: true }).click(),
   ])
-  const downloadPath = await download.path()
-  expect(downloadPath).not.toBeNull()
-  const backup = JSON.parse(readFileSync(downloadPath!, 'utf8'))
-  expect(backup.purchases[catalog.startId]).toEqual({ epoch: 0, active: true })
+  await expect.poll(() => downloads.length).toBe(2)
+  const documents = await Promise.all(downloads.map(async (download) => { const path = await download.path(); expect(path).not.toBeNull(); return JSON.parse(readFileSync(path!, 'utf8')) }))
+  const backup = documents.find((document) => document.format === 'idle-slayer-companion-progress')
+  expect(documents.find((document) => document.format === 'idle-slayer-companion-workspace')).toEqual(intentions)
+  expect(backup.format).toBe('idle-slayer-companion-progress')
+  expect(backup.ascension.purchases[catalog.startId]).toEqual({ epoch: 0, active: true })
+  expect(Object.keys(backup.modules).sort()).toEqual(['achievement', 'craft', 'divinity', 'enemy', 'material', 'quest', 'village'])
   await expect(page.locator('.toolbar')).toBeVisible()
   expect(await page.evaluate((key) => localStorage.getItem(key), preferenceKey)).toBe('disabled')
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), profileKey)).toEqual(initial)
+  expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)).toEqual(initial)
+  expect(await page.evaluate((key) => localStorage.getItem(key), workspaceKey)).toBeNull()
+  expect(JSON.stringify(capture.submissions)).not.toContain(privatePlan)
   expect(capture.scriptRequests).toEqual([])
   expect(capture.unexpected).toEqual([])
 })
@@ -1317,8 +1385,8 @@ for (const tracking of ['enabled', 'disabled'] as const) {
       }, { preferenceKey, profileKey, tracking, destination })
       const requests: { url: string; referrer: string | undefined }[] = []
       page.on('request', (request) => requests.push({ url: request.url(), referrer: request.headers().referer }))
-      await page.goto(outcome === 'valid' ? `${origin}${appFixturePath}` : progressTransferLink(older.token, origin, appFixturePath))
-      await expect(page.getByRole('status')).toHaveText('Loading the native Ascension tree…')
+      await page.goto(outcome === 'valid' ? `${origin}${appMapPath}` : progressTransferLink(older.token, origin, appFixturePath))
+      await expect(page.getByRole('status')).toHaveText('Opening your companion…')
       expect(new URL(page.url()).hash).toBe('')
       if (tracking === 'enabled') {
         await waitForActive(page)
@@ -1358,7 +1426,7 @@ for (const tracking of ['enabled', 'disabled'] as const) {
         await receiver.getByRole('button', { name: 'Cancel', exact: true }).click()
         await expect(page.getByRole('dialog')).toHaveCount(0)
       }
-      expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), profileKey)).toEqual(destination)
+      expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)).toEqual(destination)
       expect(await page.evaluate((key) => localStorage.getItem(key), preferenceKey)).toBe(tracking)
       const evidence = JSON.stringify({ submissions: capture.submissions, replay: replayEvents(capture), requests })
       for (const secret of [marker, older.token, latest.token, 'transfer=']) expect(evidence).not.toContain(secret)
@@ -1373,7 +1441,7 @@ test('continuing the final eligible suggestion reports the fresh all-owned reaso
   await serveIsolatedApplication(context, origin)
   const profile = { ...initial, purchases: Object.fromEntries(catalog.upgrades.filter((upgrade) => upgrade.id !== catalog.startId).map((upgrade) => [upgrade.id, { epoch: 0, active: true }])) }
   await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: profileKey, profile })
-  await page.goto(`${origin}${appFixturePath}`)
+  await page.goto(`${origin}${appMapPath}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await waitForActive(page)
   const reasons = () => capture.submissions.filter((submission) => submission.type === 'event' && submission.payload.name === 'recommendations_viewed').map((submission) => (submission.payload.data as Record<string, unknown>).reason)
@@ -1395,11 +1463,11 @@ test('exact upgrade references keep native recorder URLs and referrers clean and
   const capture = await installLocalRoutes(context, origin)
   await serveIsolatedApplication(context, origin)
   const hidden = catalog.upgrades.find((upgrade) => !visible.ids.has(upgrade.id))!
-  await page.goto(`${origin}${appFixturePath}?private=${secrets.url}#upgrade=${hidden.id}&catalog=${catalog.revision}`)
+  await page.goto(`${origin}${appMapPath}?private=${secrets.url}#upgrade=${hidden.id}&catalog=${catalog.revision}`)
   await expect(page.locator('.toolbar')).toBeVisible()
   await expect(page.locator('.toast')).toContainText('unavailable under your current spoiler setting')
   await waitForActive(page)
-  expect(page.url()).toBe(`${origin}${appFixturePath}`)
+  expect(page.url()).toBe(`${origin}${appMapPath}`)
   const events = await waitForReplayEvents(capture, (events) => events.some((event) => event.type === 2))
   const decoded = JSON.stringify({ submissions: capture.submissions, replay: events })
   expect(decoded).not.toContain(hidden.id)
@@ -1408,7 +1476,7 @@ test('exact upgrade references keep native recorder URLs and referrers clean and
   const before = capture.submissions.filter((item) => ['record', 'heatmap'].includes(item.type)).length
   await page.evaluate(({ id, revision }) => { location.hash = `upgrade=${id}&catalog=${revision}` }, { id: catalog.startId, revision: catalog.revision })
   await expect(page.locator('.details h2')).toHaveText('Permanent Slayer')
-  await expect.poll(() => page.url()).toBe(`${origin}${appFixturePath}`)
+  await expect.poll(() => page.url()).toBe(`${origin}${appMapPath}`)
   const submitted = capture.submissions.filter((item) => ['record', 'heatmap'].includes(item.type)).length
   expect(submitted).toBe(before)
   await page.evaluate(() => { document.body.appendChild(Object.assign(document.createElement('p'), { textContent: 'SENTINEL-after-reference-suspension' })) })
@@ -1425,7 +1493,7 @@ test('reference sheet selections and full outgoing document stay blocked in actu
   const recorderReady = new Promise<void>((resolve) => { releaseRecorder = resolve })
   const capture = await installLocalRoutes(context, origin, { recorderReady })
   await serveIsolatedApplication(context, origin)
-  await page.goto(`${origin}${appFixturePath}`); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto(`${origin}${appMapPath}`); await expect(page.locator('.toolbar')).toBeVisible()
   await page.locator(`.react-flow__node[data-id="${catalog.startId}"]`).click()
   const expand = page.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
   await page.getByRole('button', { name: 'Add to reference sheet', exact: true }).click()
@@ -1458,7 +1526,7 @@ test('hypothetical UA names, stage choices and results stay blocked in real reco
   const capture = await installLocalRoutes(context, origin, { recorderReady })
   await serveIsolatedApplication(context, origin)
   const name = 'ROADMAP_PRIVATE_NAME_74621', query = 'ROADMAP_PRIVATE_QUERY_63928', snapshotProof = 'ROADMAP_PUBLIC_SNAPSHOT', mutationProof = 'ROADMAP_PUBLIC_MUTATION'
-  await page.goto(`${origin}${appFixturePath}`); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto(`${origin}${appMapPath}`); await expect(page.locator('.toolbar')).toBeVisible()
   const compact = page.getByRole('button', { name: 'Map options', exact: true })
   await (await compact.isVisible() ? compact : page.getByRole('button', { name: 'Map view…', exact: true })).click()
   await page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Plan hypothetical UAs…', exact: true }).click()
@@ -1475,7 +1543,7 @@ test('hypothetical UA names, stage choices and results stay blocked in real reco
   const events = await waitForReplayEvents(capture, (events) => events.some((event) => event.type === 3 && JSON.stringify(event).includes(mutationProof)))
   const evidence = JSON.stringify({ submissions: capture.submissions, replay: events })
   for (const privateText of [name, query, 'Exact purchase sum across stages', 'Explicit OR choices', 'Intend route 1 for this stage']) expect(evidence).not.toContain(privateText)
-  expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBeNull()
   expect(capture.submissions.some((entry) => /roadmap|purchase|milestone/.test(String(entry.payload.name)))).toBe(false)
   expect(capture.unexpected).toEqual([])
 })

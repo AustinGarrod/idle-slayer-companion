@@ -1,3 +1,4 @@
+import { installProfileTestHelpers } from './fixtures'
 import { expect, test } from './fixtures'
 import type { Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
@@ -23,7 +24,7 @@ const camera = (page: Page) => page.locator('.react-flow__viewport').evaluate((e
   return { x: matrix.e, y: matrix.f, zoom: matrix.a }
 })
 const positions = (page: Page) => page.locator('.react-flow__node').evaluateAll((nodes) => nodes.map((node) => [node.getAttribute('data-id'), (node as HTMLElement).style.transform]))
-const stored = (page: Page) => page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)
+const stored = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)
 async function options(page: Page) {
   await expect(page.locator('.toolbar')).toBeVisible()
   const desktop = page.getByRole('button', { name: 'Map view…', exact: true })
@@ -53,7 +54,7 @@ async function selectStart(page: Page) {
   await rendered(page)
 }
 async function prepare(page: Page, layout: string) {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
   await rendered(page)
 }
@@ -126,11 +127,12 @@ for (const layout of ['Game Layout', 'Detailed Layout']) {
     for (const [index, node] of hidden.entries()) { node.position = { x: 1e9 + index * 1e6, y: -1e9 }; node.title = `HIDDEN-OVERVIEW-MARKER-${index}` }
     changed.connections.push({ from: hidden[0].id, to: hidden[1].id })
     const context = await browser.newContext({ viewport: page.viewportSize()!, reducedMotion: 'reduce' })
+    await installProfileTestHelpers(context)
     const other = await context.newPage()
     await other.addInitScript(() => localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled'))
     await other.route('https://analytics.garrod.house/**', (route) => route.abort())
     await other.route('**/catalog.json', (route) => route.fulfill({ json: changed }))
-    await other.goto(baseURL!)
+    await other.goto(new URL('ascension/', baseURL!).href)
     await other.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
     await overview(other); await fit(other)
     expect(await camera(other)).toEqual(expected)
@@ -147,7 +149,7 @@ for (const layout of ['Game Layout', 'Detailed Layout']) {
     await page.getByRole('button', { name: 'Map navigation', exact: true }).click(); await rendered(page)
     const before = await camera(page)
     const other = await context.newPage(); await other.goto(page.url())
-    await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), {
+    await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), {
       key: PROFILE_STORAGE_KEY, profile: { ...initial, purchases: { [start.id]: { epoch: 0, active: true } } },
     })
     await expect(page.locator(`.react-flow__node[data-id="${start.id}"]`)).toHaveAttribute('aria-label', /purchased/)
@@ -180,7 +182,7 @@ test('layout, rotation and external recorded progress refit only the current vis
   await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: 'Detailed Layout', exact: true }).click(); await rendered(page); await fit(page)
   await page.setViewportSize({ width: 844, height: 390 }); await rendered(page); await fit(page)
   const other = await context.newPage(); await other.goto(page.url())
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...initial, epoch: 1 } })
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...initial, epoch: 1 } })
   await expect(page.locator('.react-flow__node')).toHaveCount(visibility(catalog, { ...initial, epoch: 1 }).total)
   await rendered(page); await fit(page)
   await expect(page.locator(`.react-flow__node[data-id="${start.id}"]`)).toHaveAttribute('aria-current', 'true')
@@ -208,7 +210,7 @@ test('recorded progress refreshes a pending fit even when visible geometry has n
   await page.evaluate(() => { (window as Window & { holdOverviewFrames?: boolean }).holdOverviewFrames = true })
   await options(page); await page.getByRole('dialog').getByRole('button', { name: 'Overview visible map', exact: true }).click()
   const other = await context.newPage(); await other.goto(page.url())
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), {
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), {
     key: PROFILE_STORAGE_KEY, profile: { ...initial, purchases: { [start.id]: { epoch: 0, active: true } } },
   })
   await expect(page.locator(`.react-flow__node[data-id="${start.id}"]`)).toHaveAttribute('aria-label', /purchased/)

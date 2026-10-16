@@ -25,7 +25,7 @@ for (const viewport of [{ width: 568, height: 320 }, { width: 375, height: 350 }
   for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
     test(`${layout} keeps map and details usable at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await page.setViewportSize(viewport)
-      await page.goto('./')
+      await page.goto('./ascension/')
       await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
       await page.getByRole('button', { name: 'Return to start', exact: true }).click()
       const details = page.getByRole('complementary', { name: 'Upgrade details', exact: true })
@@ -66,7 +66,7 @@ for (const viewport of [{ width: 568, height: 320 }, { width: 375, height: 350 }
 
 test('toolbar and available workspace measurements follow a selected view through rotation', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 350 })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('button', { name: 'Return to start', exact: true }).click()
   for (const viewport of [{ width: 375, height: 350 }, { width: 844, height: 390 }, { width: 320, height: 568 }]) {
     await page.setViewportSize(viewport)

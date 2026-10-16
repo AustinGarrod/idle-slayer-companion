@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 for (const title of ['Soul Reaper III', 'Advanced Divinities']) {
   test(`${title} keeps its OR reveal alternatives grouped before the shared milestone`, async ({ page }) => {
-    await page.goto('./')
+    await page.goto('./ascension/')
     await expect(page.locator('.toolbar')).toBeVisible()
     const spoilers = page.getByRole('checkbox', { name: 'Show spoilers', exact: true })
     if (!await spoilers.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()

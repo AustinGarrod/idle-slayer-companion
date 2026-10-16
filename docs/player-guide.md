@@ -1,5 +1,7 @@
 # Player guide
 
+This utility is now Idle Slayer Companion. Use the global Import save / Backup controls for all tracked systems, and export intentions separately. Reviewed Steam 7.3.4 imports supported companion observations; legacy 7.2.0 remains map-only. This guide covers the retained Ascension tools. See [Companion behavior](companion.md) for achievements, crafting/materials, quests/Village, Bestiary and Divinities.
+
 Open the [Ascension Map](https://austingarrod.github.io/idle-slayer-ascension-map/) and use the [README first-use route](../README.md#start-playing) to begin. This guide describes the existing map, progress and privacy behavior.
 
 **Game Layout** uses the original native positions; **Detailed Layout** provides a readable dependency graph. Game Layout is the default; your last selection is remembered locally in this browser.

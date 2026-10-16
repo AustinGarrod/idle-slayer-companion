@@ -59,10 +59,10 @@ export function initializePwa() {
     registration = result
     const watch = () => {
       const worker = result.installing
-      worker?.addEventListener('statechange', () => { if (worker.state === 'installed' || worker.state === 'activated') void refresh(); if (worker.state === 'redundant') publish({ offline: result.active ? status.offline : 'unavailable', message: 'Offline download failed. Reconnect and check again; the current map remains usable.' }) })
+      worker?.addEventListener('statechange', () => { if (worker.state === 'installed' || worker.state === 'activated') void refresh(); if (worker.state === 'redundant') publish({ offline: result.active ? status.offline : 'unavailable', message: 'Offline download failed. Reconnect and check again; your current companion remains usable.' }) })
     }
     result.addEventListener('updatefound', watch); watch(); void refresh()
-  }).catch(() => publish({ offline: 'unavailable', message: 'Offline storage is unavailable. Keep using the online map and export progress backups.' }))
+  }).catch(() => publish({ offline: 'unavailable', message: 'Offline storage is unavailable. Keep using the online companion and export progress backups.' }))
 }
 export async function promptInstall() {
   const prompt = installPrompt
@@ -73,8 +73,8 @@ export async function promptInstall() {
 }
 export async function checkForUpdate() {
   if (!registration || !navigator.onLine) { publish({ message: 'Connect to the internet to check for an update or retry the offline download.' }); return }
-  try { await registration.update(); await refresh(); publish({ message: registration.waiting ? 'An update is ready. Save or export progress, then close every map window and reopen.' : registration.installing ? 'Downloading and verifying a complete offline release…' : 'Update check completed. No update is waiting.' }) }
-  catch { publish({ message: 'Update check failed. The current cached map remains available if its files are saved.' }) }
+  try { await registration.update(); await refresh(); publish({ message: registration.waiting ? 'An update is ready. Save or export progress, then close every companion window and reopen.' : registration.installing ? 'Downloading and verifying a complete offline release…' : 'Update check completed. No update is waiting.' }) }
+  catch { publish({ message: 'Update check failed. The current cached companion remains available if its files are saved.' }) }
 }
 export function prepareUpdate(): boolean {
   if (!registration?.waiting) { publish({ message: 'The update is no longer waiting. Check again.' }); return false }
@@ -89,7 +89,7 @@ export async function repairOffline(signal: AbortSignal, onCommit: () => void, c
     try {
       const response = await request(registration.active, 'CHECK_WINDOWS', signal)
       if (signal.aborted) return false
-      if (!response.accepted) { publish({ message: 'Close other Ascension Map tabs and app windows before repairing.' }); return false }
+      if (!response.accepted) { publish({ message: 'Close other Idle Slayer Companion tabs and app windows before repairing.' }); return false }
       // Dismissal is disabled once unregister begins. External session changes
       // can still abort this operation, including while unregister is pending.
       onCommit()
@@ -97,7 +97,7 @@ export async function repairOffline(signal: AbortSignal, onCommit: () => void, c
       // An invalidated committed repair may already have removed this scope,
       // while the old document still holds its activated registration object.
       if (!await registration.unregister() && await navigator.serviceWorker.getRegistration(import.meta.env.BASE_URL)) throw new Error('Unavailable')
-    } catch { if (!signal.aborted) publish({ message: 'Offline repair could not start. Close other map windows and try again.' }); return false }
+    } catch { if (!signal.aborted) publish({ message: 'Offline repair could not start. Close other companion windows and try again.' }); return false }
   } else onCommit()
   if (signal.aborted || !canContinue()) return false
   window.location.reload()

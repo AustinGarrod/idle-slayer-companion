@@ -1,6 +1,6 @@
 # Local production browser checks on Windows
 
-Run browser checks against a freshly built local production bundle. Vite serves the same `/idle-slayer-ascension-map/` base path used by GitHub Pages. Automated browser checks accept only local HTTP URLs; keep production inspection manual.
+Run browser checks against a freshly built local production bundle. `yarn test:e2e` first validates that build and prepares the local compatibility-site artifact used by migration tests. Vite serves the same `/idle-slayer-companion/` base path used by GitHub Pages. Automated browser checks accept only local HTTP URLs; keep production inspection manual.
 
 The default `yarn test:e2e` starts a strict-port preview on `127.0.0.1:4173`. Outside CI, Playwright may reuse an existing server there, which may belong to another checkout or serve an older build. An explicit preview on a free port makes the build being tested clear.
 
@@ -18,7 +18,7 @@ If the port check prints a listener, choose another port and use it in both term
 yarn preview --host 127.0.0.1 --port 4199 --strictPort
 ```
 
-Keep this terminal running. Open `http://127.0.0.1:4199/idle-slayer-ascension-map/` for manual local inspection. `--strictPort` fails if another process takes the port instead of silently switching ports.
+Keep this terminal running. Open `http://127.0.0.1:4199/idle-slayer-companion/` for manual local inspection. `--strictPort` fails if another process takes the port instead of silently switching ports.
 
 In a second PowerShell terminal, change to the **same checkout**. Install Chromium once with `yarn playwright install chromium`, then run:
 
@@ -26,7 +26,7 @@ In a second PowerShell terminal, change to the **same checkout**. Install Chromi
 $browserChecksHadBase = Test-Path Env:PLAYWRIGHT_BASE_URL
 $browserChecksPreviousBase = $env:PLAYWRIGHT_BASE_URL
 try {
-    $env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:4199/idle-slayer-ascension-map/'
+    $env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:4199/idle-slayer-companion/'
     yarn test:e2e
     if ($LASTEXITCODE -ne 0) { throw 'Browser checks failed; inspect their output.' }
 } finally {

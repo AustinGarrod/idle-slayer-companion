@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
 })
 async function purchase(page: Page) {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').fill(start.title)
   await page.locator('.search-result').filter({ hasText: start.title }).first().click()
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
@@ -38,7 +38,7 @@ async function history(page: Page, direction: 'Undo' | 'Redo', label: string) {
   await action.click()
   await expect(page.locator('.atlas')).toHaveAttribute('aria-busy', 'false')
 }
-const stored = (page: Page) => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), PROFILE_STORAGE_KEY)
+const stored = (page: Page) => page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY)
 
 test('purchase and spoiler actions are labeled, accidental Undo can be redone, and reload clears visit history', async ({ page }) => {
   await purchase(page)
@@ -108,7 +108,7 @@ test('a new edit clears Redo and external progress clears both history direction
   await page.getByRole('dialog').getByRole('button', { name: 'Undo', exact: true }).click()
   await expect.poll(async () => (await stored(page)).epoch).toBe(0)
   const other = await context.newPage(); await other.goto(page.url())
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...initial, showSpoilers: true } })
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...initial, showSpoilers: true } })
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await open(page, 'Progress')
   await expect(page.getByRole('dialog').getByRole('button', { name: 'Undo', exact: true })).toBeDisabled()
@@ -123,7 +123,7 @@ test('failed coordination retains exportable history and Undo/Redo without claim
   await purchase(page)
   await history(page, 'Undo', 'Purchase recording')
   await history(page, 'Redo', 'Purchase recording')
-  expect(await page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)).toBeNull()
   await open(page, 'Progress')
   await expect(page.getByRole('dialog')).toContainText('Another tab is saving')
   const download = page.waitForEvent('download')
@@ -181,7 +181,7 @@ test('a pending Redo write disables both history directions until coordinated sa
 for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} preserves the viewport when Undo hides a selected spoiler and Redo reveals it`, async ({ page }) => {
   const frames = () => page.evaluate(async () => { await document.fonts.ready; for (let count = 0; count < 8; count++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve())) })
   const camera = () => page.locator('.react-flow__viewport').evaluate((element) => { const matrix = new DOMMatrix(getComputedStyle(element).transform); return [matrix.e, matrix.f, matrix.a] })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
   const checkbox = page.getByRole('checkbox', { name: 'Show spoilers', exact: true })
   if (!await checkbox.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
@@ -204,8 +204,9 @@ for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} preserv
 
 for (const width of [1101, 1280, 1440, 1920]) test(`${width}px action captions retain footer and map geometry through history, Undo and Redo`, async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'Phone history lives in the options dialog; the footer is desktop only.')
-    await page.setViewportSize({ width, height: 900 })
-    await page.goto('./')
+    // The map's available width excludes the companion navigation rail.
+    await page.setViewportSize({ width: width + 236, height: 900 })
+    await page.goto('./ascension/')
     await expect(page.locator('.react-flow__node')).not.toHaveCount(0)
     await expect(page.locator('footer')).toBeVisible()
     await page.evaluate(async () => { await document.fonts.ready; for (let i = 0; i < 8; i++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve())) })

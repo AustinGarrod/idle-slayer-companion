@@ -1,4 +1,4 @@
-/** Reviewed FileBasedPrefs transport for Steam Idle Slayer 7.2.0. */
+/** Reviewed FileBasedPrefs transport for Steam Idle Slayer 7.2.0 and 7.3.4. */
 export const MAX_GAME_SAVE_BYTES = 4 * 1024 * 1024
 const MAX_PREFERENCE_ENTRIES = 100_000
 const MAX_KEY_LENGTH = 1024

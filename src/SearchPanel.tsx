@@ -70,6 +70,15 @@ export function SearchPanel({ upgrades, profile, inputRef, open, onOpenChange, o
       const title = button.querySelector('.discovery-title')
       const heading = container?.querySelector('.results-heading')
       if (document.activeElement !== button || !button.matches(':focus-visible') || !container || !title || !heading) return
+      // Enlarged browser text can make the companion taller than the viewport.
+      // Bring the result panel into that viewport before scrolling its own rows;
+      // a row cannot become readable by scrolling underneath an offscreen panel.
+      if (document.documentElement.scrollHeight > window.innerHeight + 1) {
+        const bounds = container.getBoundingClientRect()
+        const targetTop = Math.max(8, window.innerHeight - Math.min(bounds.height, window.innerHeight - 16) - 8)
+        if (bounds.top > targetTop) window.scrollBy({ top: bounds.top - targetTop, behavior: 'instant' })
+        else if (bounds.top < 0) window.scrollBy({ top: bounds.top - 8, behavior: 'instant' })
+      }
       const bounds = container.getBoundingClientRect(), text = title.getBoundingClientRect()
       const top = Math.max(bounds.top, heading.getBoundingClientRect().bottom, 0) + 8
       const bottom = Math.min(bounds.bottom, window.innerHeight) - 8

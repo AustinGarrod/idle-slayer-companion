@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 for (const activation of ['search-enter', 'result-enter', 'result-space'] as const) {
   test(`keyboard ${activation} reaches details controls and returns to search after dismissal`, async ({ page }) => {
-    await page.goto('./')
+    await page.goto('./ascension/')
     const search = page.getByRole('searchbox')
     await search.fill('Permanent Slayer')
     if (activation === 'search-enter') await search.press('Enter')
@@ -57,7 +57,7 @@ for (const activation of ['search-enter', 'result-enter', 'result-space'] as con
 }
 
 test('pointer search selection retains focus behavior and empty results cannot select hidden upgrades', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const search = page.getByRole('searchbox')
   await search.fill('Permanent Slayer')
   await page.locator('.search-result').first().click()

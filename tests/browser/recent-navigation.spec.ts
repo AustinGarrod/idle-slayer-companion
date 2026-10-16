@@ -45,10 +45,10 @@ async function recent(page: Page) {
   return dialog
 }
 const ids = (page: Page) => page.getByRole('dialog', { name: 'Recent upgrades', exact: true }).locator('[data-upgrade-id]').evaluateAll((rows) => rows.map((row) => row.getAttribute('data-upgrade-id')))
-const stored = (page: Page) => page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)
+const stored = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)
 
 for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} returns through search and connected inspections without progress history or overview changes`, async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
   await select(page, start)
   const expand = page.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
@@ -77,7 +77,7 @@ for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} returns
 })
 
 test('bounds distinct visits and returning moves a stable ID to the newest position', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const visits = visible.upgrades.slice(0, 23)
   for (const node of visits) await select(page, node)
   let dialog = await recent(page)
@@ -91,7 +91,7 @@ test('bounds distinct visits and returning moves a stable ID to the newest posit
 
 test('same-title recent rows keep exact cost and stable identity while visibility pruning cannot revive hidden visits', async ({ page }) => {
   const profile = { ...initial, showSpoilers: true }
-  await seed(page, profile); await page.goto('./'); await select(page, start); await select(page, keys[0]); await select(page, keys[1])
+  await seed(page, profile); await page.goto('./ascension/'); await select(page, start); await select(page, keys[0]); await select(page, keys[1])
   let dialog = await recent(page)
   expect(await ids(page)).toEqual([keys[1].id, keys[0].id, start.id])
   for (const node of keys.slice(0, 2)) {
@@ -118,9 +118,9 @@ test('same-title recent rows keep exact cost and stable identity while visibilit
 
 test('external visibility change reconciles the open trail and retaining navigation never restores a profile', async ({ page, context }) => {
   const profile = { ...initial, showSpoilers: true }
-  await seed(page, profile); await page.goto('./'); await select(page, start); await select(page, keys[0]); await recent(page)
+  await seed(page, profile); await page.goto('./ascension/'); await select(page, start); await select(page, keys[0]); await recent(page)
   const otherPage = await context.newPage(); await otherPage.goto(page.url())
-  await otherPage.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
+  await otherPage.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
   await expect(page.getByRole('dialog', { name: 'Recent upgrades', exact: true })).toHaveCount(0)
   await expect(page.locator('.details')).toHaveCount(0)
   const dialog = await recent(page); expect(await ids(page)).toEqual([start.id])
@@ -131,7 +131,7 @@ test('external visibility change reconciles the open trail and retaining navigat
 test('returning preserves the requirement target and does not choose an OR purchase path', async ({ page }) => {
   const target = catalog.upgrades.find((node) => node.purchase.kind === 'any' && node.purchase.requirements.length > 1 && node.purchase.requirements.every((item) => item.kind === 'active'))!
   const profile = { ...initial, showSpoilers: true }
-  await seed(page, profile); await page.goto('./'); await select(page, target)
+  await seed(page, profile); await page.goto('./ascension/'); await select(page, target)
   const expand = page.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
   await page.locator('.details dt').filter({ hasText: /^Purchase requirements$/ }).locator('+ dd').getByRole('button').first().click()
   await expect(page.locator('.details h2')).toBeFocused()
@@ -145,7 +145,7 @@ test('returning preserves the requirement target and does not choose an OR purch
 
 test('recent inspection actions remain reachable in short landscape and narrow windows', async ({ page }, info) => {
   for (const viewport of [{ width: 844, height: 390 }, { width: 568, height: 320 }, { width: 375, height: 350 }]) {
-    await page.setViewportSize(viewport); await page.goto('./'); await select(page, start); await select(page, neighbor)
+    await page.setViewportSize(viewport); await page.goto('./ascension/'); await select(page, start); await select(page, neighbor)
     const dialog = await recent(page)
     expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
     const back = dialog.locator(`[data-upgrade-id="${start.id}"]`)
@@ -162,7 +162,7 @@ test('recent inspection actions remain reachable in short landscape and narrow w
 })
 
 test('clearing navigation keeps purchase Undo available and opening from details clears earlier feedback', async ({ page }) => {
-  await page.goto('./'); await select(page, start)
+  await page.goto('./ascension/'); await select(page, start)
   const expand = page.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
   await page.locator('.details').getByRole('button', { name: 'Record purchase…', exact: true }).click()
   await page.getByRole('dialog').getByRole('button', { name: 'Apply purchases', exact: true }).click()
@@ -187,7 +187,7 @@ test('clearing navigation keeps purchase Undo available and opening from details
 
 test('conflict review replaces Recent with one correctly named dialog and retains its inspection trail', async ({ page, context }, info) => {
   await denyProfileWrites(page, 'failProfileWrites')
-  await page.goto('./')
+  await page.goto('./ascension/')
   await select(page, neighbor)
   await select(page, start)
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
@@ -202,16 +202,17 @@ test('conflict review replaces Recent with one correctly named dialog and retain
   expect(await ids(page)).toEqual([start.id, neighbor.id])
   await reopened.getByRole('button', { name: 'Review progress conflict', exact: true }).click()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
-  const review = page.getByRole('dialog', { name: 'Review progress conflict', exact: true })
+  const review = page.getByRole('dialog', { name: 'Backup & transfer', exact: true })
   await expect(review).toBeVisible()
   await expect(page.getByRole('dialog', { name: 'Recent upgrades', exact: true })).toHaveCount(0)
   expect(await stored(page)).toBe(saved)
   await page.screenshot({ path: info.outputPath('recent-conflict-review.png') })
-  await review.getByRole('button', { name: 'Use saved progress…', exact: true }).click()
+  await review.getByRole('button', { name: 'Use checked saved progress', exact: true }).click()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
-  const replace = page.getByRole('dialog', { name: 'Use saved progress?', exact: true })
+  const replace = page.getByRole('region', { name: 'Review progress replacement', exact: true })
   await expect(replace).toBeVisible()
-  await replace.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await replace.getByRole('button', { name: 'Cancel preview', exact: true }).click()
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await recent(page)
   expect(await ids(page)).toEqual([start.id, neighbor.id])
   expect(await stored(page)).toBe(saved)

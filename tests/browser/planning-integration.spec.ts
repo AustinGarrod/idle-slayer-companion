@@ -7,13 +7,13 @@ for (const [first, second] of pairs) test(`queued ${first} then ${second} opens 
   if (info.project.name === 'mobile') await page.setViewportSize({ width: 320, height: 568 })
   await page.addInitScript(() => { if (location.origin !== 'null') localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled') })
   await page.route('https://analytics.garrod.house/**', (route) => route.abort())
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   await page.getByRole('searchbox').fill('Permanent Slayer')
   await page.getByRole('searchbox').press('Enter')
   const expand = page.getByRole('button', { name: 'Show details', exact: true })
   if (await expand.isVisible()) await expand.click()
-  const stored = await page.evaluate(() => Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))
+  const stored = await page.evaluate(() => Object.keys(localStorage).sort().map((key) => [key, window.__readMapProfileText(key)]))
   const connected = await page.locator('.details').evaluate((element, labels) => {
     const buttons = [...element.querySelectorAll<HTMLButtonElement>('.detail-actions button, .detail-secondary button')]
     const previous = buttons.find((button) => button.textContent === labels.first)
@@ -36,7 +36,7 @@ for (const [first, second] of pairs) test(`queued ${first} then ${second} opens 
     await expect(panel).toBeVisible()
     await expect(panel).toHaveClass(/telemetry-private rr-block/)
   }
-  expect(await page.evaluate(() => Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))).toEqual(stored)
+  expect(await page.evaluate(() => Object.keys(localStorage).sort().map((key) => [key, window.__readMapProfileText(key)]))).toEqual(stored)
   await page.keyboard.press('Escape')
   await expect(page.locator('dialog[open]')).toHaveCount(0)
   await expect(page.locator('.details h2')).toHaveText('Permanent Slayer')

@@ -1,7 +1,7 @@
 {
-  "revision": "steam-25551532-v1",
-  "gameVersion": "7.2.0",
-  "steamBuild": "25551532",
+  "revision": "steam-25810322-v1",
+  "gameVersion": "7.3.4",
+  "steamBuild": "25810322",
   "startId": "cjnr3qwntwqt4505351h",
   "upgrades": [
     {
@@ -44,7 +44,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -94,7 +94,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -144,7 +144,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -185,7 +185,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -226,7 +226,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -267,7 +267,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -317,7 +317,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -358,7 +358,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -399,7 +399,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -440,7 +440,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -490,7 +490,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -531,7 +531,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -572,7 +572,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -622,7 +622,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -663,7 +663,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -704,7 +704,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -754,7 +754,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -813,7 +813,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -854,7 +854,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -895,7 +895,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -936,7 +936,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -977,7 +977,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1027,7 +1027,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1077,7 +1077,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1118,7 +1118,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1159,7 +1159,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1209,7 +1209,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1250,7 +1250,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1291,7 +1291,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1332,7 +1332,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1373,7 +1373,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1423,7 +1423,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1473,7 +1473,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1523,7 +1523,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1564,7 +1564,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1605,7 +1605,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1646,7 +1646,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1687,7 +1687,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1737,7 +1737,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1778,7 +1778,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1819,7 +1819,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1860,7 +1860,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1919,7 +1919,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -1978,7 +1978,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2010,7 +2010,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2064,7 +2064,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2105,7 +2105,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2155,7 +2155,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2205,7 +2205,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2237,7 +2237,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2291,7 +2291,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2341,7 +2341,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2395,7 +2395,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2449,7 +2449,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2490,7 +2490,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2540,7 +2540,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2572,7 +2572,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2603,7 +2603,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2634,7 +2634,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2666,7 +2666,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2707,7 +2707,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2739,7 +2739,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2771,7 +2771,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2802,7 +2802,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2833,7 +2833,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2864,7 +2864,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2895,7 +2895,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2926,7 +2926,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2957,7 +2957,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -2988,7 +2988,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3019,7 +3019,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3050,7 +3050,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3081,7 +3081,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3121,7 +3121,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3152,7 +3152,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3192,7 +3192,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3223,7 +3223,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3254,7 +3254,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3285,7 +3285,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3316,7 +3316,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3347,7 +3347,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3391,7 +3391,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3431,7 +3431,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3462,7 +3462,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3493,7 +3493,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3524,7 +3524,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3555,7 +3555,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3585,7 +3585,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3616,7 +3616,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3647,7 +3647,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3678,7 +3678,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3709,7 +3709,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3740,7 +3740,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3771,7 +3771,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3802,7 +3802,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3833,7 +3833,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3864,7 +3864,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3895,7 +3895,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3926,7 +3926,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3957,7 +3957,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -3988,7 +3988,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4019,7 +4019,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4050,7 +4050,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4100,7 +4100,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4159,7 +4159,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4209,7 +4209,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4259,7 +4259,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4309,7 +4309,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4359,7 +4359,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4391,7 +4391,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4423,7 +4423,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4482,7 +4482,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4532,7 +4532,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4582,7 +4582,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4632,7 +4632,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4682,7 +4682,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4732,7 +4732,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4782,7 +4782,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4853,7 +4853,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4916,7 +4916,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -4966,7 +4966,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5016,7 +5016,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5066,7 +5066,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5116,7 +5116,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5147,7 +5147,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5179,7 +5179,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5210,7 +5210,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5241,7 +5241,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5281,7 +5281,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5312,7 +5312,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5343,7 +5343,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5374,7 +5374,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5405,7 +5405,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5436,7 +5436,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5467,7 +5467,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5498,7 +5498,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5529,7 +5529,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5560,7 +5560,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5591,7 +5591,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5622,7 +5622,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5662,7 +5662,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5693,7 +5693,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5733,7 +5733,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5764,7 +5764,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5795,7 +5795,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5826,7 +5826,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5857,7 +5857,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5888,7 +5888,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5919,7 +5919,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5950,7 +5950,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -5981,7 +5981,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6012,7 +6012,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6043,7 +6043,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6074,7 +6074,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6105,7 +6105,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6145,7 +6145,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6176,7 +6176,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6207,7 +6207,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6238,7 +6238,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6269,7 +6269,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6300,7 +6300,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6331,7 +6331,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6362,7 +6362,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6402,7 +6402,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6433,7 +6433,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6464,7 +6464,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6495,7 +6495,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6535,7 +6535,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6566,7 +6566,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6597,7 +6597,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6628,7 +6628,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6659,7 +6659,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6690,7 +6690,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6721,7 +6721,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6752,7 +6752,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6783,7 +6783,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6823,7 +6823,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6873,7 +6873,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6905,7 +6905,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6936,7 +6936,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6967,7 +6967,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -6998,7 +6998,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7029,7 +7029,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7060,7 +7060,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7091,7 +7091,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7122,7 +7122,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7153,7 +7153,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7184,7 +7184,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7215,7 +7215,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7246,7 +7246,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7277,7 +7277,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7308,7 +7308,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7339,7 +7339,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7370,7 +7370,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7401,7 +7401,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7432,7 +7432,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7473,7 +7473,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7504,7 +7504,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7554,7 +7554,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7597,7 +7597,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7628,7 +7628,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7669,7 +7669,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7700,7 +7700,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7731,7 +7731,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7762,7 +7762,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7793,7 +7793,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7824,7 +7824,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7855,7 +7855,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7898,7 +7898,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7929,7 +7929,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -7972,7 +7972,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8003,7 +8003,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8034,7 +8034,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8065,7 +8065,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8096,7 +8096,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8127,7 +8127,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8158,7 +8158,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8189,7 +8189,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8229,7 +8229,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8260,7 +8260,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8291,7 +8291,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8322,7 +8322,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8353,7 +8353,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8384,7 +8384,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8415,7 +8415,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8446,7 +8446,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8486,7 +8486,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8517,7 +8517,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8548,7 +8548,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8579,7 +8579,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8619,7 +8619,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8650,7 +8650,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8681,7 +8681,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8712,7 +8712,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8743,7 +8743,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8774,7 +8774,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8805,7 +8805,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8836,7 +8836,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8867,7 +8867,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8898,7 +8898,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8929,7 +8929,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8960,7 +8960,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -8991,7 +8991,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9022,7 +9022,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9053,7 +9053,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9094,7 +9094,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9125,7 +9125,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9156,7 +9156,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9187,7 +9187,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9228,7 +9228,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9259,7 +9259,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9300,7 +9300,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9331,7 +9331,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9362,7 +9362,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9402,7 +9402,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9452,7 +9452,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9493,7 +9493,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9560,7 +9560,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9610,7 +9610,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9660,7 +9660,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9710,7 +9710,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9760,7 +9760,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9810,7 +9810,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9860,7 +9860,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9891,7 +9891,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9941,7 +9941,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -9991,7 +9991,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10041,7 +10041,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10100,7 +10100,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10150,7 +10150,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10200,7 +10200,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10250,7 +10250,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10300,7 +10300,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10350,7 +10350,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10400,7 +10400,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10459,7 +10459,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10509,7 +10509,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10540,7 +10540,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10590,7 +10590,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10649,7 +10649,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10712,7 +10712,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10762,7 +10762,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10812,7 +10812,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10862,7 +10862,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10894,7 +10894,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10926,7 +10926,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -10976,7 +10976,7 @@
       "activation": "after-ultra-ascension",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -11007,7 +11007,7 @@
       "activation": "immediate",
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         },
@@ -11197,7 +11197,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -12409,7 +12409,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -12452,7 +12452,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -12530,7 +12530,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -12750,7 +12750,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -12802,7 +12802,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -13614,7 +13614,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -13701,7 +13701,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }
@@ -13788,7 +13788,7 @@
       },
       "sources": [
         {
-          "label": "Installed Idle Slayer 7.2.0 · Steam build 25551532",
+          "label": "Installed Idle Slayer 7.3.4 · Steam build 25810322",
           "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/",
           "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"
         }

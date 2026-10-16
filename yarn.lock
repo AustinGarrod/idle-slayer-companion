@@ -585,9 +585,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"idle-slayer-ascension-map@workspace:.":
+"idle-slayer-companion@workspace:.":
   version: 0.0.0-use.local
-  resolution: "idle-slayer-ascension-map@workspace:."
+  resolution: "idle-slayer-companion@workspace:."
   dependencies:
     "@dagrejs/dagre": "npm:3.1.1"
     "@fontsource/press-start-2p": "npm:5.3.0"

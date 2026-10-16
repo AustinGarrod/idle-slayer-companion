@@ -1,4 +1,5 @@
-import { useEffect, useEffectEvent, useMemo, useState } from 'react'
+import { useContext, useEffect, useEffectEvent, useMemo, useState } from 'react'
+import { CompanionProfileContext } from './CompanionRuntimeContext'
 import { createProfileSession } from './domain/profile-session'
 import type { ProfileSessionState } from './domain/profile-session'
 import { PROFILE_STORAGE_KEY } from './domain/storage'
@@ -14,11 +15,12 @@ type SessionObservers = {
 
 /** One React snapshot of the domain session; browser subscription lifetime lives here. */
 export function useProfileSession(revision: string, observers: SessionObservers) {
-  const session = useMemo(() => createProfileSession({
+  const providedSession = useContext(CompanionProfileContext)
+  const session = useMemo(() => providedSession ?? createProfileSession({
     revision,
     storage: () => window.localStorage,
     locks: () => window.navigator.locks,
-  }), [revision])
+  }), [revision, providedSession])
   const [state, setState] = useState(session.getState)
   const observe = useEffectEvent((next: ProfileSessionState) => observers.onState(next))
   const externalChange = useEffectEvent((next: ProfileSessionState) => observers.onExternalChange(next))
@@ -42,21 +44,23 @@ export function useProfileSession(revision: string, observers: SessionObservers)
       }
     })
     beforeInitialize()
-    session.initialize()
+    if (!providedSession) session.initialize()
+    observe(session.getState())
+    setState(session.getState())
     initialized()
     const storageChanged = (event: StorageEvent) => {
       let local: Storage
       try { local = window.localStorage } catch { session.refreshExternal(); return }
-      if (event.storageArea === local && (event.key === null || event.key === PROFILE_STORAGE_KEY)) session.refreshExternal()
+      if (!providedSession && event.storageArea === local && (event.key === null || event.key === PROFILE_STORAGE_KEY)) session.refreshExternal()
     }
     window.addEventListener('storage', storageChanged)
     return () => {
       window.removeEventListener('storage', storageChanged)
       unsubscribe()
       disposed()
-      session.cancelPending()
+      if (!providedSession) session.cancelPending()
     }
-  }, [session])
+  }, [session, providedSession])
 
   return { session, state, loaded: state.persistence !== 'loading' }
 }

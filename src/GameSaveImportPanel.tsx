@@ -43,7 +43,7 @@ export function GameSaveImportPanel({ catalog, currentProfile, preview, onApply,
       <summary>File location and privacy</summary>
       <p>Choose <code>savedata.sav</code> from the Steam game's Windows save folder:</p>
       <code className="game-save-import-path">{'%USERPROFILE%\\AppData\\LocalLow\\Pablo Leban\\Idle Slayer\\savedata.sav'}</code>
-      <p>This importer was reviewed against Idle Slayer 7.2.0, Steam build 25551532.</p>
+      <p>The map importer supports reviewed Windows Steam 7.3.4 and legacy 7.2.0 saves.</p>
       <p>Exact per-upgrade purchase epochs cannot be reconstructed by this import. Current ownership and activation use a conservative mapping.</p>
       <p>Save contents are processed locally in this browser and are never uploaded. Applying updates only this map's profile; the game save is unchanged.</p>
       <p>This site uses usage analytics and session recordings. File inputs, import comparisons and notes are excluded from recordings; your visible map progress may appear after applying an import. Manage this in Privacy &amp; tracking.</p>

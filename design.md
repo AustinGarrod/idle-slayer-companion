@@ -1,5 +1,9 @@
 # Idle Slayer Ascension Map — design direction
 
+## Companion shell and modules
+
+The Companion keeps the map's cocoa/charcoal, gold, and magenta palette. Restrained pixel headings frame readable system text. A desktop section rail becomes a keyboard-trapped modal menu on small screens. Overview organizes tracked systems, shared goals, and crafting shopping lists. Each module uses native icons, search, category/status controls, explicit observations, and honest unrecorded/unknown states. Spoiler hiding filters cards, details, searches, totals, links, goals, and previews together. Controls remain reachable at 320px and enlarged text; the map retains its fixed-position canvas and established camera controls.
+
 This document defines the visual direction and reviewed Atlas layout for the app. **Game Layout** (the Game view below) preserves extracted native coordinates; **Detailed Layout** (previously Web) provides a separate visible-only dependency arrangement. Game Layout is the initial default, and the last explicit choice is remembered in separate local storage. Responsive design changes controls and inspector placement without mutating either layout's source data. Catalog completeness and game-rule verification remain independent release requirements.
 
 ## Connection clarity and mobile feedback

@@ -4,7 +4,7 @@ import { runtimeNoticesPlugin } from './scripts/runtime-notices.ts'
 import { pwaPlugin } from './scripts/pwa.ts'
 
 export default defineConfig({
-  base: '/idle-slayer-ascension-map/',
+  base: '/idle-slayer-companion/',
   plugins: [react(), runtimeNoticesPlugin(process.cwd()), pwaPlugin(process.cwd())],
   server: {
     fs: {

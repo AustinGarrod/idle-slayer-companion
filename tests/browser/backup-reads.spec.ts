@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
       } finally { win.finishedBackups!.push(this.name) }
     }
   }, { key: PROFILE_STORAGE_KEY, profile: initial })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await openProgress(page)
 })
 
@@ -38,7 +38,7 @@ async function finishRead(page: Page, name: string) {
   await expect.poll(() => page.evaluate(() => (window as ReadWindow).finishedBackups)).toContain(name)
 }
 async function unchanged(page: Page) {
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), PROFILE_STORAGE_KEY)).toEqual(initial)
+  expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY)).toEqual(initial)
 }
 
 for (const close of ['button', 'escape'] as const) {
@@ -62,7 +62,7 @@ test('a newer backup owns the preview and a late older success cannot replace it
   await finishRead(page, 'deferred-older.json')
   await expect(page.getByRole('dialog')).toContainText('epoch 2')
   await page.getByRole('button', { name: 'Apply changes', exact: true }).click()
-  await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).epoch, PROFILE_STORAGE_KEY)).toBe(2)
+  await expect.poll(() => page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!).epoch, PROFILE_STORAGE_KEY)).toBe(2)
 })
 
 test('a cancelled newer preview ignores a late older read failure', async ({ page }) => {
@@ -96,15 +96,15 @@ test('a file selected after Progress closes cannot start a restore preview', asy
 
 test('switching to game import cancels the pending JSON restore without replacing its dialog', async ({ page }) => {
   await selectBackup(page, 'deferred-older.json', 1)
-  const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: 'Import game save…', exact: true }).click()
-  await (await chooser).setFiles({ name: 'synthetic.sav', mimeType: 'application/octet-stream', buffer: Buffer.from(encodeGameSaveFixture(nativeSaveFixture({ epoch: '3' }))) })
-  await expect(page.getByRole('dialog', { name: 'Import game progress', exact: true }).getByRole('button', { name: 'Apply import', exact: true })).toBeVisible()
+  const gameImport = page.getByRole('dialog', { name: 'Import game save', exact: true })
+  await gameImport.getByLabel('Choose game save', { exact: true }).setInputFiles({ name: 'synthetic.sav', mimeType: 'application/octet-stream', buffer: Buffer.from(encodeGameSaveFixture(nativeSaveFixture({ epoch: '3' }))) })
+  await expect(gameImport.getByRole('button', { name: 'Apply snapshot', exact: true })).toBeVisible()
   await finishRead(page, 'deferred-older.json')
   await expect(page.getByRole('dialog')).toHaveCount(1)
-  await expect(page.getByRole('dialog', { name: 'Import game progress', exact: true })).toBeVisible()
+  await expect(gameImport).toBeVisible()
   await expect(page.getByRole('dialog', { name: 'Restore progress?', exact: true })).toHaveCount(0)
-  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await gameImport.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await unchanged(page)
 })
 

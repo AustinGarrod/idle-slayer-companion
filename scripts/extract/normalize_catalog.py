@@ -45,9 +45,9 @@ def description(upgrade, localization):
     template = upgrade["description"] or benefit.get("description", "")
     values = [number(parameters["value"]), number(parameters["value2"])]
     dynamic = False
-    if benefit.get("pathId") == 21016:  # Benefits.GetAstralKeys, native GetDescription special.
+    if benefit.get("id") == "f1i8bocf6a6zkgapnl0l" or benefit.get("pathId") == 21016:  # Benefits.GetAstralKeys.
         template = localization["benefit_get_astral_key_s" if parameters["value"] == 1 else "benefit_get_astral_key_p"]
-    elif benefit.get("pathId") == 21015:  # EquipmentLevelAfterAscending native special.
+    elif benefit.get("id") == "0ck9holqb5acoqa227t7" or benefit.get("pathId") == 21015:  # EquipmentLevelAfterAscending.
         template = localization["benefit_equipment_level_after_ascending_s"]
         values = [parameters["equipment"]["title"], number(parameters["value"])]
     elif upgrade["descriptionKey"] == "ascension_upgrade_silver_spirit_description":
@@ -105,11 +105,11 @@ def main():
     data = json.loads(args.export.read_text(encoding="utf8"))
     locale = json.loads((args.export.parent / "localization-en-US.json").read_text(encoding="utf8"))
     provenance = data["provenance"]
-    if provenance["steamBuild"] != "25551532" or provenance["gameVersion"] != "7.2.0":
+    if (provenance["steamBuild"], provenance["gameVersion"]) not in (("25551532", "7.2.0"), ("25810322", "7.3.4")):
         raise ValueError("Review the native rule interpretation before normalizing a different game build")
     native = {upgrade["id"]: upgrade for upgrade in data["upgrades"]}
     named = data["namedSkills"]
-    source = {"label": "Installed Idle Slayer 7.2.0 · Steam build 25551532", "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/", "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"}
+    source = {"label": f"Installed Idle Slayer {provenance['gameVersion']} · Steam build {provenance['steamBuild']}", "url": "https://store.steampowered.com/app/1353300/Idle_Slayer/", "evidence": "ResourceManager Ascension Skills registry; native rules in scripts/logic/native-method-receipt.json"}
     ultra = {"kind": "ultra-ascended"}
     def astral_ancestor(native_id, visited=None):
         visited = set() if visited is None else visited
@@ -177,7 +177,7 @@ def main():
         assets_reviewed = sprite_review["visualReviewComplete"] is True and {record["id"] for record in sprite_review["records"]} == set(native)
         if not assets_reviewed:
             raise ValueError("Sprite review is incomplete or covers a different catalog")
-    catalog = {"revision": "steam-25551532-v1", "gameVersion": provenance["gameVersion"], "steamBuild": provenance["steamBuild"], "startId": named["PermanentSlayer"], "upgrades": upgrades, "milestones": milestones, "connections": [{"from": parent, "to": upgrade["id"]} for upgrade in data["upgrades"] for parent in upgrade["requirements"]], "grants": grants, "ultraAscension": {"kind": "active", "id": named["UltraAscension"]}, "verification": {"coverage": True, "purchaseRules": True, "revealRules": True, "resetRules": True, "assets": assets_reviewed, "evidence": ["288/288 native ResourceManager Ascension Skills entries decoded with unique IDs", "All tree prerequisite references resolve to registry assets", "Native semantic interpretation: scripts/logic/README.md; immutable method bodies: scripts/logic/native-method-receipt.json", "All 288 sprites reviewed in six numbered sheets" if assets_reviewed else "Sprite visual review remains required before asset verification", "Descriptions show native base effects; player-derived totals and minion stats are omitted and explicitly labeled"]}}
+    catalog = {"revision": f"steam-{provenance['steamBuild']}-v1", "gameVersion": provenance["gameVersion"], "steamBuild": provenance["steamBuild"], "startId": named["PermanentSlayer"], "upgrades": upgrades, "milestones": milestones, "connections": [{"from": parent, "to": upgrade["id"]} for upgrade in data["upgrades"] for parent in upgrade["requirements"]], "grants": grants, "ultraAscension": {"kind": "active", "id": named["UltraAscension"]}, "verification": {"coverage": True, "purchaseRules": True, "revealRules": True, "resetRules": True, "assets": assets_reviewed, "evidence": ["288/288 native ResourceManager Ascension Skills entries decoded with unique IDs", "All tree prerequisite references resolve to registry assets", "Native semantic interpretation: scripts/logic/README.md; immutable method bodies: scripts/logic/native-method-receipt.json", "All 288 sprites reviewed in six numbered sheets" if assets_reviewed else "Sprite visual review remains required before asset verification", "Descriptions show native base effects; player-derived totals and minion stats are omitted and explicitly labeled"]}}
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf8", newline="\n")
     receipt = {"provenance": provenance, "normalizedUpgradeCount": len(upgrades), "connections": len(catalog["connections"]), "milestones": len(milestones), "dynamicDescriptionIds": dynamic_descriptions, "descriptionTransformations": "Native English templates formatted with serialized values and named references; Unity rich-text tags removed. Player-derived totals and variable minion stats replaced by base effects and a variability note. No player state read.", "milestoneChecklistPolicy": "OR of consuming upgrade gates: native reveal excluding the item itself AND (already owned upgrade OR ordinary purchase prerequisites excluding the item itself). For consumers with no ordinary prerequisites, only already owned consumers expose the control; Show spoilers enables first entry without guessed story gates.", "rulesEvidence": "scripts/logic/native-method-receipt.json", "spriteReviewComplete": assets_reviewed}

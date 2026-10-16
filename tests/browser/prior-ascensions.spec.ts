@@ -19,7 +19,7 @@ async function openAction(page: Page, name: string) {
   await action.click()
 }
 async function saved(page: Page) {
-  return page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), PROFILE_STORAGE_KEY)
+  return page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY)
 }
 async function review(page: Page, value: string) {
   await openAction(page, 'Progress')
@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(({ key, seed }) => {
     if (localStorage.getItem(key) === null) localStorage.setItem(key, JSON.stringify(seed))
   }, { key: PROFILE_STORAGE_KEY, seed })
-  await page.goto('./')
+  await page.goto('./ascension/')
 })
 
 test('editing, leaving and cancelling prior history keeps progress unchanged', async ({ page }) => {

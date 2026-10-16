@@ -41,7 +41,7 @@ test.beforeEach(async ({ page }) => {
 
 test('live reduced-motion changes govern subsequent zoom, search and return navigation', async ({ page }) => {
   await preference(page, 'no-preference')
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   await page.waitForTimeout(350)
   await preference(page, 'reduce')
@@ -57,7 +57,7 @@ test('live reduced-motion changes govern subsequent zoom, search and return navi
 
 test('initial reduced motion stays instant and later preference changes work in both directions', async ({ page }) => {
   await preference(page, 'reduce')
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   await page.waitForTimeout(350)
   expectInstant(await captureMotion(page, () => page.getByRole('button', { name: 'Zoom in', exact: true }).click()))

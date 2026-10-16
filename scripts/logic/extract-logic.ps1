@@ -1,11 +1,16 @@
 param(
     [Parameter(Mandatory = $true)][string]$GamePath,
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [string]$OutputRoot
 )
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-$logicRoot = Join-Path $repoRoot '.local-game/logic'
+$privateRoot = [IO.Path]::GetFullPath((Join-Path $repoRoot '.local-game'))
+$logicRoot = if ($OutputRoot) { [IO.Path]::GetFullPath($OutputRoot) } else { Join-Path $privateRoot 'logic' }
+if (!$logicRoot.StartsWith($privateRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+    throw 'OutputRoot must be inside the ignored repository .local-game directory.'
+}
 $toolsRoot = Join-Path $logicRoot 'tools'
 $cppPath = Join-Path $toolsRoot 'Cpp2IL.exe'
 $cppUrl = 'https://github.com/SamboyCoding/Cpp2IL/releases/download/2022.1.0-pre-release.21/Cpp2IL-2022.1.0-pre-release.21-Windows.exe'

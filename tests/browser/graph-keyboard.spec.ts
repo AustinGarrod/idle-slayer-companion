@@ -80,7 +80,7 @@ test.beforeEach(async ({ page }) => {
 for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
   for (const viewport of [{ width: 1280, height: 800 }, { width: 320, height: 568 }, { width: 844, height: 390 }]) {
     test(`${layout} enters, explores and leaves the graph efficiently at ${viewport.width}x${viewport.height}`, async ({ page }) => {
-      await page.setViewportSize(viewport); await page.goto('./')
+      await page.setViewportSize(viewport); await page.goto('./ascension/')
       await page.getByRole('group', { name: 'Map layout' }).getByRole('button', { name: layout, exact: true }).click()
       const nodes = page.locator('.react-flow__node')
       await expect(nodes).toHaveCount(121)
@@ -139,7 +139,7 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
       do { await page.keyboard.press('Tab'); tabs++ } while (tabs < 4 && !await page.getByRole('button', { name: 'Zoom out', exact: true }).evaluate((element) => element === document.activeElement))
       await expect(page.getByRole('button', { name: 'Zoom out', exact: true })).toBeFocused()
       expect(tabs).toBeLessThanOrEqual(2)
-      expect(await page.evaluate((key) => localStorage.getItem(key), key)).toBeNull()
+      expect(await page.evaluate((key) => window.__readMapProfileText(key), key)).toBeNull()
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
     })
   }
@@ -153,7 +153,7 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
       const end = Math.min(start + chunkSize, visible.upgrades.length)
       test(`${layout} keyboard traverses every ${spoilers ? 'spoiler-visible' : 'default-visible'} upgrade ${start + 1}-${end} of ${visible.upgrades.length}`, async ({ page }) => {
         test.setTimeout(90_000)
-        await page.goto('./')
+        await page.goto('./ascension/')
         await page.getByRole('group', { name: 'Map layout' }).getByRole('button', { name: layout, exact: true }).click()
         if (spoilers) await showSpoilers(page, true)
         await expect(page.locator('.react-flow__node')).toHaveCount(visible.upgrades.length)
@@ -179,7 +179,7 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
   }
 
   test(`${layout} restores the visible focus universe after hiding a focused spoiler`, async ({ page }) => {
-    await page.goto('./')
+    await page.goto('./ascension/')
     await page.getByRole('group', { name: 'Map layout' }).getByRole('button', { name: layout, exact: true }).click()
     await expect(node(page, hidden.id)).toHaveCount(0)
     await expect(page.locator('.react-flow__node[tabindex="0"]')).toHaveCount(1)
@@ -201,7 +201,7 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
   for (const motion of ['reduce', 'no-preference'] as const) for (const viewport of [{ width: 375, height: 350 }, { width: 320, height: 350 }, { width: 320, height: 568 }]) {
     test(`${layout} keeps keyboard upgrades and directional controls usable with expanded details at ${viewport.width}x${viewport.height} (${motion})`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: motion })
-      await page.setViewportSize(viewport); await page.goto('./')
+      await page.setViewportSize(viewport); await page.goto('./ascension/')
       await page.getByRole('group', { name: 'Map layout' }).getByRole('button', { name: layout, exact: true }).click()
       await page.getByRole('button', { name: 'Return to start', exact: true }).click()
       await page.getByRole('button', { name: 'Show details', exact: true }).click()
@@ -239,7 +239,7 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
         expect(await control.evaluate((element) => {
           const box = element.getBoundingClientRect()
           return box.width >= 44 && box.height >= 44 && element.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2))
-        })).toBe(true)
+        }), `Pan map ${direction} retains a 44px target and an unobstructed center`).toBe(true)
         const before = await settledCameraPosition(page)
         await page.keyboard.press('Enter')
         const expected = { x: before.x + (direction === 'left' ? 180 : direction === 'right' ? -180 : 0), y: before.y + (direction === 'up' ? 180 : direction === 'down' ? -180 : 0) }
@@ -259,14 +259,14 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
         expect(await control.evaluate((element) => {
           const box = element.getBoundingClientRect()
           return box.width >= 44 && box.height >= 44 && element.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2))
-        })).toBe(true)
+        }), `${name} retains a 44px target and an unobstructed center`).toBe(true)
       }
     })
   }
 }
 
 test('keyboard help is discoverable in responsive menus and restores its trigger focus', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 568 }); await page.goto('./')
+  await page.setViewportSize({ width: 320, height: 568 }); await page.goto('./ascension/')
   await openAction(page, 'Map help…')
   const help = page.getByRole('dialog', { name: 'Map help', exact: true })
   await expect(help).toContainText('one Tab stop')

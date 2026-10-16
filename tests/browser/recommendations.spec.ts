@@ -26,7 +26,7 @@ async function undo(page: Page) {
 }
 
 test('wiki suggestion follows recorded purchases and undo without changing layout', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('group', { name: 'Map layout' }).getByRole('button', { name: 'Game Layout', exact: true }).click()
   let dialog = await openSuggestions(page)
   await expect(dialog.locator('.recommendation-main')).toHaveAttribute('data-upgrade-id', start.id)
@@ -35,7 +35,7 @@ test('wiki suggestion follows recorded purchases and undo without changing layou
   await expect(dialog).toHaveCount(0)
   await expect(page.locator('.details h2')).toHaveText(start.title)
   await expect(page.getByRole('group', { name: 'Map layout' }).getByRole('button', { name: 'Game Layout', exact: true })).toHaveAttribute('aria-pressed', 'true')
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 
   dialog = await openSuggestions(page)
   await dialog.locator('.recommendation-main').getByRole('button', { name: 'Record purchase…', exact: true }).click()
@@ -66,7 +66,7 @@ test('recommendation dialog filters spoilers and owned pending locks with source
   const pending = catalog.upgrades.find((upgrade) => upgrade.activation === 'after-ultra-ascension')!
   const profile = { ...initial, purchases: { [pending.id]: { epoch: 0, active: false } } }
   await page.addInitScript((value) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(value)), profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   const dialog = await openSuggestions(page)
   const ids = await dialog.locator('.recommendation-card').evaluateAll((cards) => cards.map((card) => card.getAttribute('data-upgrade-id')))
   expect(ids).not.toContain(pending.id)
@@ -86,18 +86,18 @@ test('recommendation dialog filters spoilers and owned pending locks with source
 test('restored purchases determine suggestions and all-owned profile has an honest empty state', async ({ page }) => {
   const profile = { ...initial, purchases: Object.fromEntries(catalog.upgrades.map((upgrade) => [upgrade.id, { epoch: 0, active: true }])) }
   await page.addInitScript((value) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(value)), profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   const dialog = await openSuggestions(page)
   await expect(dialog.locator('.recommendation-card')).toHaveCount(0)
   await expect(dialog).toContainText('owned')
   await expect(dialog.getByRole('button', { name: 'Record purchase…', exact: true })).toHaveCount(0)
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases)).toEqual(profile.purchases)
+  expect(await page.evaluate(() => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases)).toEqual(profile.purchases)
 })
 
 test('keyboard dismissal returns focus and suggestion actions stay usable on compact screens', async ({ page }) => {
   for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
     await page.setViewportSize(viewport)
-    await page.goto('./')
+    await page.goto('./ascension/')
     const trigger = page.getByRole('button', { name: 'Next upgrade', exact: true })
     await expect(trigger).toBeInViewport()
     await trigger.focus()
@@ -119,20 +119,20 @@ test('keyboard dismissal returns focus and suggestion actions stay usable on com
 })
 
 test('successive suggestions and an alternative each require a separate confirmation', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   let dialog = await openSuggestions(page)
   for (const upgrade of [start, gatherer]) {
     await expect(dialog.locator('.recommendation-main')).toHaveAttribute('data-upgrade-id', upgrade.id)
     await dialog.locator('.recommendation-main').getByRole('button', { name: 'Record purchase…', exact: true }).click()
     const preview = page.getByRole('dialog', { name: 'Record purchase?', exact: true })
-    const before = await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))
+    const before = await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))
     await expect(preview).toContainText(upgrade.title)
     expect(before === null || !JSON.parse(before).purchases[upgrade.id]).toBe(true)
     await preview.getByRole('button', { name: 'Apply and continue suggestions', exact: true }).click()
     dialog = page.getByRole('dialog', { name: 'Suggested next upgrade', exact: true })
     await expect(dialog).toBeVisible()
     await expect(dialog.locator(`[data-upgrade-id="${upgrade.id}"]`)).toHaveCount(0)
-    expect(await page.evaluate((id) => !!JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases[id], upgrade.id)).toBe(true)
+    expect(await page.evaluate((id) => !!JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases[id], upgrade.id)).toBe(true)
   }
   await expect(dialog.locator('.recommendation-card')).toHaveCount(3)
   for (const card of await dialog.locator('.recommendation-card').all()) {
@@ -148,27 +148,27 @@ test('successive suggestions and an alternative each require a separate confirma
   await alternative.getByRole('button', { name: `Record ${reaper.title} purchase…`, exact: true }).click()
   await page.getByRole('dialog', { name: 'Record purchase?', exact: true }).getByRole('button', { name: 'Back to suggestions', exact: true }).click()
   dialog = page.getByRole('dialog', { name: 'Suggested next upgrade', exact: true })
-  expect(await page.evaluate((id) => !!JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases[id], reaper.id)).toBe(false)
+  expect(await page.evaluate((id) => !!JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases[id], reaper.id)).toBe(false)
   await dialog.locator(`.recommendation-card[data-upgrade-id="${reaper.id}"]`).getByRole('button', { name: `Record ${reaper.title} purchase…`, exact: true }).click()
   await page.getByRole('button', { name: 'Apply and continue suggestions', exact: true }).click()
   dialog = page.getByRole('dialog', { name: 'Suggested next upgrade', exact: true })
   await expect(dialog.locator(`[data-upgrade-id="${reaper.id}"]`)).toHaveCount(0)
-  expect(await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases))).toHaveLength(3)
+  expect(await page.evaluate(() => Object.keys(JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases))).toHaveLength(3)
   await expect(dialog.locator('.recommendation-main')).toHaveAttribute('data-upgrade-id', quests.id)
   await dialog.locator('.recommendation-main').getByRole('button', { name: 'Record purchase…', exact: true }).click()
   await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  expect(await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases))).toHaveLength(4)
+  expect(await page.evaluate(() => Object.keys(JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases))).toHaveLength(4)
   await undo(page)
   dialog = await openSuggestions(page)
   await expect(dialog.locator('.recommendation-main')).toHaveAttribute('data-upgrade-id', quests.id)
-  expect(await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases))).toHaveLength(3)
+  expect(await page.evaluate(() => Object.keys(JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases))).toHaveLength(3)
 })
 
 test('suggestion purchase choices wrap and remain actionable on compact screens', async ({ page }, info) => {
   for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
     await page.setViewportSize(viewport)
-    await page.goto('./')
+    await page.goto('./ascension/')
     const dialog = await openSuggestions(page)
     await dialog.locator('.recommendation-main').getByRole('button', { name: 'Record purchase…', exact: true }).click()
     const preview = page.getByRole('dialog', { name: 'Record purchase?', exact: true })
@@ -184,6 +184,6 @@ test('suggestion purchase choices wrap and remain actionable on compact screens'
     await page.screenshot({ path: info.outputPath(`purchase-choices-${viewport.width}.png`) })
     await preview.getByRole('button', { name: 'Back to suggestions', exact: true }).click()
     await expect(page.getByRole('dialog', { name: 'Suggested next upgrade', exact: true })).toBeVisible()
-    expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+    expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
   }
 })

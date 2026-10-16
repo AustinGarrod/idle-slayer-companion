@@ -21,7 +21,7 @@ test.beforeEach(async ({ page }) => {
 
 async function load(page: Page, profile: Profile) {
   await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
 }
 async function select(page: Page, title: string) {
@@ -32,7 +32,7 @@ async function select(page: Page, title: string) {
   await expect(page.locator('.details h2')).toHaveText(title)
 }
 async function stored(page: Page) {
-  return page.evaluate((key) => JSON.parse(localStorage.getItem(key)!) as Profile, PROFILE_STORAGE_KEY)
+  return page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!) as Profile, PROFILE_STORAGE_KEY)
 }
 async function undo(page: Page) {
   const action = page.getByRole('button', { name: 'Undo', exact: true })

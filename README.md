@@ -1,15 +1,24 @@
-# Idle Slayer Ascension Map
+# Idle Slayer Companion
 
-[**Open the Ascension Map**](https://austingarrod.github.io/idle-slayer-ascension-map/)
+An unofficial, static utility for **Idle Slayer 7.3.4 / Steam build 25810322**. It combines the reviewed Ascension Map with achievements, crafting and materials, regular quests and Village, Bestiary, and normal, Dark, and Elemental Divinities.
 
-A free, unofficial companion for Idle Slayer: explore the Ascension tree, record your progress, and find eligible upgrades in the reviewed wiki order. The complete catalog covers **Idle Slayer 7.2.0 / Steam build 25551532**, with **288 upgrades, 318 connections and 288 icons**.
+The map has **288 upgrades / 318 connections**. The companion catalog adds **1,293 entries** and **1,205 reviewed icons**. The game remains authoritative. Unsupported native predicates are marked unknown and do not reveal content by default.
 
-## Start playing
+The local application now uses `/idle-slayer-companion/`. The repository and public address have **not been renamed or published by this change**. [The migration runbook](docs/site-migration.md) covers the prepared same-origin compatibility site and reversible rollout.
 
-1. Open the map. **Game Layout** follows native coordinates; **Detailed Layout** spreads visible dependency paths out for reading. Spoilers start hidden.
-2. Search by upgrade title or effect, or leave search empty to browse all visible upgrades. Filter **Progress state** to review available, locked, owned or awaiting-activation upgrades; results show status and exact cost. Select a result or tile to inspect requirements and connected upgrades. **Next upgrade** offers eligible suggestions; availability checks native requirements without checking SP balance or claiming an optimal build.
-3. Select an upgrade and choose **Record purchase…** to enter purchases manually. Alternatively, open **Progress → Import game save…** (on phones, **Map options → Progress**) for a reviewed Windows Steam 7.2.0 save. Import and consequential changes require a preview and confirmation; the app never changes the game.
-4. Use **Export JSON backup** regularly; its filename includes the UTC export time and recorded UA count. Restore, import and conflict recovery compare currently visible progress before replacement. Progress belongs to this browser's local storage, with labeled session-only Undo/Redo (up to 20 changes) and validated restore; there is no account, cloud backup or automatic game-file access.
+## Use the companion
+
+1. Open **Overview** for tracked systems, shared goals, and crafting plans. Use the section navigation for **Ascension**, **Achievements**, **Crafting**, **Quests**, **Bestiary**, and **Divinities**. Spoilers start hidden; lists, search, summaries, goals, and previews use the current visible universe.
+2. Enable tracking for a system and record observations manually. A material count, achievement completion, quest claim, crafted item, building, enemy count, or Divinity selection is a recorded fact. Ordinary edits never spend stock, award rewards, or simulate gameplay. Missing observations remain unrecorded.
+3. **Import game save** reads a selected file locally: reviewed Windows Steam 7.3.4 supplies supported companion state together; legacy 7.2.0 remains map-only. Review before applying. One import or actual Ultra Ascension is one visit-only Undo/Redo operation across tracked systems. Intentions and preferences stay separate.
+4. **Backup & transfer → Export Companion progress** backs up all actual tracked progress. Export **intentions** separately for shared goals and recipe quantities. Ascension checkpoints and saved comparisons retain their own exports. Legacy map JSON and QR transfers cover **map progress/layout only**.
+5. **Settings & privacy** controls the existing self-hosted Umami integration. New companion module contents, observations, intentions, import/restore/reset previews, and recovery controls are blocked from replay. Ordinary visible Ascension progress can appear in recordings. Saves and backups never leave the browser.
+
+See [Companion architecture and limits](docs/companion.md), [native review](docs/companion-native-review.md), and [Steam import compatibility](docs/save-import.md). No accounts, cloud backup, application backend, automatic game-file access, SP-balance simulation, or Stone allocation are included. Daily/weekly quests, Armory, and Minions remain outside this release.
+
+## Ascension tools
+
+Game Layout preserves native positions. Detailed Layout arranges the visible dependency graph. Search by title/effect, inspect native requirements, and record purchases through the existing prerequisite previews. Next upgrade uses the reviewed wiki priority snapshot without claiming affordability or an optimal build.
 
 **Recent upgrades…** in Map view/options or expanded upgrade details returns to your latest inspections. It remembers up to 20 different visible upgrades for this visit, independently of progress Undo.
 
@@ -50,7 +59,7 @@ yarn install --immutable
 yarn dev
 ```
 
-Open the printed URL under `/idle-slayer-ascension-map/`. If Node.js is installed but no `yarn` launcher exists, use the tracked CLI directly:
+Open the printed URL under `/idle-slayer-companion/`. If Node.js is installed but no `yarn` launcher exists, use the tracked CLI directly:
 
 ```powershell
 node .yarn/releases/yarn-4.13.0.cjs install --immutable
@@ -68,6 +77,7 @@ yarn test
 yarn test:tools
 yarn build
 yarn playwright install chromium
+yarn prepare:migration
 yarn test:e2e
 yarn check:release
 ```
@@ -78,7 +88,7 @@ Shared [browser fixtures and helpers](docs/browser-test-helpers.md) keep ordinar
 
 Failed local/CI browser tests retain a trace, screenshot and HTML report. CI uploads only synthetic failure diagnostics for five days. See [browser diagnostics](docs/browser-diagnostics.md) for Windows retrieval and local viewer commands.
 
-GitHub Pages CI validates and deploys successful main builds using the repository base path. `yarn check:release` inspects actual built entries, referenced assets, byte-identical catalog, all reviewed icons, complete runtime notices and exclusion of private inputs. Upload only `dist`; a merge or deployment alone does not establish manual production behavior.
+GitHub Pages CI validates main builds and deploys only when the explicit `PAGES_DEPLOY_ENABLED` repository variable is `true`. The migration must be staged before enabling publication; see the runbook. `yarn check:release` inspects actual built entries, referenced assets, byte-identical catalog, all reviewed icons, complete runtime notices and exclusion of private inputs. The project Pages artifact is `dist`; the separately prepared user-site migration is `.cache/site-migration`; a merge or deployment alone does not establish manual production behavior.
 
 `yarn test:tools` runs the real normalization and offline wiki-parser entry points on invented fixtures using Python 3.10+ standard library only. It needs no UnityPy, installed game, saves, downloaded wiki responses or network access. Use `python` on Windows, `python3` elsewhere, or set `$env:PYTHON` to an interpreter path. [Coverage and limits](scripts/extract/README.md#synthetic-transformation-checks) supplement independent native review and real-input release gates.
 

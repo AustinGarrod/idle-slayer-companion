@@ -1,3 +1,4 @@
+import { installProfileTestHelpers } from './fixtures'
 import { expect, test } from './fixtures'
 import { chromium, type Locator, type Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
@@ -15,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled'))
   await page.route('https://analytics.garrod.house/**', (route) => route.abort())
 })
-const stored = (page: Page) => page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)
+const stored = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)
 async function seed(page: Page, profile: Profile) { await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile }) }
 async function open(page: Page) {
   await expect(page.locator('.toolbar')).toBeVisible()
@@ -40,7 +41,7 @@ async function boundary(dialog: Locator, number: number) {
 test('compares two deliberate sequences through two full native resets without writes or invented history', async ({ page }) => {
   const lord = node('Land Lord'), scales = node('Astral Scales'), slayer = node('Astral Slayer')
   const actual = { ...initial, epoch: 1, purchases: { [slayer.id]: { epoch: 0, active: true }, [lord.id]: { epoch: 1, active: false }, UNKNOWN_PRIVATE: { epoch: 1, active: true } } }
-  await seed(page, actual); await page.goto('./'); const bytes = await stored(page), url = page.url(), dialog = await open(page)
+  await seed(page, actual); await page.goto('./ascension/'); const bytes = await stored(page), url = page.url(), dialog = await open(page)
   await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Activate Scales through two UAs')
   await boundary(dialog, 1)
   await expect(stage(dialog, 1).locator('.roadmap-reset')).toContainText('Land Lord')
@@ -60,12 +61,12 @@ test('compares two deliberate sequences through two full native resets without w
   await expect(dialog.locator('[data-roadmap-summary]')).toHaveCount(2)
   expect(await dialog.textContent()).not.toContain('UNKNOWN_PRIVATE')
   expect(await stored(page)).toBe(bytes); expect(page.url()).toBe(url)
-  expect(await page.evaluate((key) => localStorage.getItem(key), GOALS_STORAGE_KEY)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), GOALS_STORAGE_KEY)).toBeNull()
   await page.keyboard.press('Escape'); const progress = await openProgress(page)
   await expect(progress.getByRole('button', { name: 'Undo', exact: true })).toBeDisabled()
 })
 test('each reset requires fresh eligibility and later route intentions clear after earlier edits', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page)
+  await page.goto('./ascension/'); const dialog = await open(page)
   await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Choose every OR path')
   await add(dialog, 1, 'Legendary Belt'); await expect(stage(dialog, 1).getByRole('radio')).toHaveCount(4)
   await expect(stage(dialog, 1)).toContainText('Choose an intended route explicitly')
@@ -84,7 +85,7 @@ test('each reset requires fresh eligibility and later route intentions clear aft
   expect(await stored(page)).toBeNull()
 })
 test('future epoch reveals stay absent from later pickers and every displayed result', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page)
+  await page.goto('./ascension/'); const dialog = await open(page)
   await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Fixed original map')
   await boundary(dialog, 1)
   await dialog.getByRole('button', { name: 'Add purchase stage', exact: true }).click()
@@ -98,7 +99,7 @@ test('explicit staged item receipts remain hypothetical across full resets and n
   const lock = node('Limit Break'), gate = lock.reveal.kind === 'all' ? lock.reveal.requirements.find((requirement) => requirement.kind === 'milestone') : undefined
   if (!gate || gate.kind !== 'milestone') throw new Error('Expected native Limit Break receipt gate')
   const actual = { ...initial, epoch: 1, showSpoilers: true, purchases: Object.fromEntries(catalog.upgrades.filter((entry) => entry.id !== lock.id).map((entry) => [entry.id, { epoch: 1, active: true }])) }
-  await seed(page, actual); await page.goto('./'); const bytes = await stored(page), dialog = await open(page)
+  await seed(page, actual); await page.goto('./ascension/'); const bytes = await stored(page), dialog = await open(page)
   await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Assume item receipt before UA'); await add(dialog, 1, lock.title)
   await expect(stage(dialog, 1)).toContainText('Incomplete')
   await stage(dialog, 1).locator('.roadmap-items summary').click(); await stage(dialog, 1).locator(`[data-roadmap-item="${gate.id}"]`).check()
@@ -111,9 +112,9 @@ test('explicit staged item receipts remain hypothetical across full resets and n
   expect(await stored(page)).toBe(bytes)
 })
 test('external actual progress closes all stale outputs and clean reopening discards both sequences', async ({ page, context }) => {
-  await seed(page, { ...initial, showSpoilers: true }); await page.goto('./'); const dialog = await open(page)
+  await seed(page, { ...initial, showSpoilers: true }); await page.goto('./ascension/'); const dialog = await open(page)
   await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Private old sequence'); await add(dialog, 1, 'Astral Scales')
-  const other = await context.newPage(); await other.goto('./'); await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
+  const other = await context.newPage(); await other.goto('./ascension/'); await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
   await expect(dialog).toHaveCount(0)
   const fresh = await open(page); await expect(fresh.getByRole('textbox', { name: 'Plan name', exact: true })).toHaveValue('')
   await expect(fresh.locator('[data-roadmap-target]')).toHaveCount(0); expect(await fresh.textContent()).not.toContain('Private old sequence')
@@ -121,16 +122,16 @@ test('external actual progress closes all stale outputs and clean reopening disc
 })
 test('recovery replaces the roadmap with exactly one native modal and preserves the unsaved session', async ({ page, context }) => {
   await seed(page, initial)
-  await page.addInitScript((key) => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function (name, value) { if (name === key) throw new DOMException('Synthetic write failure'); original.call(this, name, value) } }, PROFILE_STORAGE_KEY)
-  await page.goto('./'); await page.getByRole('button', { name: 'Return to start', exact: true }).click(); await page.getByRole('button', { name: 'Record purchase…', exact: true }).click(); await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
-  const other = await context.newPage(); await other.goto('./'); await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify({ ...profile, showSpoilers: true })), { key: PROFILE_STORAGE_KEY, profile: initial })
+  await page.addInitScript((key) => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function (name, value) { if ([key, ...(key === 'idle-slayer-ascension-map.profile.v1' ? ['idle-slayer-companion.progress.v1'] : key === 'idle-slayer-ascension-map.goals.v1' ? ['idle-slayer-companion.workspace.v1'] : [])].includes(name)) throw new DOMException('Synthetic write failure'); original.call(this, name, value) } }, PROFILE_STORAGE_KEY)
+  await page.goto('./ascension/'); await page.getByRole('button', { name: 'Return to start', exact: true }).click(); await page.getByRole('button', { name: 'Record purchase…', exact: true }).click(); await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
+  const other = await context.newPage(); await other.goto('./ascension/'); await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify({ ...profile, showSpoilers: true })), { key: PROFILE_STORAGE_KEY, profile: initial })
   await expect(page.getByRole('button', { name: 'Review progress conflict', exact: true })).toBeVisible()
   const dialog = await open(page); await dialog.getByRole('button', { name: 'Review progress conflict', exact: true }).click()
-  await expect(page.locator('dialog[open]')).toHaveCount(1); await expect(page.getByRole('dialog', { name: 'Review progress conflict', exact: true })).toBeVisible(); await expect(dialog).toHaveCount(0)
+  await expect(page.locator('dialog[open]')).toHaveCount(1); await expect(page.getByRole('dialog', { name: 'Backup & transfer', exact: true })).toBeVisible(); await expect(dialog).toHaveCount(0)
   await expect(page.locator('.map-summary')).toContainText('1 /'); await other.close()
 })
 for (const purchaseFirst of [true, false]) test(`queued connected native purchase and roadmap openers leave one dialog (${purchaseFirst})`, async ({ page }) => {
-  await page.goto('./'); await selectUpgrade(page, 'Permanent Slayer'); const expand = page.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
+  await page.goto('./ascension/'); await selectUpgrade(page, 'Permanent Slayer'); const expand = page.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
   const connected = await page.locator('.details').evaluate((details, purchaseFirst) => {
     const buttons = [...details.querySelectorAll<HTMLButtonElement>('button')], purchase = buttons.find((button) => button.textContent === 'Record purchase…')!, roadmap = buttons.find((button) => button.textContent === 'Plan hypothetical UAs…')!
     const first = purchaseFirst ? purchase : roadmap, second = purchaseFirst ? roadmap : purchase
@@ -141,7 +142,7 @@ for (const purchaseFirst of [true, false]) test(`queued connected native purchas
   expect(await stored(page)).toBeNull()
 })
 test('a connected opener after an actual change can only open a fresh current-scope roadmap', async ({ page }) => {
-  await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible(); const compact = page.getByRole('button', { name: 'Map options', exact: true }); await (await compact.isVisible() ? compact : page.getByRole('button', { name: 'Map view…', exact: true })).click()
+  await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible(); const compact = page.getByRole('button', { name: 'Map options', exact: true }); await (await compact.isVisible() ? compact : page.getByRole('button', { name: 'Map view…', exact: true })).click()
   await page.getByRole('dialog', { name: 'Map options', exact: true }).evaluate((dialog) => {
     const input = dialog.querySelector<HTMLInputElement>('input[type="checkbox"]')!, button = [...dialog.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === 'Plan hypothetical UAs…')!
     input.click(); if (!button.isConnected) throw new Error('Expected old opener still connected'); button.click()
@@ -163,7 +164,7 @@ test('opening a roadmap invalidates a held older backup read and a late picker s
     const win = window as Window & { releaseRoadmapBackup?: () => void; roadmapBackupFinished?: boolean }, native = File.prototype.text
     File.prototype.text = async function () { if (this.name !== 'held.json') return native.call(this); await new Promise<void>((resolve) => { win.releaseRoadmapBackup = resolve }); const text = await native.call(this); win.roadmapBackupFinished = true; return text }
   })
-  await page.goto('./'); await openProgress(page)
+  await page.goto('./ascension/'); await openProgress(page)
   await page.getByLabel('Map progress JSON backup', { exact: true }).setInputFiles({ name: 'held.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ ...initial, epoch: 7 })) })
   await expect.poll(() => page.evaluate(() => typeof (window as Window & { releaseRoadmapBackup?: () => void }).releaseRoadmapBackup)).toBe('function')
   await page.keyboard.press('Escape'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Newer roadmap')
@@ -173,14 +174,14 @@ test('opening a roadmap invalidates a held older backup read and a late picker s
   await expect(page.locator('dialog[open]')).toHaveCount(1); await expect(dialog).toBeVisible(); await expect(dialog.getByRole('textbox', { name: 'Plan name', exact: true })).toHaveValue('Newer roadmap'); expect(await stored(page)).toBeNull()
 })
 test('compact details preserve the native purchase Tab path while auxiliary roadmap controls stay hidden', async ({ page }) => {
-  await page.setViewportSize({ width: 844, height: 390 }); await page.goto('./'); await page.getByRole('searchbox').fill('Permanent Slayer'); await page.getByRole('searchbox').press('Enter')
+  await page.setViewportSize({ width: 844, height: 390 }); await page.goto('./ascension/'); await page.getByRole('searchbox').fill('Permanent Slayer'); await page.getByRole('searchbox').press('Enter')
   await expect(page.locator('.details h2')).toBeFocused(); await expect(page.getByRole('button', { name: 'Plan hypothetical UAs…', exact: true })).not.toBeVisible(); await expect(page.locator('.detail-secondary')).toHaveCount(1)
   let reached = false
   for (let index = 0; index < 5; index++) { await page.keyboard.press('Tab'); if (await page.getByRole('button', { name: 'Record purchase…', exact: true }).evaluate((button) => button === document.activeElement)) { reached = true; break } }
   expect(reached).toBe(true)
 })
 test('same-task duplicate controls enforce two plans, four stages and one minimum stage', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('First bounded sequence')
+  await page.goto('./ascension/'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('First bounded sequence')
   const connected = await dialog.getByRole('button', { name: 'Add comparison sequence', exact: true }).evaluate((element) => { const button = element as HTMLButtonElement; button.click(); const connected = button.isConnected; button.click(); return connected })
   expect(connected).toBe(true)
   await expect(dialog.getByRole('group', { name: 'Choose sequence', exact: true }).getByRole('button')).toHaveCount(2)
@@ -190,10 +191,10 @@ test('same-task duplicate controls enforce two plans, four stages and one minimu
   await expect(dialog.locator('[data-roadmap-stage]')).toHaveCount(4); await expect(dialog.getByRole('button', { name: 'Add purchase stage', exact: true })).toBeDisabled()
   await dialog.getByRole('button', { name: 'Remove last stage', exact: true }).evaluate((element) => { const button = element as HTMLButtonElement; for (let index = 0; index < 8; index++) button.click() })
   await expect(dialog.locator('[data-roadmap-stage]')).toHaveCount(1); await expect(dialog.getByRole('button', { name: 'Remove last stage', exact: true })).toBeDisabled()
-  expect(await stored(page)).toBeNull(); expect(await page.evaluate((key) => localStorage.getItem(key), GOALS_STORAGE_KEY)).toBeNull()
+  expect(await stored(page)).toBeNull(); expect(await page.evaluate((key) => window.__readMapProfileText(key), GOALS_STORAGE_KEY)).toBeNull()
 })
 test('a queued plan switch rejects the old active plan stage and target handlers', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('First sequence'); await add(dialog, 1, 'Permanent Quests')
+  await page.goto('./ascension/'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('First sequence'); await add(dialog, 1, 'Permanent Quests')
   await dialog.getByRole('button', { name: 'Add comparison sequence', exact: true }).click(); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Second sequence')
   const picker = stage(dialog, 1).locator('.roadmap-picker'); await picker.locator('summary').click(); await picker.getByRole('searchbox').fill('Permanent Slayer')
   const connected = await dialog.evaluate((element, id) => {
@@ -207,7 +208,7 @@ test('a queued plan switch rejects the old active plan stage and target handlers
   await expect(dialog.locator('[data-roadmap-stage]')).toHaveCount(1); await expect(dialog.locator('[data-roadmap-target]')).toHaveCount(0); expect(await stored(page)).toBeNull()
 })
 test('a queued removed-stage picker cannot edit the new stage at the same position', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Stage identity guard'); await dialog.getByRole('button', { name: 'Add purchase stage', exact: true }).click()
+  await page.goto('./ascension/'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Stage identity guard'); await dialog.getByRole('button', { name: 'Add purchase stage', exact: true }).click()
   const picker = stage(dialog, 2).locator('.roadmap-picker'); await picker.locator('summary').click(); await picker.getByRole('searchbox').fill('Permanent Slayer')
   const connected = await dialog.evaluate((element, id) => {
     const buttons = [...element.querySelectorAll<HTMLButtonElement>('button')], remove = buttons.find((button) => button.textContent === 'Remove last stage')!, add = buttons.find((button) => button.textContent === 'Add purchase stage')!, oldTarget = element.querySelector<HTMLButtonElement>(`[data-roadmap-stage="2"] [data-roadmap-choice="${id}"]`)!
@@ -216,7 +217,7 @@ test('a queued removed-stage picker cannot edit the new stage at the same positi
   expect(connected).toBe(true); await expect(dialog.locator('[data-roadmap-stage]')).toHaveCount(2); await expect(stage(dialog, 2).locator('[data-roadmap-target]')).toHaveCount(0); expect(await stored(page)).toBeNull()
 })
 test('captured old plan name and stage callbacks cannot edit their former plan after a switch', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('First protected plan')
+  await page.goto('./ascension/'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('First protected plan')
   await dialog.getByRole('button', { name: 'Add comparison sequence', exact: true }).click(); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Second protected plan')
   await dialog.getByRole('group', { name: 'Choose sequence', exact: true }).getByRole('button', { name: 'First protected plan', exact: true }).click()
   await dialog.evaluate((element) => {
@@ -236,7 +237,7 @@ test('captured old plan name and stage callbacks cannot edit their former plan a
   await expect(dialog.getByRole('textbox', { name: 'Plan name', exact: true })).toHaveValue('First protected plan'); await expect(dialog.locator('[data-roadmap-stage]')).toHaveCount(1); expect(await stored(page)).toBeNull()
 })
 test('a captured old boundary callback cannot reset the replacement stage at the same position', async ({ page }) => {
-  await page.goto('./'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Protected replacement boundary'); await dialog.getByRole('button', { name: 'Add purchase stage', exact: true }).click()
+  await page.goto('./ascension/'); const dialog = await open(page); await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Protected replacement boundary'); await dialog.getByRole('button', { name: 'Add purchase stage', exact: true }).click()
   await dialog.evaluate((element) => {
     const boundary = element.querySelector<HTMLInputElement>('[aria-label="Full Ultra Ascension after stage 2"]')!, key = Object.keys(boundary).find((key) => key.startsWith('__reactProps$'))
     if (!key) throw new Error('Expected live React boundary callback')
@@ -252,10 +253,11 @@ test('a captured old boundary callback cannot reset the replacement stage at the
 test('roadmap choices, boundaries and comparison remain reachable with real 32px text and native Tab', async ({ baseURL }, info) => {
   const directory = info.outputPath('roadmap-font-profile'); await mkdir(join(directory, 'Default'), { recursive: true }); await writeFile(join(directory, 'Default', 'Preferences'), JSON.stringify({ webkit: { webprefs: { default_font_size: 32 } } }))
   const context = await chromium.launchPersistentContext(directory, { channel: 'chromium', headless: true, ignoreDefaultArgs: ['--hide-scrollbars'], baseURL, viewport: { width: 320, height: 568 }, ...(info.project.name === 'mobile' ? { isMobile: true, hasTouch: true } : {}) })
+  await installProfileTestHelpers(context)
   const errors: string[] = []; context.on('page', (page) => page.on('pageerror', (error) => errors.push(error.message)))
   try {
     await context.addInitScript(({ key, profile }) => { if (location.origin !== 'null') { localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled'); localStorage.setItem(key, JSON.stringify(profile)) } }, { key: PROFILE_STORAGE_KEY, profile: { ...initial, showSpoilers: true } })
-    const page = await context.newPage(); await page.goto('./'); await expect(page.locator('html')).toHaveCSS('font-size', '32px'); const dialog = await open(page)
+    const page = await context.newPage(); await page.goto('./ascension/'); await expect(page.locator('html')).toHaveCSS('font-size', '32px'); const dialog = await open(page)
     await dialog.getByRole('textbox', { name: 'Plan name', exact: true }).fill('Readable sequence')
     const picker = stage(dialog, 1).locator('.roadmap-picker'); await picker.locator('summary').click(); const input = picker.getByRole('searchbox'); await input.fill('Astral Key'); const choices = picker.locator('[data-roadmap-choice]'); expect(await choices.count()).toBe(13); await input.focus()
     for (const button of await choices.all()) {

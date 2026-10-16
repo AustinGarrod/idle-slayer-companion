@@ -13,7 +13,7 @@ const start = catalog.upgrades.find((node) => node.id === catalog.startId)!
 const hidden = catalog.upgrades.find((node) => !initialVisibility.ids.has(node.id))!
 
 test('search centers the native node, purchase persists, and undo works', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.getByRole('heading', { name: 'Ascension Map', exact: true })).toBeVisible()
   await page.getByRole('searchbox').fill(start.title)
   await page.locator('.search-result').filter({ hasText: start.title }).first().click()
@@ -35,7 +35,7 @@ test('search centers the native node, purchase persists, and undo works', async 
 })
 
 test('spoilers share one boundary across nodes, search, details and totals', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.map-summary')).toContainText(`0 / ${initialVisibility.total}`)
   await expect(page.locator(`.react-flow__node[data-id="${hidden.id}"]`)).toHaveCount(0)
   await page.getByRole('searchbox').fill(hidden.title)
@@ -51,7 +51,7 @@ test('spoilers share one boundary across nodes, search, details and totals', asy
 })
 
 test('backup restore is previewed and malformed input leaves current progress intact', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await openProgress(page)
   await page.getByLabel('Map progress JSON backup', { exact: true }).setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{broken') })
   await expect(page.getByRole('status', { name: 'Map action feedback', exact: true })).toContainText('not valid JSON')
@@ -71,7 +71,7 @@ test('backup restore is previewed and malformed input leaves current progress in
 
 test('storage failures retain usable progress and export', async ({ page }) => {
   await page.addInitScript(() => { Storage.prototype.setItem = () => { throw new DOMException('Quota exceeded', 'QuotaExceededError') } })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('button', { name: 'Return to start', exact: true }).click()
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
   await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
@@ -93,13 +93,13 @@ test('manual Astral activation retains ownership through prerequisite removal an
     const key = 'idle-slayer-ascension-map.profile.v1'
     if (localStorage.getItem(key) === null) localStorage.setItem(key, JSON.stringify(profile))
   }, purchase.profile)
-  const recordedAstral = () => page.evaluate((id) => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!).purchases[id], astral.id)
+  const recordedAstral = () => page.evaluate((id) => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!).purchases[id], astral.id)
   const activate = async () => {
     await selectUpgrade(page, astral.title)
     await page.getByRole('button', { name: 'Already activated…', exact: true }).click()
     await page.getByRole('button', { name: 'Apply changes', exact: true }).click()
   }
-  await page.goto('./')
+  await page.goto('./ascension/')
   await selectUpgrade(page, astral.title)
   await page.getByRole('button', { name: 'Already activated…', exact: true }).click()
   await page.getByRole('button', { name: 'Cancel', exact: true }).click()
@@ -132,20 +132,20 @@ test('manual Astral activation requires previous Ultra Ascension history', async
   const astral = catalog.upgrades.find((node) => node.title === 'Land Lord')!
   const profile = { ...initial, showSpoilers: true, purchases: { [astral.id]: { epoch: 0, active: false } } }
   await page.addInitScript((seed) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(seed)), profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await selectUpgrade(page, astral.title)
   await page.getByRole('button', { name: 'Already activated…', exact: true }).click()
   await expect(page.getByRole('status', { name: 'Map action feedback', exact: true })).toContainText('Record at least one previous Ultra Ascension')
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!))).toEqual(profile)
+  expect(await page.evaluate(() => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!))).toEqual(profile)
 })
 
 test('corrupt stored data cannot be overwritten by ordinary edits', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('idle-slayer-ascension-map.profile.v1', '{corrupt'))
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.getByRole('alert')).toContainText('not valid JSON')
   await showSpoilers(page, true)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBe('{corrupt')
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBe('{corrupt')
   await expect(page.getByRole('alert')).toContainText('Changes stay in memory')
 })
 
@@ -153,7 +153,7 @@ test('entering history keeps repeat purchases current and removal still cascades
   const child = catalog.upgrades.find((node) => node.title === 'Reinvest')!
   const seed = { ...initial, purchases: { [start.id]: { epoch: 0, active: true }, [child.id]: { epoch: 0, active: true } } }
   await page.addInitScript((profile) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(profile)), seed)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await openProgress(page)
   await page.getByRole('spinbutton', { name: 'Previous Ultra Ascensions' }).fill('1')
   await page.getByRole('button', { name: 'Review history…', exact: true }).click()
@@ -162,14 +162,14 @@ test('entering history keeps repeat purchases current and removal still cascades
   await page.getByRole('button', { name: 'Remove purchase…', exact: true }).click()
   await expect(page.getByRole('dialog')).toContainText(child.title)
   await page.getByRole('button', { name: 'Apply changes', exact: true }).click()
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!))).toEqual({ ...initial, epoch: 1 })
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!))
+  await expect.poll(() => page.evaluate(() => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!))).toEqual({ ...initial, epoch: 1 })
+  const saved = await page.evaluate(() => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!))
   expect(saved.epoch).toBe(1)
   expect(saved.purchases[child.id]).toBeUndefined()
 })
 
 test('fixed map and responsive controls support keyboard details without overflow', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Game Layout')
   const node = page.locator(`.react-flow__node[data-id="${start.id}"]`)
   await expect(page.getByRole('complementary', { name: 'Upgrade details' })).toHaveCount(0)
@@ -200,7 +200,7 @@ test('Web and Game layouts preserve selection, ownership and the spoiler boundar
   const branch = catalog.upgrades.find((upgrade) => upgrade.title === 'Reinvest')!
   const seed = { ...initial, purchases: { [start.id]: { epoch: 0, active: true } } }
   await page.addInitScript((profile) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(profile)), seed)
-  await page.goto('./')
+  await page.goto('./ascension/')
   const layout = page.getByRole('group', { name: 'Map layout', exact: true })
   await chooseLayout(page, 'Detailed Layout')
   await expect(layout.getByRole('button', { name: 'Detailed Layout', exact: true })).toHaveAttribute('aria-pressed', 'true')
@@ -221,7 +221,7 @@ test('Web and Game layouts preserve selection, ownership and the spoiler boundar
     return collisions
   })
   expect(overlaps).toEqual([])
-  const progress = await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))
+  const progress = await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))
   await chooseLayout(page, 'Game Layout')
   await expect(selectedNode).toHaveClass(/selected/)
   await expect(page.locator('.details h2')).toHaveText(branch.title)
@@ -231,7 +231,7 @@ test('Web and Game layouts preserve selection, ownership and the spoiler boundar
   await expect(selectedNode).toHaveClass(/selected/)
   await expect.poll(() => selectedNode.getAttribute('style')).toBe(webPosition)
   await selectedNodeIsUsable(page, branch.id)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBe(progress)
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBe(progress)
   await expect(page.locator('.map-summary')).toContainText('1 /')
   await expect(page.locator(`.react-flow__node[data-id="${hidden.id}"]`)).toHaveCount(0)
   await page.getByRole('searchbox').fill(hidden.title)
@@ -244,7 +244,7 @@ test('selected connections show direction and navigate directly to visible neigh
   const outgoing = catalog.connections.find((edge) => edge.from === branch.id && initialVisibility.ids.has(edge.to))!
   const prerequisite = catalog.upgrades.find((upgrade) => upgrade.id === incoming.from)!
   const next = catalog.upgrades.find((upgrade) => upgrade.id === outgoing.to)!
-  await page.goto('./')
+  await page.goto('./ascension/')
   await chooseLayout(page, 'Detailed Layout')
   await selectUpgrade(page, branch.title)
   const fromEdge = page.locator(`.react-flow__edge[data-id="${incoming.from}:${incoming.to}"]`)
@@ -280,7 +280,7 @@ test('selected connections show direction and navigate directly to visible neigh
 
 test('connection navigation keeps native AND and OR purchase requirements explicit', async ({ page }) => {
   await page.addInitScript((profile) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(profile)), { ...initial, showSpoilers: true })
-  await page.goto('./')
+  await page.goto('./ascension/')
   for (const kind of ['all', 'any'] as const) {
     const upgrade = catalog.upgrades.find((node) => node.purchase.kind === kind && node.purchase.requirements.length > 1 && node.purchase.requirements.every((requirement) => requirement.kind === 'active'))!
     if (upgrade.purchase.kind !== kind) throw new Error(`Missing native ${kind} fixture`)
@@ -301,7 +301,7 @@ test('connection navigation keeps native AND and OR purchase requirements explic
 for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
   test(`map and details stay usable at ${viewport.width}x${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport)
-    await page.goto('./')
+    await page.goto('./ascension/')
     await noPageOverflow(page)
     const map = page.getByRole('region', { name: 'Ascension tree', exact: true })
     const mapBox = (await map.boundingBox())!

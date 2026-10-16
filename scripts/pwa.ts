@@ -1,17 +1,29 @@
 import { createHash } from 'node:crypto'
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 
-export const PWA_BASE = '/idle-slayer-ascension-map/'
+export const PWA_BASE = '/idle-slayer-companion/'
+/** Keep the same-origin installed application identity across the product rename. */
+export const PWA_IDENTITY = '/idle-slayer-ascension-map/'
+export const COMPANION_SECTION_PATHS = ['overview', 'ascension', 'achievements', 'crafting', 'quests', 'bestiary', 'divinities'] as const
+export function writeSectionEntries(directory: string): void {
+  const entry = readFileSync(resolve(directory, 'index.html'))
+  for (const section of COMPANION_SECTION_PATHS) {
+    mkdirSync(resolve(directory, section), { recursive: true })
+    writeFileSync(resolve(directory, section, 'index.html'), entry)
+  }
+}
 const hash = (bytes: string | Uint8Array) => createHash('sha256').update(bytes).digest('hex')
 export interface OfflineRelease { version: string; assets: { file: string; sha256: string }[] }
 export function offlineRelease(root: string, directory: string): OfflineRelease {
   const catalog = JSON.parse(readFileSync(resolve(root, 'public/catalog.json'), 'utf8')) as { upgrades: { icon: string }[] }
+  const companion = JSON.parse(readFileSync(resolve(root, 'public/companion-catalog.json'), 'utf8')) as { entities: { icon?: string }[] }
   const notices = JSON.parse(readFileSync(resolve(root, 'public/licenses/notices.json'), 'utf8')) as { packages: { notices: { file: string }[] }[] }
-  const reviewed = new Set(['index.html', 'catalog.json', 'manifest.webmanifest',
+  const reviewed = new Set(['index.html', 'catalog.json', 'companion-catalog.json', 'manifest.webmanifest',
+    ...COMPANION_SECTION_PATHS.map((section) => section + '/index.html'),
     ...['icon-192', 'icon-512', 'maskable-512', 'apple-touch-icon'].map((name) => 'pwa/' + name + '.png'),
-    ...catalog.upgrades.map((upgrade) => upgrade.icon), 'licenses/index.html', 'licenses/notices.json', 'licenses/bundle-notices.json',
+    ...catalog.upgrades.map((upgrade) => upgrade.icon), ...companion.entities.flatMap((entity) => entity.icon ? [entity.icon] : []), 'licenses/index.html', 'licenses/notices.json', 'licenses/bundle-notices.json',
     ...notices.packages.flatMap((item) => item.notices.map((notice) => 'licenses/' + notice.file))])
   const publicFile = (file: string) => reviewed.has(file) || /^assets\/[a-zA-Z0-9_-]+\.(?:js|css|woff2?)$/.test(file)
   const files: string[] = []
@@ -42,6 +54,7 @@ export function pwaPlugin(root: string): Plugin {
       directory = resolve(root, config.build.outDir)
     },
     closeBundle() {
+      writeSectionEntries(directory)
       const release = offlineRelease(root, directory)
       writeFileSync(resolve(directory, 'offline-assets.json'), JSON.stringify(release, null, 2) + '\n')
       writeFileSync(resolve(directory, 'sw.js'), renderWorker(root, release))
@@ -53,7 +66,7 @@ export function validatePwaDistribution(root: string, directory: string): void {
   const actual = JSON.parse(readFileSync(resolve(directory, 'offline-assets.json'), 'utf8')) as OfflineRelease
   if (JSON.stringify(actual) !== JSON.stringify(expected) || readFileSync(resolve(directory, 'sw.js'), 'utf8') !== renderWorker(root, expected)) throw new Error('Offline release inventory or worker is stale.')
   const manifest = JSON.parse(readFileSync(resolve(directory, 'manifest.webmanifest'), 'utf8'))
-  if (manifest.id !== PWA_BASE || manifest.start_url !== PWA_BASE || manifest.scope !== PWA_BASE || manifest.display !== 'standalone'
+  if (manifest.id !== PWA_IDENTITY || manifest.start_url !== PWA_BASE || manifest.scope !== PWA_BASE || manifest.display !== 'standalone'
     || manifest.theme_color !== '#231e19' || manifest.background_color !== '#15120f') throw new Error('Invalid installation identity, scope or colors.')
   const expectedIcons = ['pwa/icon-192.png', 'pwa/icon-512.png', 'pwa/maskable-512.png']
   if (manifest.icons?.length !== 3 || manifest.icons.some((icon: { src: string; sizes: string; purpose: string; type: string }, index: number) => icon.src !== expectedIcons[index]
@@ -65,4 +78,5 @@ export function validatePwaDistribution(root: string, directory: string): void {
   }
   const html = readFileSync(resolve(directory, 'index.html'), 'utf8')
   if (!html.includes('rel="manifest" href="' + PWA_BASE + 'manifest.webmanifest"') || !html.includes('rel="apple-touch-icon" href="' + PWA_BASE + 'pwa/apple-touch-icon.png"')) throw new Error('Missing install metadata in built HTML.')
+  for (const section of COMPANION_SECTION_PATHS) if (readFileSync(resolve(directory, section, 'index.html'), 'utf8') !== html) throw new Error('Static section entry is missing or differs from the application entry.')
 }
