@@ -188,8 +188,12 @@ test('native reset and Undo recompute facts while leaving the reference list unc
   await expect(dialog.locator(`article[data-upgrade-id="${repeat.id}"]`)).toContainText('not currently owned')
   expect(await stored(page)).toBe(reference)
   await page.keyboard.press('Escape')
-  if (await mobile.isVisible()) await mobile.click()
-  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  if (await mobile.isVisible()) {
+    await mobile.click()
+    await page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Undo', exact: true }).click()
+  } else {
+    await page.locator('.companion-session-status').getByRole('button', { name: 'Undo', exact: true }).click()
+  }
   await expect.poll(async () => JSON.parse((await progress(page))!)).toEqual(profile)
   expect(await stored(page)).toBe(reference)
 })

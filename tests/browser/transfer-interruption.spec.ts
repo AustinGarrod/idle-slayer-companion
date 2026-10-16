@@ -268,7 +268,7 @@ for (const state of ['conflict', 'tracking reload'] as const) {
       await openAction(page, 'Privacy & tracking')
       await page.getByRole('button', { name: 'Disable tracking and reload', exact: true }).click()
     }
-    await expect(page.getByRole('dialog', { name: state === 'conflict' ? 'Backup & transfer' : 'Settings & privacy', exact: true })).toBeVisible()
+    await expect(page.getByRole('dialog', { name: state === 'conflict' ? 'Backup & transfer' : 'Privacy & tracking', exact: true })).toBeVisible()
     const transfer = await link(baseURL!)
     await arrive(page, transfer, false)
     const receiver = await arrive(page, transfer, true)

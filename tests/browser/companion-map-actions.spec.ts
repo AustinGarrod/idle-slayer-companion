@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures'
-import { openAction } from './helpers/app'
+import { openAction, purchaseStart } from './helpers/app'
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled'))
@@ -26,6 +26,30 @@ test('embedded map keeps one set of app-wide controls and one visible history gr
   }
   await expect(options.getByRole('button', { name: 'Progress', exact: true })).toBeVisible()
   await expect(options.getByRole('button', { name: 'Reference sheet', exact: true })).toBeVisible()
+})
+
+test('short phone maps retain working Undo and Redo in Map options', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.goto('./ascension/')
+  await expect(page.locator('.toolbar')).toBeVisible()
+  await expect(page.locator('.companion-session-status')).toBeHidden()
+  await purchaseStart(page)
+  await expect(page.locator('.upgrade-node.purchased')).toHaveCount(1)
+  const options = page.getByRole('dialog', { name: 'Map options', exact: true })
+  for (const direction of ['Undo', 'Redo'] as const) {
+    await page.getByRole('button', { name: 'Map options', exact: true }).click()
+    const action = options.getByRole('button', { name: direction, exact: true })
+    await expect(action).toBeEnabled()
+    await action.scrollIntoViewIfNeeded()
+    await expect(action).toBeInViewport()
+    expect(await action.evaluate((button) => {
+      const box = button.getBoundingClientRect()
+      return box.width >= 44 && box.height >= 44 && button.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2))
+    })).toBe(true)
+    await action.click()
+    await expect(options).toHaveCount(0)
+    await expect(page.locator('.upgrade-node.purchased')).toHaveCount(direction === 'Undo' ? 0 : 1)
+  }
 })
 
 test('reviewing Ascension references opens each real collection without changing progress', async ({ page }) => {
