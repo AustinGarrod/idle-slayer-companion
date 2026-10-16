@@ -4,7 +4,7 @@ An unofficial, static utility for **Idle Slayer 7.3.4 / Steam build 25810322**. 
 
 The map has **288 upgrades / 318 connections**. The companion catalog adds **1,293 entries** and **1,205 reviewed icons**. The game remains authoritative. Unsupported native predicates are marked unknown and do not reveal content by default.
 
-The local application now uses `/idle-slayer-companion/`. The repository and public address have **not been renamed or published by this change**. [The migration runbook](docs/site-migration.md) covers the prepared same-origin compatibility site and reversible rollout.
+The application uses `/idle-slayer-companion/`. [The migration runbook](docs/site-migration.md) covers the same-origin compatibility site, repository rename, reversible rollout, and deployment verification. The previous `/idle-slayer-ascension-map/` address is retained through the compatibility host.
 
 ## Use the companion
 

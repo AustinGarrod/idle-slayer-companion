@@ -1,6 +1,6 @@
 # Companion repository and Pages migration
 
-This implementation prepares a migration without changing GitHub repositories, DNS, Pages settings, or production files. The current remote is `AustinGarrod/idle-slayer-ascension-map`; the target is `AustinGarrod/idle-slayer-companion`. The application base is already `/idle-slayer-companion/`.
+This runbook migrates the source repository from `AustinGarrod/idle-slayer-ascension-map` to `AustinGarrod/idle-slayer-companion` and publishes the application at `/idle-slayer-companion/`. Inspect current repository and Pages state before repeating any step. Repository operations and publication require user authorization; running the local generator changes no remote state.
 
 ## Why a same-origin bridge is required
 
@@ -50,4 +50,4 @@ git remote -v
 
 Disable project deployment, restore the prior reviewed static release only at `/idle-slayer-ascension-map/` through the user site, and retain both same-origin data documents. Never publish that old-base artifact at `/idle-slayer-companion/`: its absolute asset paths point to the old address. Keep the staged current Companion at the new path while disabling its project site. Do not roll back by clearing storage or rewriting Companion progress into the legacy key. Older map code cannot represent the new modules. Keep Companion JSON and intentions exports available through the staged site or bridge, and preserve repository redirects. Reversing the repository rename is a deliberate operator action; first inspect which name owns each redirect and Pages path.
 
-This change has not performed any of the remote rollout steps. Local/CI success does not establish deployment, manual production readback, analytics ingestion, or physical installation behavior.
+Record the source commit, user-site commit, workflow run URLs, Pages settings, and deliberate browser readback separately for each rollout. Local/CI success does not establish deployment, manual production readback, analytics ingestion, or physical installation behavior.
