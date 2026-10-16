@@ -1,3 +1,4 @@
+import { installProfileTestHelpers } from './fixtures'
 import { expect, test } from './fixtures'
 import { chromium, type Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
@@ -35,20 +36,20 @@ async function open(page: Page) {
   await page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Saved upgrade comparison…', exact: true }).click()
   return page.getByRole('dialog', { name: 'Saved upgrade comparison', exact: true })
 }
-const stored = (page: Page) => page.evaluate((key) => localStorage.getItem(key), COMPARISON_STORAGE_KEY)
-const progress = (page: Page) => page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)
+const stored = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), COMPARISON_STORAGE_KEY)
+const progress = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)
 
 test('queued export uses newly adopted visibility before React commits without editing saved references', async ({ page }) => {
   const hidden = catalog.upgrades.find((node) => !visibility(catalog, initial).ids.has(node.id))!
   const unknown = 'unavailable-queued-export'
   const selected = [hidden.id, catalog.startId, unknown]
   await seed(page, { ...initial, showSpoilers: true }, selected)
-  await page.goto('./'); const dialog = await open(page)
+  await page.goto('./ascension/'); const dialog = await open(page)
   const download = page.waitForEvent('download')
   const connected = await dialog.evaluate((element, { key, next }) => {
     const button = [...element.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === 'Export comparison')!
-    const oldValue = localStorage.getItem(key), newValue = JSON.stringify(next)
-    localStorage.setItem(key, newValue)
+    const oldValue = window.__readMapProfileText(key), newValue = JSON.stringify(next)
+    window.__writeExternalMapProfileText(key, newValue)
     window.dispatchEvent(new StorageEvent('storage', { key, oldValue, newValue, storageArea: localStorage, url: location.href }))
     const connected = button.isConnected; button.click(); return connected
   }, { key: PROFILE_STORAGE_KEY, next: initial })
@@ -68,7 +69,7 @@ for (const action of ['add', 'restore'] as const) {
   test(`queued ${action} respects newly adopted visibility before React commits`, async ({ page }) => {
     const hidden = catalog.upgrades.find((node) => !visibility(catalog, initial).ids.has(node.id))!
     await seed(page, { ...initial, showSpoilers: true }, [catalog.startId])
-    await page.goto('./'); const dialog = await open(page)
+    await page.goto('./ascension/'); const dialog = await open(page)
     if (action === 'add') {
       const picker = dialog.locator('.saved-comparison-picker')
       if (!await picker.evaluate((element) => (element as HTMLDetailsElement).open)) await picker.locator('summary').click()
@@ -80,8 +81,8 @@ for (const action of ['add', 'restore'] as const) {
       const button = action === 'add'
         ? element.querySelector<HTMLButtonElement>(`.saved-comparison-results button[data-upgrade-id="${id}"]`)!
         : [...element.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === 'Replace comparison')!
-      const oldValue = localStorage.getItem(key), newValue = JSON.stringify(next)
-      localStorage.setItem(key, newValue)
+      const oldValue = window.__readMapProfileText(key), newValue = JSON.stringify(next)
+      window.__writeExternalMapProfileText(key, newValue)
       window.dispatchEvent(new StorageEvent('storage', { key, oldValue, newValue, storageArea: localStorage, url: location.href }))
       const connected = button.isConnected; button.click(); return connected
     }, { key: PROFILE_STORAGE_KEY, next: initial, action, id: hidden.id })
@@ -105,7 +106,7 @@ test('arbitrary visible states compare exact native facts without changing progr
   const profile = { ...initial, epoch: 1, showSpoilers: true, purchases: { [upgrade('Permanent Slayer').id]: { epoch: 0, active: true }, [upgrade('Limit Break').id]: { epoch: 1, active: false } } }
   const available = catalog.upgrades.find((node) => upgradeState(node, profile) === 'available')!
   const entries = [upgrade('Permanent Slayer'), upgrade('Limit Break'), upgrade('Coimbo Release'), available]
-  await seed(page, profile, entries.map((node) => node.id)); await page.goto('./')
+  await seed(page, profile, entries.map((node) => node.id)); await page.goto('./ascension/')
   const before = await progress(page), dialog = await open(page)
   await expect(dialog.locator('.saved-comparison-card')).toHaveCount(4)
   for (const node of entries) {
@@ -123,7 +124,7 @@ test('arbitrary visible states compare exact native facts without changing progr
 })
 
 test('picker adds, explicitly replaces and removes stable IDs and survives reopening', async ({ page }) => {
-  await seed(page); await page.goto('./'); const before = await progress(page)
+  await seed(page); await page.goto('./ascension/'); const before = await progress(page)
   let dialog = await open(page)
   for (const node of ordinary.slice(0, 4)) await choose(page, node.id)
   await expect(dialog.locator(`.saved-comparison-results button[data-upgrade-id="${ordinary[4].id}"]`)).toBeDisabled()
@@ -141,7 +142,7 @@ test('picker adds, explicitly replaces and removes stable IDs and survives reope
 test('duplicate Astral Keys keep separate costs, rules and map identity', async ({ page }) => {
   const keys = catalog.upgrades.filter((node) => node.title === 'Astral Key').slice(-4)
   const profile = { ...initial, showSpoilers: true }
-  await seed(page, profile, keys.map((node) => node.id)); await page.goto('./')
+  await seed(page, profile, keys.map((node) => node.id)); await page.goto('./ascension/')
   const dialog = await open(page)
   for (const node of keys) await expect(dialog.locator(`article[data-upgrade-id="${node.id}"]`)).toContainText(cost(node.cost))
   await dialog.locator(`article[data-upgrade-id="${keys[2].id}"]`).getByRole('button', { name: 'Show on map', exact: true }).click()
@@ -152,7 +153,7 @@ test('duplicate Astral Keys keep separate costs, rules and map identity', async 
 
 test('requirement review uses the existing return route without changing either stored document', async ({ page }) => {
   const profile = { ...initial, showSpoilers: true }
-  await seed(page, profile, ids(['Coimbo Release', 'Limit Break', 'Astral Slayer'])); await page.goto('./')
+  await seed(page, profile, ids(['Coimbo Release', 'Limit Break', 'Astral Slayer'])); await page.goto('./ascension/')
   const before = await progress(page), reference = await stored(page), dialog = await open(page)
   await dialog.locator(`article[data-upgrade-id="${upgrade('Coimbo Release').id}"]`).getByRole('button', { name: /^Review Limit Break/ }).first().click()
   await expect(page.locator('.details h2')).toHaveText('Limit Break')
@@ -172,7 +173,7 @@ test('requirement review uses the existing return route without changing either 
 test('native reset and Undo recompute facts while leaving the reference list unchanged', async ({ page }) => {
   const lock = upgrade('Limit Break'), reset = upgrade('Ultra Ascension'), repeat = upgrade('Permanent Slayer')
   const profile = { ...initial, showSpoilers: true, epoch: 1, purchases: { [lock.id]: { epoch: 1, active: false }, [reset.id]: { epoch: 1, active: true }, [repeat.id]: { epoch: 1, active: true } } }
-  await seed(page, profile, [lock.id, repeat.id]); await page.goto('./')
+  await seed(page, profile, [lock.id, repeat.id]); await page.goto('./ascension/')
   const reference = await stored(page)
   let dialog = await open(page)
   await expect(dialog.locator(`article[data-upgrade-id="${lock.id}"]`)).toContainText('Owned · awaiting activation')
@@ -181,7 +182,7 @@ test('native reset and Undo recompute facts while leaving the reference list unc
   if (await mobile.isVisible()) await mobile.click()
   await page.getByRole('button', { name: 'Progress', exact: true }).click()
   await page.getByRole('button', { name: 'Ultra Ascend…', exact: true }).click()
-  await page.getByRole('dialog', { name: 'Ultra Ascend?', exact: true }).getByRole('button', { name: 'Apply changes', exact: true }).click()
+  await page.getByRole('dialog', { name: 'Review companion Ultra Ascension', exact: true }).getByRole('button', { name: 'Record companion Ultra Ascension', exact: true }).click()
   dialog = await open(page)
   await expect(dialog.locator(`article[data-upgrade-id="${lock.id}"]`)).toContainText('Owned and active')
   await expect(dialog.locator(`article[data-upgrade-id="${repeat.id}"]`)).toContainText('not currently owned')
@@ -196,7 +197,7 @@ test('native reset and Undo recompute facts while leaving the reference list unc
 test('current visibility hides identities, counts, picker options and exported IDs after external progress', async ({ page, context }) => {
   const secret = ids(['Limit Break', 'Coimbo Release'])
   const profile = { ...initial, showSpoilers: true }
-  await seed(page, profile, [ordinary[0].id, ...secret]); await page.goto('./')
+  await seed(page, profile, [ordinary[0].id, ...secret]); await page.goto('./ascension/')
   await page.getByRole('searchbox').fill('Limit Break')
   await page.locator(`.search-result[data-upgrade-id="${secret[0]}"]`).click()
   const expand = page.getByRole('button', { name: 'Show details', exact: true })
@@ -214,8 +215,8 @@ test('current visibility hides identities, counts, picker options and exported I
       }
     }).observe(document.querySelector('.saved-comparison')!, { subtree: true, characterData: true, characterDataOldValue: true })
   })
-  const other = await context.newPage(); await other.goto('./')
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
+  const other = await context.newPage(); await other.goto('./ascension/')
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
   await expect(dialog.locator('.saved-comparison-card')).toHaveCount(1)
   await expect(dialog).toContainText('Compared entries · 1 / 4')
   await expect(dialog.getByRole('searchbox', { name: 'Find a visible upgrade', exact: true })).toHaveValue('')
@@ -232,7 +233,7 @@ test('current visibility hides identities, counts, picker options and exported I
 })
 
 test('unavailable entries are honest and exportable without inventing catalog facts', async ({ page }) => {
-  await seed(page, initial, ['SENTINEL-unknown-comparison']); await page.goto('./'); const dialog = await open(page)
+  await seed(page, initial, ['SENTINEL-unknown-comparison']); await page.goto('./ascension/'); const dialog = await open(page)
   await expect(dialog.locator('article')).toContainText('Unavailable catalog entry')
   await expect(dialog).not.toContainText('SENTINEL-unknown-comparison')
   await expect(dialog.locator('article').getByRole('button', { name: 'Show on map' })).toHaveCount(0)
@@ -243,7 +244,7 @@ test('unavailable entries are honest and exportable without inventing catalog fa
 })
 
 test('comparison restore requires confirmation and rejects profile or oversized files', async ({ page }) => {
-  await seed(page, initial, [ordinary[0].id]); await page.goto('./'); const before = await progress(page), dialog = await open(page)
+  await seed(page, initial, [ordinary[0].id]); await page.goto('./ascension/'); const before = await progress(page), dialog = await open(page)
   const file = dialog.getByLabel('Upgrade comparison JSON backup', { exact: true })
   await file.setInputFiles({ name: 'comparison.json', mimeType: 'application/json', buffer: Buffer.from(exportComparison(makeList([ordinary[1].id]))) })
   await expect(dialog.getByRole('region', { name: 'Review comparison restore' })).toContainText(ordinary[1].title)
@@ -260,11 +261,11 @@ test('comparison restore requires confirmation and rejects profile or oversized 
 })
 
 test('clean cross-tab updates invalidate restore and adopt the latest comparison', async ({ page, context }) => {
-  await seed(page, initial, [ordinary[0].id]); await page.goto('./'); const dialog = await open(page)
+  await seed(page, initial, [ordinary[0].id]); await page.goto('./ascension/'); const dialog = await open(page)
   await dialog.getByLabel('Upgrade comparison JSON backup', { exact: true }).setInputFiles({ name: 'comparison.json', mimeType: 'application/json', buffer: Buffer.from(exportComparison(makeList([ordinary[1].id]))) })
   await expect(dialog.getByRole('region', { name: 'Review comparison restore' })).toBeVisible()
-  const other = await context.newPage(); await other.goto('./')
-  await other.evaluate(({ key, value }) => localStorage.setItem(key, value), { key: COMPARISON_STORAGE_KEY, value: exportComparison(makeList([ordinary[2].id])) })
+  const other = await context.newPage(); await other.goto('./ascension/')
+  await other.evaluate(({ key, value }) => window.__writeExternalMapProfileText(key, value), { key: COMPARISON_STORAGE_KEY, value: exportComparison(makeList([ordinary[2].id])) })
   await expect(dialog.getByRole('region', { name: 'Review comparison restore' })).toHaveCount(0)
   await expect(dialog.locator('article')).toContainText(ordinary[2].title)
   await other.close()
@@ -273,7 +274,7 @@ test('clean cross-tab updates invalidate restore and adopt the latest comparison
 test('unchanged corrupt comparison storage stays recoverable and requires explicit replacement', async ({ page }) => {
   await seed(page)
   await page.addInitScript((key) => localStorage.setItem(key, 'SENTINEL-invalid-private-comparison'), COMPARISON_STORAGE_KEY)
-  await page.goto('./'); const dialog = await open(page), before = await progress(page)
+  await page.goto('./ascension/'); const dialog = await open(page), before = await progress(page)
   await expect(dialog).not.toContainText('SENTINEL-invalid-private-comparison')
   await dialog.getByRole('button', { name: 'Refresh recovery', exact: true }).click()
   await expect(dialog.getByRole('button', { name: 'Replace saved comparison…', exact: true })).toBeVisible()
@@ -290,14 +291,14 @@ test('dirty external races keep memory and require fresh deliberate recovery', a
   await seed(page)
   await page.addInitScript((key) => {
     const original = Storage.prototype.setItem
-    Storage.prototype.setItem = function (name, value) { if (name === key) throw new DOMException('SENTINEL-private-storage'); return original.call(this, name, value) }
+    Storage.prototype.setItem = function (name, value) { if ([key, ...(key === 'idle-slayer-ascension-map.profile.v1' ? ['idle-slayer-companion.progress.v1'] : key === 'idle-slayer-ascension-map.goals.v1' ? ['idle-slayer-companion.workspace.v1'] : [])].includes(name)) throw new DOMException('SENTINEL-private-storage'); return original.call(this, name, value) }
   }, COMPARISON_STORAGE_KEY)
-  await page.goto('./'); const dialog = await open(page)
+  await page.goto('./ascension/'); const dialog = await open(page)
   await dialog.locator(`.saved-comparison-results button[data-upgrade-id="${ordinary[0].id}"]`).click()
   await expect(dialog).toContainText('Saving failed'); await expect(dialog).not.toContainText('SENTINEL-private-storage')
-  const other = await context.newPage(); await other.goto('./')
+  const other = await context.newPage(); await other.goto('./ascension/')
   const external = exportComparison(makeList([ordinary[1].id]))
-  await other.evaluate(({ key, value }) => localStorage.setItem(key, value), { key: COMPARISON_STORAGE_KEY, value: external })
+  await other.evaluate(({ key, value }) => window.__writeExternalMapProfileText(key, value), { key: COMPARISON_STORAGE_KEY, value: external })
   await expect(dialog).toContainText('Your local comparison was kept')
   await expect(dialog.locator('article')).toContainText(ordinary[0].title)
   await dialog.getByRole('button', { name: 'Use saved comparison…', exact: true }).click()
@@ -311,21 +312,21 @@ test('profile conflict recovery replaces the comparison modal and preserves its 
   await seed(page, initial, [ordinary[1].id])
   await page.addInitScript((key) => {
     const original = Storage.prototype.setItem
-    Storage.prototype.setItem = function (name, value) { if (name === key) throw new DOMException('Synthetic profile write refusal'); return original.call(this, name, value) }
+    Storage.prototype.setItem = function (name, value) { if ([key, ...(key === 'idle-slayer-ascension-map.profile.v1' ? ['idle-slayer-companion.progress.v1'] : key === 'idle-slayer-ascension-map.goals.v1' ? ['idle-slayer-companion.workspace.v1'] : [])].includes(name)) throw new DOMException('Synthetic profile write refusal'); return original.call(this, name, value) }
   }, PROFILE_STORAGE_KEY)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('button', { name: 'Return to start', exact: true }).click()
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
   await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('could not be saved')
   const reference = await stored(page), dialog = await open(page)
-  const other = await context.newPage(); await other.goto('./')
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...initial, showSpoilers: true } })
+  const other = await context.newPage(); await other.goto('./ascension/')
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...initial, showSpoilers: true } })
   await dialog.getByRole('button', { name: 'Review progress conflict', exact: true }).click()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
-  const recovery = page.getByRole('dialog', { name: 'Review progress conflict', exact: true })
+  const recovery = page.getByRole('dialog', { name: 'Backup & transfer', exact: true })
   await expect(recovery).toBeVisible()
-  await recovery.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await recovery.getByRole('button', { name: 'Close dialog', exact: true }).click()
   expect(await stored(page)).toBe(reference)
   await other.close()
 })
@@ -336,7 +337,7 @@ test('late comparison file reads cannot reopen a closed or changed reference', a
     const original = File.prototype.text
     File.prototype.text = function () { const file = this; return new Promise((resolve) => setTimeout(() => { void original.call(file).then(resolve) }, 300)) }
   })
-  await page.goto('./'); let dialog = await open(page)
+  await page.goto('./ascension/'); let dialog = await open(page)
   await dialog.getByLabel('Upgrade comparison JSON backup', { exact: true }).setInputFiles({ name: 'comparison.json', mimeType: 'application/json', buffer: Buffer.from(exportComparison(makeList([ordinary[1].id]))) })
   await page.keyboard.press('Escape'); dialog = await open(page)
   await page.waitForTimeout(400)
@@ -347,7 +348,7 @@ test('late comparison file reads cannot reopen a closed or changed reference', a
 test('ordinary narrow comparison controls wrap and retain touch and keyboard access', async ({ page }, info) => {
   await page.setViewportSize({ width: 320, height: 568 })
   const keys = catalog.upgrades.filter((node) => node.title === 'Astral Key').slice(-4)
-  await seed(page, { ...initial, showSpoilers: true }, keys.map((node) => node.id)); await page.goto('./'); const dialog = await open(page)
+  await seed(page, { ...initial, showSpoilers: true }, keys.map((node) => node.id)); await page.goto('./ascension/'); const dialog = await open(page)
   expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
   for (const button of await dialog.locator('.saved-comparison-tools button').all()) {
     await button.focus(); await expect(button).toBeFocused()
@@ -360,10 +361,12 @@ test('ordinary narrow comparison controls wrap and retain touch and keyboard acc
 })
 
 test('comparison reflows with actual 32px browser text in portrait and landscape', async ({ baseURL }, info) => {
+  test.setTimeout(60_000) // Include native persistent font-profile cleanup; assertion timeouts remain unchanged.
   const directory = info.outputPath('comparison-font-profile')
   await mkdir(join(directory, 'Default'), { recursive: true })
   await writeFile(join(directory, 'Default', 'Preferences'), JSON.stringify({ webkit: { webprefs: { default_font_size: 32 } } }))
   const context = await chromium.launchPersistentContext(directory, { channel: 'chromium', headless: true, ignoreDefaultArgs: ['--hide-scrollbars'], baseURL, viewport: { width: 320, height: 568 }, ...(info.project.name === 'mobile' ? { isMobile: true, hasTouch: true } : {}) })
+  await installProfileTestHelpers(context)
   const errors: string[] = []
   const watch = (page: Page) => page.on('pageerror', (error) => errors.push(error.message))
   context.pages().forEach(watch); context.on('page', watch)
@@ -372,7 +375,7 @@ test('comparison reflows with actual 32px browser text in portrait and landscape
     await context.route('https://analytics.garrod.house/**', (route) => route.abort())
     const page = await context.newPage()
     await seed(page, { ...initial, showSpoilers: true }, ids(['Limit Break', 'Coimbo Release']))
-    await page.goto('./'); await expect(page.locator('html')).toHaveCSS('font-size', '32px')
+    await page.goto('./ascension/'); await expect(page.locator('html')).toHaveCSS('font-size', '32px')
     const dialog = await open(page)
     for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }]) {
       await page.setViewportSize(viewport)

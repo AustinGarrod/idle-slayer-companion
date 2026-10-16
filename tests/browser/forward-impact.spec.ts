@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }, info) => {
   await page.route('https://analytics.garrod.house/**', (route) => route.abort())
   await page.emulateMedia({ reducedMotion: 'reduce' })
 })
-const stored = (page: Page) => page.evaluate(() => Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))
+const stored = (page: Page) => page.evaluate(() => Object.keys(localStorage).sort().map((key) => [key, window.__readMapProfileText(key)]))
 async function inspect(page: Page, title: string) {
   await expect(page.locator('.toolbar')).toBeVisible()
   await page.getByRole('searchbox').fill(title)
@@ -46,7 +46,7 @@ async function analyze(page: Page, title: string) {
 for (const stocks of [false, true]) test(`one Portals event respects the independent Stocks Buyer AND gate (${stocks})`, async ({ page }) => {
   const profile = stocks ? buy('Stocks Buyer', buy('Soul Gatherer Bundle')) : buy('Soul Gatherer Bundle')
   await seedProfile(page, profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   const before = await stored(page)
   const dialog = await analyze(page, 'Portals')
   const eligible = dialog.getByRole('region', { name: 'Newly eligible to purchase', exact: true })
@@ -70,7 +70,7 @@ for (const stocks of [false, true]) test(`one Portals event respects the indepen
 })
 
 test('invalid proposal reports both native gates without prerequisite filling or activation correction', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const before = await stored(page)
   const dialog = await analyze(page, 'Portals')
   await expect(dialog).toContainText('This purchase cannot occur')
@@ -85,7 +85,7 @@ test('Armory receipt finds its no-edge consumer and returns to the unchanged mil
   const profile = buy('Bonus Stage 3', buy('Astral Slayer', { ...emptyProfile(catalog.revision), epoch: 1 }))
   const armory = catalog.milestones.find((item) => item.title === 'Armory')!
   await seedProfile(page, profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   const before = await stored(page)
   await openAction(page, 'Milestones')
   const checkbox = page.locator(`[data-requirement-milestone="${armory.id}"]`)
@@ -111,7 +111,7 @@ for (const spoilers of [false, true]) test(`Astral Keys reveals retain eleven st
     milestones: Object.fromEntries(catalog.milestones.map((item) => [item.id, true as const])),
   }
   await seedProfile(page, profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   const before = await stored(page)
   const dialog = await analyze(page, 'Astral Keys')
   if (spoilers) {
@@ -134,36 +134,36 @@ for (const spoilers of [false, true]) test(`Astral Keys reveals retain eleven st
 
 test('external progress invalidates analysis and generic dirty recovery replaces it with exactly one named dialog', async ({ page, context }) => {
   await denyProfileWrites(page, 'failProfileWrites')
-  await page.goto('./')
+  await page.goto('./ascension/')
   await inspect(page, 'Permanent Slayer')
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
   await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
-  await expect(page.getByRole('alert')).toContainText('Progress could not be saved on this device.')
+  await expect(page.getByRole('alert')).toContainText('Companion progress could not be saved on this device.')
   const dialog = await analyze(page, 'Soul Gatherer Bundle')
   const other = await context.newPage()
-  await other.goto('./')
+  await other.goto('./ascension/')
   await showSpoilers(other)
   await expect(dialog).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Review progress conflict', exact: true })).toBeVisible()
   const again = await analyze(page, 'Soul Gatherer Bundle')
   await again.getByRole('button', { name: 'Review progress conflict', exact: true }).click()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
-  const recovery = page.getByRole('dialog', { name: 'Review progress conflict', exact: true })
+  const recovery = page.getByRole('dialog', { name: 'Backup & transfer', exact: true })
   await expect(recovery).toBeVisible()
   await expect(page.getByRole('dialog', { name: 'Forward impact', exact: true })).toHaveCount(0)
-  await recovery.getByRole('button', { name: 'Use saved progress…', exact: true }).click()
+  await recovery.getByRole('button', { name: 'Use checked saved progress', exact: true }).click()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
-  await expect(page.getByRole('dialog', { name: 'Use saved progress?', exact: true })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Review progress replacement', exact: true })).toBeVisible()
   const before = await stored(page)
-  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await page.getByRole('button', { name: 'Cancel preview', exact: true }).click()
   expect(await stored(page)).toEqual(before)
   await other.close()
-  expect(JSON.parse((await page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY))!).purchases).toEqual({})
+  expect(JSON.parse((await page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY))!).purchases).toEqual({})
 })
 
 test('compact analysis does not displace the native Purchase Tab path and keeps forecast controls usable in landscape', async ({ page }) => {
   await page.setViewportSize({ width: 844, height: 390 })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').fill('Permanent Slayer')
   await page.getByRole('searchbox').press('Enter')
   await expect(page.locator('.details h2')).toBeFocused()
@@ -185,7 +185,7 @@ test('compact analysis does not displace the native Purchase Tab path and keeps 
 })
 
 test('analysis preserves the exact session Undo and Redo action without storing a plan or goal', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await inspect(page, 'Permanent Slayer')
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
   await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()

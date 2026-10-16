@@ -1,3 +1,4 @@
+import { installProfileTestHelpers } from './fixtures'
 import { expect, test } from './fixtures'
 import { chromium, type Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
@@ -28,10 +29,10 @@ async function add(page: Page, title: string) {
   await picker.getByRole('searchbox').fill(title)
   await picker.locator(`[data-route-choice="${node(title).id}"]`).click()
 }
-const stored = (page: Page) => page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)
+const stored = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)
 
 test('four complete Legendary Belt alternatives and intended OR choice never change progress or its history', async ({ page }) => {
-  await page.goto('./'); const url = page.url(), dialog = await open(page)
+  await page.goto('./ascension/'); const url = page.url(), dialog = await open(page)
   await add(page, 'Legendary Belt')
   await expect(dialog.locator('.route-card')).toHaveCount(4)
   expect((await dialog.locator('.route-card').evaluateAll((cards) => cards.map((card) => card.getAttribute('data-route-cost')))).sort()).toEqual(['1006', '436', '641', '651'])
@@ -40,7 +41,7 @@ test('four complete Legendary Belt alternatives and intended OR choice never cha
   await dialog.getByRole('radio').nth(1).check()
   await expect(dialog.getByRole('status', { name: 'Route comparison state', exact: true })).toContainText('intended route is selected for reference only')
   expect(await stored(page)).toBeNull(); expect(page.url()).toBe(url)
-  expect(await page.evaluate((key) => localStorage.getItem(key), GOALS_STORAGE_KEY)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), GOALS_STORAGE_KEY)).toBeNull()
   await page.keyboard.press('Escape')
   const compact = page.getByRole('button', { name: 'Map options', exact: true })
   await (await compact.isVisible() ? compact : page.getByRole('button', { name: 'Map view…', exact: true })).click()
@@ -50,7 +51,7 @@ test('shared target purchases count once and saved goal completion modes are cop
   const goals = { version: 1, targets: [{ id: node('Permanent Quests').id, mode: 'acquire' }, { id: node('Soul Reaper').id, mode: 'activate' }] }
   const bytes = JSON.stringify(goals)
   await page.addInitScript(({ key, bytes }) => localStorage.setItem(key, bytes), { key: GOALS_STORAGE_KEY, bytes })
-  await page.goto('./'); const dialog = await open(page)
+  await page.goto('./ascension/'); const dialog = await open(page)
   await dialog.locator('.route-goals summary').click()
   await dialog.locator(`[data-route-goal="${node('Permanent Quests').id}"]`).click()
   await dialog.locator(`[data-route-goal="${node('Soul Reaper').id}"]`).click()
@@ -61,13 +62,13 @@ test('shared target purchases count once and saved goal completion modes are cop
   await expect(dialog).toContainText('Permanent Quests: target-specific shown additions 3 SP')
   await expect(dialog).toContainText('Soul Reaper: target-specific shown additions 5 SP')
   await expect(dialog.getByRole('combobox', { name: `Completion for Soul Reaper ${node('Soul Reaper').id}`, exact: true })).toHaveValue('activate')
-  expect(await page.evaluate((key) => localStorage.getItem(key), GOALS_STORAGE_KEY)).toBe(bytes)
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), GOALS_STORAGE_KEY)).toBe(bytes)
   expect(await stored(page)).toBeNull()
 })
 test('pending Astral ownership can finish acquisition but cannot satisfy activation or be repurchased', async ({ page }) => {
   const lock = node('Limit Break')
   const profile = { ...initial, epoch: 1, showSpoilers: true, purchases: { [lock.id]: { epoch: 1, active: false } } }
-  await seed(page, profile); await page.goto('./'); const dialog = await open(page)
+  await seed(page, profile); await page.goto('./ascension/'); const dialog = await open(page)
   await add(page, lock.title)
   await expect(dialog.locator('.route-card')).toHaveAttribute('data-route-cost', '0')
   await dialog.getByRole('combobox', { name: `Completion for ${lock.title} ${lock.id}`, exact: true }).selectOption('activate')
@@ -81,7 +82,7 @@ test('combined long catalog totals use shared exact compact notation with full a
   const profile = { ...initial, epoch: 2, showSpoilers: true, purchases: Object.fromEntries(catalog.upgrades.filter((upgrade) => !chosen.some((target) => target.id === upgrade.id)).map((upgrade) => [upgrade.id, { epoch: 2, active: true }])), milestones: Object.fromEntries(catalog.milestones.map((item) => [item.id, true as const])) }
   const total = chosen.reduce((sum, upgrade) => sum + BigInt(upgrade.cost), 0n).toString()
   await page.setViewportSize({ width: 320, height: 568 })
-  await seed(page, profile); await page.goto('./'); const dialog = await open(page)
+  await seed(page, profile); await page.goto('./ascension/'); const dialog = await open(page)
   for (const upgrade of chosen) await add(page, upgrade.title)
   await expect(dialog.locator('.route-card')).toHaveCount(1)
   await expect(dialog.locator('.route-card')).toHaveAttribute('data-route-cost', total)
@@ -96,7 +97,7 @@ test('an external item remains a visible explicit assumption and never becomes r
   const lock = node('Limit Break'), requirement = lock.reveal.kind === 'all' ? lock.reveal.requirements.find((gate) => gate.kind === 'milestone')! : undefined
   if (!requirement || requirement.kind !== 'milestone') throw new Error('Expected native Limit Break item gate')
   const profile = { ...initial, epoch: 1, showSpoilers: true, purchases: Object.fromEntries(catalog.upgrades.filter((upgrade) => upgrade.id !== lock.id).map((upgrade) => [upgrade.id, { epoch: 1, active: true }])) }
-  await seed(page, profile); await page.goto('./'); const dialog = await open(page)
+  await seed(page, profile); await page.goto('./ascension/'); const dialog = await open(page)
   await add(page, lock.title)
   await expect(dialog.locator('.route-card')).toHaveAttribute('data-route-cost', 'incomplete')
   await dialog.locator('.route-assumptions summary').click()
@@ -110,9 +111,9 @@ test('external visibility changes close the comparison and no hidden goal or tar
   const hidden = node('Limit Break'), profile = { ...initial, showSpoilers: true }
   await seed(page, profile)
   await page.addInitScript(({ key, id }) => localStorage.setItem(key, JSON.stringify({ version: 1, targets: [{ id, mode: 'activate' }] })), { key: GOALS_STORAGE_KEY, id: hidden.id })
-  await page.goto('./'); let dialog = await open(page); await add(page, hidden.title)
+  await page.goto('./ascension/'); let dialog = await open(page); await add(page, hidden.title)
   const other = await context.newPage(); await other.goto(page.url())
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: initial })
   await expect(dialog).toHaveCount(0); dialog = await open(page)
   await expect(dialog.locator('[data-route-target]')).toHaveCount(0)
   await dialog.getByRole('searchbox', { name: 'Find a route target', exact: true }).fill(hidden.title)
@@ -123,30 +124,32 @@ test('external visibility changes close the comparison and no hidden goal or tar
 })
 test('progress-conflict review replaces the route dialog with one correctly named native modal', async ({ page, context }) => {
   await seed(page, initial)
-  await page.addInitScript((key) => { const set = Storage.prototype.setItem; Storage.prototype.setItem = function (name, value) { if (name === key) throw new DOMException('Synthetic profile refusal'); set.call(this, name, value) } }, PROFILE_STORAGE_KEY)
-  await page.goto('./'); await page.getByRole('button', { name: 'Return to start', exact: true }).click()
+  await page.addInitScript((key) => { const set = Storage.prototype.setItem; Storage.prototype.setItem = function (name, value) { if ([key, ...(key === 'idle-slayer-ascension-map.profile.v1' ? ['idle-slayer-companion.progress.v1'] : key === 'idle-slayer-ascension-map.goals.v1' ? ['idle-slayer-companion.workspace.v1'] : [])].includes(name)) throw new DOMException('Synthetic profile refusal'); set.call(this, name, value) } }, PROFILE_STORAGE_KEY)
+  await page.goto('./ascension/'); await page.getByRole('button', { name: 'Return to start', exact: true }).click()
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click(); await page.getByRole('button', { name: 'Apply purchases', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('could not be saved')
   const other = await context.newPage(); await other.goto(page.url())
-  await other.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify({ ...profile, showSpoilers: true })), { key: PROFILE_STORAGE_KEY, profile: initial })
+  await other.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify({ ...profile, showSpoilers: true })), { key: PROFILE_STORAGE_KEY, profile: initial })
   await expect(page.getByRole('button', { name: 'Review progress conflict', exact: true })).toBeVisible()
   const dialog = await open(page)
   await dialog.getByRole('button', { name: 'Review progress conflict', exact: true }).click()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
-  await expect(page.getByRole('dialog', { name: 'Review progress conflict', exact: true })).toBeVisible()
+  await expect(page.getByRole('dialog', { name: 'Backup & transfer', exact: true })).toBeVisible()
   await other.close()
 })
 test('route targets and choices remain usable with real 32px text and native Tab', async ({ baseURL }, info) => {
+  test.setTimeout(60_000) // Include native persistent font-profile cleanup; assertion timeouts remain unchanged.
   const directory = info.outputPath('route-font-profile')
   await mkdir(join(directory, 'Default'), { recursive: true })
   await writeFile(join(directory, 'Default', 'Preferences'), JSON.stringify({ webkit: { webprefs: { default_font_size: 32 } } }))
   const context = await chromium.launchPersistentContext(directory, { channel: 'chromium', headless: true, ignoreDefaultArgs: ['--hide-scrollbars'], baseURL, viewport: { width: 320, height: 568 }, ...(info.project.name === 'mobile' ? { isMobile: true, hasTouch: true } : {}) })
+  await installProfileTestHelpers(context)
   const errors: string[] = [], watch = (page: Page) => page.on('pageerror', (error) => errors.push(error.message))
   context.pages().forEach(watch); context.on('page', watch)
   try {
     await context.addInitScript(() => { if (location.origin !== 'null') localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled') })
-    const page = await context.newPage(); await page.goto('./')
-    await page.evaluate(({ key, profile }) => localStorage.setItem(key, JSON.stringify({ ...profile, showSpoilers: true })), { key: PROFILE_STORAGE_KEY, profile: initial }); await page.reload()
+    const page = await context.newPage(); await page.goto('./ascension/')
+    await page.evaluate(({ key, profile }) => window.__writeExternalMapProfileText(key, JSON.stringify({ ...profile, showSpoilers: true })), { key: PROFILE_STORAGE_KEY, profile: initial }); await page.reload()
     await expect(page.locator('html')).toHaveCSS('font-size', '32px')
     const dialog = await open(page), input = dialog.getByRole('searchbox', { name: 'Find a route target', exact: true })
     await input.fill('Astral Key'); const choices = dialog.locator('[data-route-choice]')

@@ -1,5 +1,13 @@
 # Steam save import
 
+## Current companion adapter (7.3.4)
+
+**Import game save** now opens the global Companion preview. A reviewed **Windows Steam 7.3.4 / build 25810322** file replaces supported native observations across Ascension, achievements, crafting/materials, regular quests, supported Village construction state, Bestiary, and Divinities with one Undo operation. The native version is a compatibility discriminator, not authentication. Missing supported native keys use only their reviewed native defaults. Unsupported Village task predicates remain unrecorded; no unsupported NPC/task completion is inferred. See [native review](companion-native-review.md).
+
+Native preferences are decoded once and discarded after normalization. Goals, recipe quantities, layout, tracking preference and the current spoiler choice are kept. Preview identities use the recipient's **current** visibility, including when the incoming save reveals more content. Unknown normalized IDs survive catalog updates. Shared craft/Village item completion and map milestones refer to one ownership fact. Selection and effective Divinity activation remain separate. Counters use exact decimal strings.
+
+The **7.2.0 / build 25551532** adapter documented below is retained as **map-only** compatibility. It preserves companion modules instead of treating unsupported fields as zero. Its original receipt is `data/save-import-receipt-720.json`; the current receipt is `data/save-import-receipt.json`. Other versions/platforms remain rejected pending native review. Both adapters preserve the documented synthetic retained-ownership baseline because native saves do not provide complete purchase history.
+
 The importer reads a user-selected copy of `savedata.sav` or `backup.sav` locally in the browser. It extracts the map's current upgrade ownership, Astral activation, Ultra Ascension count and nine external milestones. The preview replaces known map progress only after confirmation; undo remains available. The app does not write a game save, run the game, authenticate to cloud storage or upload the selected file.
 
 The app separately uses self-hosted Umami usage analytics and session recording. File inputs, import previews, counters and import warnings are excluded from replay contents, and events describe only bounded import stages/outcomes. The selected file, filename, path, bytes, native preferences and imported ownership snapshot are never uploaded. After applying, ordinary visible map progress can appear in recordings. Excluded elements can still contribute coarse heatmap click/scroll coordinates. The separate persistent tracking opt-out in About & sources is unchanged by import or undo; see [analytics.md](analytics.md).

@@ -7,6 +7,12 @@ import { planUltraAscension, visibility } from './rules'
 import { planPriorAscensions } from './prior-ascensions'
 import { compareProgress } from './progress-comparison'
 import { sameRecordedProfile } from './checkpoints'
+import companionData from '../../public/companion-catalog.json'
+import type { CompanionCatalog } from './companion-types'
+import { emptyCompanionProgress, recordCompanionEntity } from './companion-progress'
+import { planCompanionUltraAscension } from './companion-reset'
+import { createCompanionSession } from './companion-session'
+import { COMPANION_STORAGE_KEY, exportCompanionStored } from './companion-storage'
 
 const catalog = catalogData as Catalog
 const id = (title: string) => catalog.upgrades.find((node) => node.title === title)!.id
@@ -62,5 +68,55 @@ describe('verified checkpoint operation context', () => {
     expect(changes.upgrades.some((change) => change.upgrade.id === hidden.id)).toBe(false)
     expect(changes.upgrades.some((change) => change.upgrade.id === 'future-hidden')).toBe(false)
     expect(old.purchases['future-hidden']).toBeDefined()
+  })
+  it('recognizes an exact whole Companion reset through its projected history and Undo/Redo', () => {
+    const companion = companionData as unknown as CompanionCatalog
+    const craft = companion.entities.find((item) => item.system === 'craft' && !catalog.milestones.some((mapItem) => mapItem.id === item.id))!
+    const quest = companion.entities.find((item) => item.system === 'quest')!
+    let progress = { ...emptyCompanionProgress(catalog.revision), ascension: structuredClone(before) }
+    progress = recordCompanionEntity(progress, 'craft', craft.id, { completed: true })
+    progress = recordCompanionEntity(progress, 'quest', quest.id, { count: '7', completed: true, claimed: true })
+    const stored = exportCompanionStored({ progress, legacyBaseline: null })
+    if (!stored.ok) throw new Error('Synthetic Companion fixture must export')
+    const session = createCompanionSession({ revision: catalog.revision, storage: () => ({ getItem: (key) => key === COMPANION_STORAGE_KEY ? stored.value : null, setItem: () => {} }), locks: () => undefined,
+      mapCatalog: catalog, companionCatalog: companion, mapMilestoneIds: catalog.milestones.map((item) => item.id), companionItemIds: companion.entities.filter((item) => item.system === 'craft' || item.system === 'village').map((item) => item.id) })
+    session.initialize()
+    const first = session.getState().profile
+    expect(first.milestones[craft.id]).toBeUndefined()
+    expect(session.getState().progress.ascension.milestones[craft.id]).toBe(true)
+    const plan = planCompanionUltraAscension(catalog, companion, session.getState().progress)
+    if (!plan.ok) throw new Error(plan.error)
+    expect(session.applyCompanion(plan.progress, false, 'companion_reset')).toBe(true)
+    const second = session.getState().profile
+    const context = () => { const state = session.getState(); return checkpointHistory(catalog, first, second, state.profile, state.history, state.redoHistory) }
+    expect(context()).toMatchObject({ steps: ['companion_reset'], reversed: false })
+    expect(context()!.activated).toContain(land.id)
+    expect(session.undo()).toBe(true)
+    expect(session.getState().progress).toEqual(progress)
+    expect(context()).toMatchObject({ steps: ['companion_reset'], reversed: false })
+    expect(session.redo()).toBe(true)
+    expect(session.getState().progress).toEqual(plan.progress)
+    expect(context()).toMatchObject({ steps: ['companion_reset'], reversed: false })
+    const state = session.getState()
+    expect(checkpointHistory(catalog, second, first, state.profile, state.history, state.redoHistory)).toMatchObject({ steps: ['companion_reset'], reversed: true, cleared: [], activated: [] })
+    // Copying public history fields cannot copy the visit-only verification certificate.
+    expect(checkpointHistory(catalog, first, second, state.profile, state.history.map((entry) => ({ ...entry })), [])).toBeNull()
+  })
+  it('rejects a forged Companion reset label and a correct tree reset with incorrect module outcomes', () => {
+    expect(checkpointHistory(catalog, before, reset.profile, reset.profile, [{ profile: before, action: 'companion_reset' }], [])).toBeNull()
+    const companion = companionData as unknown as CompanionCatalog
+    const progress = { ...emptyCompanionProgress(catalog.revision), ascension: structuredClone(before) }
+    const stored = exportCompanionStored({ progress, legacyBaseline: null })
+    if (!stored.ok) throw new Error('Synthetic Companion fixture must export')
+    const session = createCompanionSession({ revision: catalog.revision, storage: () => ({ getItem: (key) => key === COMPANION_STORAGE_KEY ? stored.value : null, setItem: () => {} }), locks: () => undefined, mapCatalog: catalog, companionCatalog: companion })
+    session.initialize()
+    const first = session.getState().profile
+    const plan = planCompanionUltraAscension(catalog, companion, session.getState().progress)
+    if (!plan.ok) throw new Error(plan.error)
+    const altered = recordCompanionEntity(plan.progress, 'enemy', 'synthetic-future-enemy', { count: '8' })
+    expect(session.applyCompanion(altered, false, 'companion_reset')).toBe(true)
+    const state = session.getState()
+    expect(sameRecordedProfile(state.profile, reset.profile)).toBe(true)
+    expect(checkpointHistory(catalog, first, state.profile, state.profile, state.history, [])).toBeNull()
   })
 })

@@ -1,5 +1,9 @@
 # Offline catalog extraction
 
+## Current 7.3.4 extraction
+
+Current release inputs are **7.3.4 / build 25810322**. [The companion native review](../../docs/companion-native-review.md) records current extraction commands, method bindings, registry/icon coverage, adapter defaults, unsupported predicates, and cross-system reset rules. `normalize_catalog.py` accepts only the two reviewed version/build pairs. The older extraction narrative below describes the original 7.2.0 evidence; its RVAs/paths must not be substituted for current receipt values.
+
 These tools read installed Unity assets and write inspection material only under
 the ignored repository `.local-game/` directory. They never launch the game,
 read player saves, call native game methods, or modify the installation.

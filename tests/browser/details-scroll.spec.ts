@@ -35,7 +35,7 @@ async function scrollDetails(details: Locator) {
 
 for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
   test(`${layout} resets details scrolling for a neighboring selection and keeps the same selection's position`, async ({ page }) => {
-    await page.goto('./')
+    await page.goto('./ascension/')
     await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
     await selectUpgrade(page, start.title)
     await expandDetails(page)
@@ -67,7 +67,7 @@ test('different stable IDs reset details scrolling even when their titles match'
     await page.locator('.search-result').filter({ has: page.getByRole('math', { name: `${BigInt(cost).toLocaleString('en')} Slayer Points`, exact: true }) }).click()
     await expect(page.locator('.detail-cost').getByRole('math')).toHaveAccessibleName(`${BigInt(cost).toLocaleString('en')} Slayer Points`)
   }
-  await page.goto('./')
+  await page.goto('./ascension/')
   await selectKey(first.cost)
   await expandDetails(page)
   const details = page.getByRole('complementary', { name: 'Upgrade details', exact: true })

@@ -30,7 +30,7 @@ async function open(page: Page) {
 test('explicit preview matches every downloaded byte and print tab while keeping progress unchanged', async ({ page, context }, info) => {
   const viewer = { ...initial, epoch: 3, showSpoilers: true, purchases: { 'private-sheet-record': { epoch: 1, active: true } } }
   await page.addInitScript(({ key, viewer }) => { if (window === window.top) localStorage.setItem(key, JSON.stringify(viewer)) }, { key: PROFILE_STORAGE_KEY, viewer })
-  await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible()
   const keys = catalog.upgrades.filter((node) => node.title === 'Astral Key')
   const selected = [keys[0].id, keys.at(-1)!.id]
   for (const id of selected) await add(page, id)
@@ -56,10 +56,10 @@ test('explicit preview matches every downloaded byte and print tab while keeping
     expect(await popup.locator('body').innerHTML()).not.toContain('private-sheet-record')
     expect(requests).toEqual([])
   } finally { context.off('request', watch); await popup.close() }
-  expect(await page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)).toBe(JSON.stringify(viewer))
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)).toBe(JSON.stringify(viewer))
 })
 test('four-entry bound, explicit removal, empty selection and reload remain honest without profile edits', async ({ page }) => {
-  await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible()
   const ids = visibility(catalog, initial).upgrades.slice(0, 5).map((node) => node.id)
   for (const id of ids) await add(page, id)
   await expect(page.locator('.sheet-add')).toContainText('four-upgrade sheet is full')
@@ -70,11 +70,11 @@ test('four-entry bound, explicit removal, empty selection and reload remain hone
   await expect(dialog.getByRole('button', { name: 'Review outgoing sheet', exact: true })).toBeDisabled()
   await page.keyboard.press('Escape'); await page.reload(); await expect(page.locator('.toolbar')).toBeVisible()
   await expect((await open(page)).locator('li')).toHaveCount(0)
-  expect(await page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)).toBeNull()
+  expect(await page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)).toBeNull()
 })
 test('a selected spoiler is pruned from counts and output after hiding and never restored by Undo', async ({ page }) => {
   await page.addInitScript(({ key, viewer }) => { if (window === window.top) localStorage.setItem(key, JSON.stringify(viewer)) }, { key: PROFILE_STORAGE_KEY, viewer: { ...initial, showSpoilers: true } })
-  await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible()
   const hidden = catalog.upgrades.find((node) => !visibility(catalog, initial).ids.has(node.id))!
   await add(page, hidden.id); await add(page, catalog.startId)
   const dialog = await open(page); await dialog.getByRole('button', { name: 'Review outgoing sheet', exact: true }).click()
@@ -101,14 +101,14 @@ test('a selected spoiler is pruned from counts and output after hiding and never
 
 test('external progress cancels the preview and blocked print tabs retain the save fallback', async ({ page, context }) => {
   await page.addInitScript(() => { window.open = () => null })
-  await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible()
   await add(page, catalog.startId)
   const dialog = await open(page); await dialog.getByRole('button', { name: 'Review outgoing sheet', exact: true }).click()
   await dialog.getByRole('button', { name: 'Open reviewed sheet for printing', exact: true }).click()
   await expect(dialog).toContainText('Save the reviewed HTML file')
   await expect(dialog.getByRole('button', { name: 'Save reviewed HTML', exact: true })).toBeEnabled()
-  const other = await context.newPage(); await other.goto('./'); await expect(other.locator('.toolbar')).toBeVisible()
-  await other.evaluate(({ key, viewer }) => localStorage.setItem(key, JSON.stringify(viewer)), { key: PROFILE_STORAGE_KEY, viewer: { ...initial, epoch: 1 } })
+  const other = await context.newPage(); await other.goto('./ascension/'); await expect(other.locator('.toolbar')).toBeVisible()
+  await other.evaluate(({ key, viewer }) => window.__writeExternalMapProfileText(key, JSON.stringify(viewer)), { key: PROFILE_STORAGE_KEY, viewer: { ...initial, epoch: 1 } })
   await expect(dialog).toHaveCount(0)
   const fresh = await open(page)
   await expect(fresh.locator('li')).toHaveCount(1)
@@ -119,7 +119,7 @@ test('external progress cancels the preview and blocked print tabs retain the sa
 for (const change of ['remove', 'clear', 'close'] as const) {
   for (const output of ['save', 'print'] as const) {
     test(`queued ${change} invalidates the old ${output} action before React commits`, async ({ page }) => {
-      await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible()
+      await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible()
       const ids = visibility(catalog, initial).upgrades.slice(0, 2).map((node) => node.id)
       for (const id of ids) await add(page, id)
       const dialog = await open(page)
@@ -152,7 +152,7 @@ for (const change of ['remove', 'clear', 'close'] as const) {
         await expect(dialog.locator('li')).toHaveCount(change === 'remove' ? 1 : 0)
         await expect(dialog.locator('iframe')).toHaveCount(0)
       }
-      expect(await page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)).toBeNull()
+      expect(await page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)).toBeNull()
     })
   }
 }

@@ -317,8 +317,8 @@ describe('analytics payload privacy', () => {
     // Deliberately bypass TypeScript to exercise the JavaScript caller boundary.
     const unexpectedCaller = analytics.trackEvent as (name: string, properties?: unknown) => void
     unexpectedCaller('upgrade_selected', { upgrade_id: 'visible-upgrade', milestone_id: 'hidden-milestone', source: 'search', query: 'PRIVATE', filename: 'PRIVATE.sav', epoch: 112, results: '1-5', query_length: '4-10', position: 4, reason: 'PRIVATE error' })
-    expect(tracker.track).toHaveBeenCalledWith('upgrade_selected', { app_version: '0.1.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false, upgrade_id: 'visible-upgrade', source: 'search' })
-    expect(tracker.identify).toHaveBeenCalledWith({ app_version: '0.1.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false })
+    expect(tracker.track).toHaveBeenCalledWith('upgrade_selected', { app_version: '0.2.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false, upgrade_id: 'visible-upgrade', source: 'search' })
+    expect(tracker.identify).toHaveBeenCalledWith({ app_version: '0.2.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false })
   })
 
   it('revalidates queued upgrade identities after spoilers or progress change', () => {
@@ -348,7 +348,7 @@ describe('analytics payload privacy', () => {
     ready()
     const unexpectedCaller = analytics.trackEvent as (name: string, properties?: unknown) => void
     unexpectedCaller(name, properties)
-    const common = { app_version: '0.1.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false }
+    const common = { app_version: '0.2.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false }
     expect(tracker.track).toHaveBeenCalledWith(name, { ...common, ...expected })
     const callback = win.ascensionMapBeforeSend!('event', { name, data: properties })
     expect(callback?.data).toEqual({ ...common, ...expected })
@@ -422,7 +422,7 @@ describe('analytics payload privacy', () => {
     analytics.updateAnalyticsContext(context)
     const identify = win.ascensionMapBeforeSend!('identify', { id: 'PRIVATE', data: { email: 'PRIVATE', profile: 'PRIVATE' }, referrer: '/map/?save=PRIVATE', screen: '1920x1080', language: 'en-US' })
     expect(identify).not.toHaveProperty('id')
-    expect(identify?.data).toEqual({ app_version: '0.1.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false })
+    expect(identify?.data).toEqual({ app_version: '0.2.0', screen_layout: 'wide', catalog_version: '7.2.0', catalog_revision: 'steam-25551532-v1', layout: 'web', spoilers: false })
     expect(identify?.referrer).toBe('/map/')
     const performance = win.ascensionMapBeforeSend!('performance', { data: 'PRIVATE', stack: 'PRIVATE', lcp: 2400, inp: -1, cls: 0.03, fcp: Number.NaN, ttfb: 90000 })
     expect(performance).toMatchObject({ lcp: 2400, cls: 0.03 })

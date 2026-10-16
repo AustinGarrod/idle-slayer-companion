@@ -37,7 +37,7 @@ export function ProgressTransferPanel({ catalog, profile, layout, mode, busy, ge
     ]
     return <div className="progress-transfer telemetry-private rr-block">
       <h3 ref={previewHeading} tabIndex={-1}>Review transfer</h3>
-      <p>Review this snapshot before replacing progress. Complete recorded ownership, history and unrecognized IDs will replace this profile. Undo is available in this session.</p>
+      <p>Review this snapshot before replacing Ascension purchases, history and reviewed map milestones. Companion observations and existing milestones outside the reviewed map are kept. Unrecognized IDs in the transfer are retained. Undo is available in this session.</p>
       <table className="game-save-import-comparison" aria-describedby={id}><caption>Transfer progress preview</caption><thead><tr><th scope="col">Progress</th><th scope="col">Current</th><th scope="col">After transfer</th></tr></thead><tbody>{rows.map((row) => <tr key={row.label}><th scope="row">{row.label}</th><td>{row.current.toLocaleString('en')}</td><td>{row.incoming.toLocaleString('en')}</td></tr>)}</tbody></table>
       <p id={id}>Counts follow this map's current spoiler setting. The complete profile is applied, including recorded progress outside this preview.</p>
       <dl><dt>Layout</dt><dd>{name(layout)} → {name(preview.layout)}</dd><dt>Spoiler preference after transfer</dt><dd>{preview.profile.showSpoilers ? 'Shown' : 'Hidden'}</dd></dl>

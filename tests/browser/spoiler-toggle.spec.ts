@@ -123,7 +123,7 @@ async function expectRevealedGraph(page: Page, spoilers: boolean) {
 for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
   for (const selection of ['none', 'visible'] as const) {
     test(`${layout} preserves a manually panned and zoomed camera with ${selection} selection when spoilers change`, async ({ page }) => {
-      await page.goto('./')
+      await page.goto('./ascension/')
       await chooseLayout(page, layout)
       if (selection === 'visible') await selectUpgrade(page, start.title)
       await panAndZoom(page)
@@ -135,13 +135,13 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
       await expectRevealedGraph(page, false)
       if (selection === 'visible') await expect(page.locator('.details h2')).toHaveText(start.title)
       await expectCameraUnchanged(page, baseline)
-      const profile = await page.evaluate(() => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!))
+      const profile = await page.evaluate(() => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!))
       expect(profile).toEqual(initial)
     })
   }
 
   test(`${layout} hides a spoiler-only selection without moving the camera as its inspector closes`, async ({ page }) => {
-    await page.goto('./')
+    await page.goto('./ascension/')
     await chooseLayout(page, layout)
     await showSpoilers(page, true)
     await selectUpgrade(page, hidden.title)
@@ -159,7 +159,7 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
 }
 
 test('Show spoilers uses a real keyboard checkbox with a themed hit area and forced-color fallback', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const checkbox = await spoilerCheckbox(page)
   const label = checkbox.locator('..')
   await expect(checkbox).toHaveCSS('appearance', 'none')
@@ -182,9 +182,10 @@ test('Show spoilers uses a real keyboard checkbox with a themed hit area and for
 test('changing spoilers interrupts an active camera tween without a later reset', async ({ page }) => {
   // A wide viewport keeps the checkbox reachable during the active zoom;
   // portrait resize behavior is exercised by the selected-node tests above.
-  await page.setViewportSize({ width: 1280, height: 720 })
+  // Preserve a 1280px map workspace beside the Companion navigation rail.
+  await page.setViewportSize({ width: 1280 + 236, height: 720 })
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   await finishRenderCycles(page)
   const before = await camera(page)

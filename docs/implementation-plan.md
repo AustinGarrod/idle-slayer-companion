@@ -1,4 +1,17 @@
-# Accepted implementation plan: Idle Slayer Ascension Map
+# Accepted implementation plan: Idle Slayer Companion
+
+## Approved companion expansion
+
+The first combined release includes Overview, Ascension, achievements, crafting/materials, regular quests/Village, Bestiary, and all three Divinity families. It rebrands the application and prepares the `idle-slayer-companion` repository/Pages migration while preserving old storage, map backups/QRs, public references, and installed-app identity. Current native review covers 7.3.4 / build 25810322. [companion.md](companion.md) defines the implementation contract and [site-migration.md](site-migration.md) defines rollout gates.
+
+One canonical progress document and one bounded visit history serve actual observations across all modules. Shared craft/Village item ownership is canonical with Ascension milestones. One reviewed native save applies one full supported snapshot. Actual UA applies reviewed native cross-system effects atomically; unknown inputs produce unrecorded dependent outputs. Normal manual edits do not spend or award resources. Goals and recipe plans remain a separate bounded workspace document. Tree checkpoints/comparisons/planners stay tree-scoped; map/layout QR remains map/layout only. Hidden or unknown predicates do not disclose identities by default.
+
+Daily/weekly quests, Armory, Minions, SP-balance simulation, Stone allocation, accounts, backend/auth, cloud saves, and automatic game-file access are deferred. The expanded native catalog, strict parsers, reset/session/storage tests, local browser privacy/responsive/offline regressions, artifact verification, and migration checks must pass before publication. Physical installation and live deployment are separate evidence claims.
+
+## Original Ascension acceptance contract
+
+The following sections preserve the original tree-specific requirements. Historical 7.2.0 source/RVA statements describe the original review; current receipts supersede their version bindings. Publication details are superseded by the staged migration runbook.
+
 
 ## Summary and current state
 

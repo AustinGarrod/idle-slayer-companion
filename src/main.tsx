@@ -7,6 +7,7 @@ import { createProgressTransferInbox } from './progress-transfer-inbox'
 import { initializeUpgradeReferences } from './upgrade-reference-receiver'
 import { initializePwa } from './pwa'
 
+const initialMapIntent = window.location.hash.startsWith('#transfer=') || window.location.hash.startsWith('#upgrade=')
 const transferInbox = createProgressTransferInbox(window)
 const references = initializeUpgradeReferences(window, import.meta.env.BASE_URL)
 if (transferInbox.trackingSafe) initializeAnalytics()
@@ -15,6 +16,6 @@ initializePwa()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App transferInbox={transferInbox} />
+    <App transferInbox={transferInbox} initialMapIntent={initialMapIntent} />
   </StrictMode>,
 )

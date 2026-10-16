@@ -1,3 +1,4 @@
+import { installProfileTestHelpers } from './fixtures'
 import { chromium, expect, test as base, type BrowserContext, type Locator, type Page } from '@playwright/test'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { readFileSync } from 'node:fs'
@@ -11,6 +12,9 @@ const exact = '1,000,000,000,000,000,000 Slayer Points'
 const test = base.extend<{ fontSize: number }>({
   fontSize: [16, { option: true }],
   page: async ({ baseURL, fontSize }, use, info) => {
+    // Include native persistent-profile startup/cleanup without widening the
+    // normal action and assertion timeouts.
+    info.setTimeout(60_000)
     const directory = info.outputPath('cost-font-profile')
     await mkdir(join(directory, 'Default'), { recursive: true })
     await writeFile(join(directory, 'Default', 'Preferences'), JSON.stringify({ webkit: { webprefs: { default_font_size: fontSize } } }))
@@ -22,6 +26,7 @@ const test = base.extend<{ fontSize: number }>({
         channel: 'chromium', headless: true, ignoreDefaultArgs: ['--hide-scrollbars'], baseURL, viewport: { width: 320, height: 568 },
         ...(info.project.name === 'mobile' ? { isMobile: true, hasTouch: true, userAgent: info.project.use.userAgent, deviceScaleFactor: info.project.use.deviceScaleFactor } : {}),
       })
+      await installProfileTestHelpers(context)
       context.pages().forEach(watch)
       context.on('page', watch)
       await context.addInitScript(() => { if (location.origin !== 'null') localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled') })
@@ -54,7 +59,7 @@ for (const fontSize of [16, 32]) test.describe(`${fontSize}px browser font`, () 
     delete profile.purchases[key.id]
     await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile })
     await page.addInitScript(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (text: string) => { Object.assign(window, { copiedExactCost: text }) } } }))
-    await page.goto('./'); await expect(page.locator('html')).toHaveCSS('font-size', `${fontSize}px`)
+    await page.goto('./ascension/'); await expect(page.locator('html')).toHaveCSS('font-size', `${fontSize}px`)
     await page.getByRole('searchbox').fill('Astral Key')
     const result = page.locator(`.search-result[data-upgrade-id="${key.id}"]`)
     await exactCompact(result.getByRole('math'))
@@ -108,13 +113,13 @@ for (const fontSize of [16, 32]) test.describe(`${fontSize}px browser font`, () 
     await exactCompact(comparison.locator('li').filter({ hasText: key.id }).getByRole('math'))
     await comparison.getByRole('math').scrollIntoViewIfNeeded(); await page.screenshot({ path: info.outputPath('exact-cost-comparison.png') })
     await restore.getByRole('button', { name: 'Cancel', exact: true }).click()
-    expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), PROFILE_STORAGE_KEY)).toEqual(profile)
+    expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY)).toEqual(profile)
   })
 
   test('clipboard failure offers exact selectable digits and a different same-title selection clears feedback', async ({ page }) => {
     await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...emptyProfile(catalog.revision), showSpoilers: true } })
     await page.addInitScript(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('Synthetic clipboard rejection') } } }))
-    await page.goto('./'); await page.getByRole('searchbox').fill('Astral Key')
+    await page.goto('./ascension/'); await page.getByRole('searchbox').fill('Astral Key')
     await page.locator(`.search-result[data-upgrade-id="${key.id}"]`).click()
     const details = page.getByRole('complementary', { name: 'Upgrade details', exact: true })
     const expand = details.getByRole('button', { name: 'Show details', exact: true }); if (await expand.isVisible()) await expand.click()
@@ -137,7 +142,7 @@ for (const fontSize of [16, 32]) test.describe(`${fontSize}px browser font`, () 
     const fixture = { ...catalog, upgrades: catalog.upgrades.map((node) => node.id === key.id ? { ...node, cost: value } : node) }
     await page.route('**/catalog.json', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }))
     await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile: { ...emptyProfile(catalog.revision), showSpoilers: true } })
-    await page.goto('./'); await page.getByRole('searchbox').fill('Astral Key')
+    await page.goto('./ascension/'); await page.getByRole('searchbox').fill('Astral Key')
     const result = page.locator(`.search-result[data-upgrade-id="${key.id}"]`)
     const cost = result.getByRole('math')
     await expect(cost).toHaveAccessibleName(exact)

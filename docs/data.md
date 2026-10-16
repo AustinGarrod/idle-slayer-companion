@@ -1,5 +1,11 @@
 # Catalog, provenance and refresh
 
+## Current reviewed build
+
+The current catalogs target **7.3.4 / Steam build 25810322**. The native map remains 288 upgrades, 318 links and nine map milestones; every native rule field, coordinate, cost, ID, connection, and icon matched the previously reviewed tree. Current map receipts and method hashes were regenerated from the installed build. The companion registry adds 1,293 entries and 1,205 icons; [companion-native-review.md](companion-native-review.md) records extraction, registry coverage, native adapters, unsupported predicates, source IDs, and reset review.
+
+The detailed layout/prefab narrative and RVAs below describe the original **7.2.0** review. They are historical evidence, not current method addresses. Consult current receipts for 7.3.4 bindings; the original import/method receipts are retained with `-720` filenames. No player saves were inspected for catalog extraction.
+
 Catalog validation checks every upgrade and milestone source before rendering: a nonempty label, typed optional evidence, and an absolute HTTP(S) URL without credentials when a link is present. Native evidence-only sources remain valid. Malformed provenance enters the recoverable catalog loading error screen rather than failing when details open.
 
 The bundled catalog is the installed **Idle Slayer 7.2.0**, Steam app **1353300**,

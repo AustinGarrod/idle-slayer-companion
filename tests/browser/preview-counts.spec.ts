@@ -28,7 +28,7 @@ for (const showSpoilers of [false, true]) {
         expect(visibleIds(reset.cleared).length).toBeLessThan(reset.cleared.length)
       }
       await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile })
-      await page.goto('./')
+      await page.goto('./ascension/')
       await expect(page.locator('.toolbar')).toBeVisible()
       if (operation === 'removal') {
         await page.getByRole('button', { name: 'Return to start', exact: true }).click()
@@ -46,17 +46,17 @@ for (const showSpoilers of [false, true]) {
           ['Repeat purchases cleared', reset.cleared], ['Astral locks activated', reset.activated], ['Conditionally retained purchases', reset.conditionallyRetained],
         ] as const
         for (const [label, ids] of groups) {
-          const section = page.getByRole('dialog').locator('section').filter({ has: page.getByRole('heading', { name: `${label} (${visibleIds(ids).length})`, exact: true }) })
+          const section = page.getByRole('region', { name: 'Ascension reset effects', exact: true }).locator(':scope > section').filter({ has: page.getByRole('heading', { name: `${label} (${visibleIds(ids).length})`, exact: true }) })
           await expect(section).toBeVisible()
           await expect(section.locator('li')).toHaveCount(visibleIds(ids).length)
-          expect(await section.locator('li').evaluateAll((elements) => elements.map((element) => ({ id: element.getAttribute('data-upgrade-id'), cost: element.querySelector('[role=math]')?.getAttribute('aria-label') })))).toEqual(visibleIds(ids).map(rowLabel))
+          expect(await section.locator('li').evaluateAll((elements) => elements.map((element) => ({ id: element.getAttribute('data-upgrade-id'), cost: element.querySelector('[role=math]')?.getAttribute('aria-label') })))).toEqual(catalog.upgrades.filter((node) => visibleIds(ids).includes(node.id)).map((node) => rowLabel(node.id)))
         }
       }
       const dialog = page.getByRole('dialog')
-      await expect(dialog).toContainText('The change applies to the entire profile. Lists and counts show only currently visible upgrades.')
-      await page.getByRole('button', { name: 'Apply changes', exact: true }).click()
+      await expect(dialog).toContainText(operation === 'reset' ? 'Lists show only your current visible entries' : 'The change applies to the entire profile. Lists and counts show only currently visible upgrades.')
+      await page.getByRole('button', { name: operation === 'reset' ? 'Record companion Ultra Ascension' : 'Apply changes', exact: true }).click()
       const expected = operation === 'removal' ? removal.profile : reset.profile
-      await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), PROFILE_STORAGE_KEY)).toEqual(expected)
+      await expect.poll(() => page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY)).toEqual(expected)
     })
   }
 }

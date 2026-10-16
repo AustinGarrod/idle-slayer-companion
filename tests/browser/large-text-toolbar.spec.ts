@@ -1,3 +1,4 @@
+import { installProfileTestHelpers } from './fixtures'
 import { chromium, expect, test as base, type BrowserContext, type Page } from '@playwright/test'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -9,6 +10,9 @@ import { focusedDiscoveryTitleIsReadable, tabThroughDiscovery } from './helpers/
 
 const test = base.extend({
   page: async ({ baseURL }, use, info) => {
+    // Persistent Chromium font profiles can take additional time to close on
+    // Windows; every interaction and assertion retains its normal timeout.
+    info.setTimeout(60_000)
     const directory = info.outputPath('chromium-font-profile')
     await mkdir(join(directory, 'Default'), { recursive: true })
     await writeFile(join(directory, 'Default', 'Preferences'), JSON.stringify({ webkit: { webprefs: { default_font_size: 32 } } }))
@@ -20,6 +24,7 @@ const test = base.extend({
         channel: 'chromium', headless: true, ignoreDefaultArgs: ['--hide-scrollbars'], baseURL, viewport: { width: 320, height: 568 },
         ...(info.project.name === 'mobile' ? { isMobile: true, hasTouch: true, userAgent: info.project.use.userAgent, deviceScaleFactor: info.project.use.deviceScaleFactor } : {}),
       })
+      await installProfileTestHelpers(context)
       context.pages().forEach(watch)
       context.on('page', watch)
       await context.addInitScript(() => { if (location.origin !== 'null') localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled') })
@@ -43,13 +48,13 @@ test('single-event forward impact wraps every text line and preserves native con
   const plan = planPurchase(catalog, emptyProfile(catalog.revision), bundle.id)
   if (plan.kind !== 'ready') throw new Error('Expected an ordinary native purchase path for font fixture')
   await page.addInitScript((profile) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(profile)), plan.profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('searchbox').fill('Portals')
   await page.locator(`.search-result[data-upgrade-id="${portals.id}"]`).click()
   const toggle = page.getByRole('button', { name: 'Show details', exact: true })
   if (await toggle.isVisible()) await toggle.click()
-  const stored = await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))
+  const stored = await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))
   await page.getByRole('button', { name: 'Analyze forward impact…', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Forward impact', exact: true })
   await expect(dialog).toBeVisible()
@@ -78,11 +83,11 @@ test('single-event forward impact wraps every text line and preserves native con
   await expect(close).toBeFocused()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBe(stored)
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBe(stored)
 })
 
 test('optional map help remains readable and actionable at the actual 200% font', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('button', { name: 'Map options', exact: true }).click()
   await page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Map help…', exact: true }).click()
@@ -99,7 +104,7 @@ test('optional map help remains readable and actionable at the actual 200% font'
 test('complete discovery remains reachable with the actual browser default font at 200%', async ({ page }) => {
   const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
   const upgrades = visibility(catalog, emptyProfile(catalog.revision)).upgrades
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('searchbox').focus()
   await expect(page.getByRole('combobox', { name: 'Progress state' })).toBeVisible()
@@ -117,7 +122,7 @@ test('complete discovery remains reachable with the actual browser default font 
 test('native Tab keeps every focused discovery title clear at the actual 200% browser font', async ({ page }) => {
   const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
   const upgrades = visibility(catalog, emptyProfile(catalog.revision)).upgrades
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await tabThroughDiscovery(page, upgrades.map((node) => node.id))
   await page.screenshot({ path: test.info().outputPath('discovery-tab-200-percent.png') })
@@ -127,7 +132,7 @@ test('native Tab keeps every focused discovery title clear at the actual 200% br
 })
 
 for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} toolbar reflows with the actual browser default font at 200%`, async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   await page.evaluate(async () => { await document.fonts.ready })
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
@@ -161,7 +166,7 @@ for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} toolbar
 })
 
 test('search arrows expose a readable non-first candidate at the actual 200% browser font', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('searchbox').fill('Soul')
   await page.getByRole('searchbox').press('ArrowUp')
@@ -176,7 +181,7 @@ test('search arrows expose a readable non-first candidate at the actual 200% bro
 })
 
 test('chosen progression intentions are readable at the actual 200% font without recording progress', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('searchbox').fill('Permanent Slayer')
   await page.locator('.search-result').filter({ hasText: 'Permanent Slayer' }).click()
   await page.getByRole('button', { name: 'Show details', exact: true }).click()
@@ -196,11 +201,11 @@ test('chosen progression intentions are readable at the actual 200% font without
     expect(await button.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
   }
   await page.screenshot({ path: test.info().outputPath('goals-200-percent.png') })
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('action-labelled Undo and Redo reflow at the actual 200% browser font', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('button', { name: 'Map options', exact: true }).click()
   const options = page.getByRole('dialog', { name: 'Map options', exact: true })
@@ -224,12 +229,12 @@ test('action-labelled Undo and Redo reflow at the actual 200% browser font', asy
 })
 
 test('overview fits visible frames and keeps its return label readable at the actual 200% font', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   const settle = () => page.evaluate(async () => { await document.fonts.ready; for (let i = 0; i < 8; i++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve())) })
   await page.getByRole('searchbox').fill('Permanent Slayer')
   await page.getByRole('searchbox').press('Enter')
-  const original = await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))
+  const original = await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))
   for (const layout of ['Game Layout', 'Detailed Layout']) {
     await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
     await page.getByRole('button', { name: 'Map options', exact: true }).click()
@@ -249,11 +254,11 @@ test('overview fits visible frames and keeps its return label readable at the ac
     await expect(page.locator('.details h2')).toHaveText('Permanent Slayer')
     expect(await page.locator('.react-flow__node.selected').evaluate((node) => { const r = node.getBoundingClientRect(); return r.width >= 44 && r.height >= 44 })).toBe(true)
   }
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBe(original)
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBe(original)
 })
 
 test('successive suggestion confirmation stays readable at the actual 200% browser font', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('button', { name: 'Next upgrade', exact: true }).click()
   await page.getByRole('dialog', { name: 'Suggested next upgrade', exact: true }).getByRole('button', { name: 'Record purchase…', exact: true }).click()
@@ -291,12 +296,12 @@ test('public reference copying and manual selection reflow at the actual 200% br
   expect(new URL(link).hash).toBe(`#upgrade=${catalog.startId}&catalog=${catalog.revision}`)
   expect(await input.evaluate((element: HTMLTextAreaElement) => [element.selectionStart, element.selectionEnd])).toEqual([0, link.length])
   expect(await page.locator('.details').evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 test('recent inspection controls stay usable at the actual 200% browser font', async ({ page }) => {
   const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
   const nodes = visibility(catalog, emptyProfile(catalog.revision)).upgrades.slice(0, 2)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   for (const node of nodes) {
     await page.getByRole('searchbox').fill(node.title)
@@ -317,11 +322,11 @@ test('recent inspection controls stay usable at the actual 200% browser font', a
   await expect(page.locator('.details h2')).toBeFocused()
   await expect(page.getByRole('button', { name: 'Close upgrade details', exact: true })).toBeInViewport()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('recent guidance and its clear action fit with wide font metrics at actual 200% text', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('searchbox').fill('Permanent Slayer')
   await page.getByRole('searchbox').press('Enter')
@@ -352,11 +357,11 @@ test('recent guidance and its clear action fit with wide font metrics at actual 
   await expect(dialog).toContainText('No recently inspected visible upgrades.')
   await dialog.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await expect(page.locator('.details h2')).toHaveText('Permanent Slayer')
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('prior ascension history keeps its input and actions inside a narrow large-text dialog', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('button', { name: 'Map options', exact: true }).click()
   await page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Progress', exact: true }).click()
@@ -374,14 +379,14 @@ test('prior ascension history keeps its input and actions inside a narrow large-
   await review.click()
   await expect(page.getByRole('dialog', { name: 'Record prior Ultra Ascensions?', exact: true })).toContainText('from 0 to 3')
   await page.getByRole('button', { name: 'Cancel', exact: true }).click()
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('long prerequisite return labels remain fully visible and clickable with large text', async ({ page }) => {
   const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
   const profile = { ...emptyProfile(catalog.revision), showSpoilers: true }
   await page.addInitScript((profile) => localStorage.setItem('idle-slayer-ascension-map.profile.v1', JSON.stringify(profile)), profile)
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('searchbox').fill("Doesn't Matter to Me")
   await page.getByRole('searchbox').press('Enter')
@@ -404,12 +409,12 @@ test('long prerequisite return labels remain fully visible and clickable with la
   await back.click()
   await expect(page.locator('.details h2')).toHaveText("Doesn't Matter to Me")
   await expect(page.locator('.details h2')).toBeFocused()
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('idle-slayer-ascension-map.profile.v1')!))).toEqual(profile)
+  expect(await page.evaluate(() => JSON.parse(window.__readMapProfileText('idle-slayer-ascension-map.profile.v1')!))).toEqual(profile)
 })
 
 test('reference sheet controls and exact outgoing document reflow at actual 32px text', async ({ page }, info) => {
   const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
-  await page.goto('./'); await expect(page.locator('html')).toHaveCSS('font-size', '32px')
+  await page.goto('./ascension/'); await expect(page.locator('html')).toHaveCSS('font-size', '32px')
   await page.getByRole('searchbox').fill('Permanent Slayer')
   await page.locator(`.search-result[data-upgrade-id="${catalog.startId}"]`).click()
   await page.getByRole('button', { name: 'Show details', exact: true }).click()
@@ -427,5 +432,5 @@ test('reference sheet controls and exact outgoing document reflow at actual 32px
   const body = page.frameLocator('iframe').locator('body')
   expect(await body.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
   await page.screenshot({ path: info.outputPath('reference-sheet-actual32.png') })
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })

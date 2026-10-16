@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { Profile } from '../../../src/domain/types'
 import { PROFILE_STORAGE_KEY } from '../../../src/domain/storage'
+import { COMPANION_STORAGE_KEY } from '../../../src/domain/companion-storage'
 
 // Explicit synthetic profiles only. Retain edits across reload when requested.
 export async function seedProfile(page: Page, profile: Profile, onlyWhenAbsent = false) {
@@ -18,5 +19,5 @@ export async function denyProfileWrites(page: Page, flag: 'denyProfileWrites' | 
       if (name === key && win[flag]) throw new DOMException('Synthetic quota refusal', 'QuotaExceededError')
       native.call(this, name, value)
     }
-  }, { key: PROFILE_STORAGE_KEY, flag })
+  }, { key: COMPANION_STORAGE_KEY, flag })
 }

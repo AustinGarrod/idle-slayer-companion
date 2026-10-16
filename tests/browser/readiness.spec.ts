@@ -27,7 +27,7 @@ for (const title of ['Soul of The Fallen', 'Soul Climbing Boots']) {
     expect(satisfies(node.purchase, profile)).toBe(true)
     expect(satisfies(node.reveal, profile)).toBe(false)
     await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile })
-    await page.goto('./')
+    await page.goto('./ascension/')
     await page.getByRole('searchbox').fill(title)
     await page.locator('.search-result').filter({ hasText: title }).first().click()
     await expect(page.locator('.details h2')).toHaveText(title)

@@ -7,7 +7,7 @@ export function MapHelpPanel({ onProgress, onMilestones, onSpoilers }: {
   return <section className="map-help" aria-label="Starting and recording progress">
     <h3>Start with your game progress</h3>
     <p>Explore with spoilers hidden. Select a tile to read its effect, exact cost and requirements. This companion records what happened in your game; it never purchases or changes anything in the game.</p>
-    <p>For existing Windows Steam 7.2.0 progress, open Progress → Import game save… and choose your save locally. Review the preview before applying. For manual setup, record your previous Ultra Ascension count, purchases and the required milestone items. Missing OR paths need your choice before purchases are applied.</p>
+    <p>For existing Windows Steam 7.3.4 progress (or legacy 7.2.0 map progress), open Progress → Import game save… and choose your save locally. Review the preview before applying. For manual setup, record your previous Ultra Ascension count, purchases and the required milestone items. Missing OR paths need your choice before purchases are applied.</p>
     <button onClick={onProgress}>Open Progress</button>
     <h3>Map states</h3>
     <dl className="map-help-legend">

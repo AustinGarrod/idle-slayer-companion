@@ -1,7 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { CompanionMapGoalsContext } from './CompanionRuntimeContext'
 import { emptyGoals, GOALS_STORAGE_KEY, parseGoals, type Goals } from './domain/goals'
 
 type GoalsState = { goals: Goals; error: string; raw: string | null; dirty: boolean; readable: boolean }
+export type GoalsController = GoalsState & {
+  edit: (goals: Goals, expected: Goals, replace?: boolean) => boolean
+  useSaved: () => void
+  reviewRecovery?: () => void
+  getState: () => GoalsState
+}
 function read(): GoalsState {
   try {
     const raw = window.localStorage.getItem(GOALS_STORAGE_KEY)
@@ -9,7 +16,8 @@ function read(): GoalsState {
   } catch { return { goals: emptyGoals(), raw: null, dirty: false, readable: false, error: 'Saved goals could not be read. Intentions remain usable for this visit; existing saved data will not be overwritten.' } }
 }
 /** Independent local intentions never write the game profile or its Undo history. */
-export function useGoals() {
+export function useGoals(): GoalsController {
+  const provided = useContext(CompanionMapGoalsContext)
   const [state, setState] = useState(read)
   const current = useRef(state)
   function publish(next: GoalsState) { current.current = next; setState(next) }
@@ -37,6 +45,7 @@ export function useGoals() {
     else publish({ ...current.current, readable: false, dirty: true, error: incoming.error })
   }
   useEffect(() => {
+    if (provided) return
     const changed = (event: StorageEvent) => {
       let storage: Storage
       try { storage = window.localStorage } catch { return }
@@ -46,6 +55,6 @@ export function useGoals() {
     }
     window.addEventListener('storage', changed)
     return () => window.removeEventListener('storage', changed)
-  }, [])
-  return { ...state, edit, useSaved, getState: () => current.current }
+  }, [provided])
+  return provided ?? { ...state, edit, useSaved, getState: () => current.current }
 }

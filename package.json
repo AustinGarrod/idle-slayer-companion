@@ -1,7 +1,7 @@
 {
-  "name": "idle-slayer-ascension-map",
+  "name": "idle-slayer-companion",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "packageManager": "yarn@4.13.0",
   "engines": {
@@ -14,11 +14,12 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:tools": "node scripts/test-tools.mjs",
-    "test:e2e": "playwright test",
-    "validate:catalog": "vitest run src/domain/catalog.test.ts",
+    "test:e2e": "node scripts/prepare-site-migration.mjs && playwright test",
+    "validate:catalog": "vitest run src/domain/catalog.test.ts src/domain/companion-catalog.test.ts",
     "notices:check": "node scripts/maintain-runtime-notices.mjs check",
     "notices:refresh": "node scripts/maintain-runtime-notices.mjs refresh",
-    "check:release": "node scripts/check-release.mjs"
+    "check:release": "node scripts/check-release.mjs",
+    "prepare:migration": "node scripts/prepare-site-migration.mjs"
   },
   "dependencies": {
     "@dagrejs/dagre": "3.1.1",

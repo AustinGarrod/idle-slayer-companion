@@ -1,5 +1,9 @@
 # Offline native-rule evidence
 
+## Current and legacy method evidence
+
+`native-method-receipt.json` now binds reviewed **7.3.4 / build 25810322** map methods. `native-method-receipt-720.json` preserves the original 7.2.0 bodies. Companion-specific bodies are pinned separately in `data/companion-native-method-receipt.json`; [companion-native-review.md](../../docs/companion-native-review.md) explains their interpretation. The RVA narrative below is historical 7.2.0 review evidence. Use an isolated `-OutputRoot` for each Cpp2IL refresh and do not overwrite prior evidence.
+
 This folder contains reproducible tooling and a sanitized receipt for the read-only inspection of Steam build **25551532**, game **7.2.0**, Unity **6000.3.14f1**, IL2CPP metadata **39**. The installed game's native code and serialized assets are the source for rule evaluation. No game or player-save method was invoked.
 
 ```powershell

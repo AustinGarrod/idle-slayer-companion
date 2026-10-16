@@ -47,7 +47,7 @@ async function history(page: Page, epoch: string) {
   await rendered(page)
 }
 async function prepare(page: Page, layout: 'Game Layout' | 'Detailed Layout', select = true) {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await page.getByRole('group', { name: 'Map layout', exact: true }).getByRole('button', { name: layout, exact: true }).click()
   if (select) await page.getByRole('button', { name: 'Return to start', exact: true }).click()
   await rendered(page)

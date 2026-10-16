@@ -10,7 +10,7 @@ import { upgradeReferenceURL } from '../../src/domain/upgrade-reference'
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
 const initial = emptyProfile(catalog.revision)
 const reference = (base: string, id: string, revision = catalog.revision) => upgradeReferenceURL(base, id, revision)
-const saved = (page: Page) => page.evaluate((key) => localStorage.getItem(key), PROFILE_STORAGE_KEY)
+const saved = (page: Page) => page.evaluate((key) => window.__readMapProfileText(key), PROFILE_STORAGE_KEY)
 async function expand(page: Page) { await expect(page.locator('.details h2')).toBeVisible(); const button = page.getByRole('button', { name: 'Show details', exact: true }); if (await button.isVisible()) await button.click() }
 test.beforeEach(async ({ page }, info) => {
   if (info.project.name === 'mobile') await page.setViewportSize({ width: 320, height: 568 })
@@ -32,9 +32,9 @@ test('copyable exact-ID link uses recipient progress, clears incoming URL data a
     const r = element.getBoundingClientRect(), map = element.closest('.map')!.getBoundingClientRect()
     return r.width >= 44 && r.height >= 44 && r.left >= map.left && r.right <= map.right && r.top >= map.top && r.bottom <= map.bottom
   })).toBe(true)
-  expect(page.url()).toBe(baseURL)
+  expect(page.url()).toBe(new URL('ascension/', baseURL).toString())
   expect(await saved(page)).toBe(JSON.stringify(own))
-  expect(await page.title()).toBe('Idle Slayer Ascension Map')
+  expect(await page.title()).toBe('Idle Slayer Companion · Ascension')
   await expand(page)
   await page.getByRole('button', { name: 'Copy upgrade reference', exact: true }).click()
   await expect(page.locator('.reference-copy-feedback')).toHaveText('Upgrade reference copied.')
@@ -47,7 +47,7 @@ test('copyable exact-ID link uses recipient progress, clears incoming URL data a
   const recipient = await popupPromise
   try {
     await expect(recipient.locator('.react-flow__node.selected')).toHaveAttribute('data-id', target.id)
-    expect(recipient.url()).toBe(baseURL)
+    expect(recipient.url()).toBe(new URL('ascension/', baseURL).toString())
     expect(navigationHeaders.length).toBeGreaterThan(0)
     expect(navigationHeaders.every((value) => value === '')).toBe(true)
     expect(await saved(recipient)).toBe(JSON.stringify(own))
@@ -69,8 +69,8 @@ test('hidden and missing identities have the same nonrevealing response and neve
     await expect(page.locator('.details')).toHaveCount(0)
     expect(await page.locator('body').innerHTML()).not.toContain(hidden.id)
     await expect(page.locator('body')).not.toContainText(hidden.title)
-    expect(await page.title()).toBe('Idle Slayer Ascension Map')
-    expect(page.url()).toBe(baseURL)
+    expect(await page.title()).toBe('Idle Slayer Companion · Ascension')
+    expect(page.url()).toBe(new URL('ascension/', baseURL).toString())
     expect(await saved(page)).toBeNull()
   }
 })
@@ -90,10 +90,10 @@ test('different catalog context and malformed references keep normal navigation 
 })
 
 test('live fragments resolve once, sanitize immediately and do not resurrect a hidden target later', async ({ page, baseURL }) => {
-  await page.goto('./'); await expect(page.locator('.toolbar')).toBeVisible()
+  await page.goto('./ascension/'); await expect(page.locator('.toolbar')).toBeVisible()
   await page.evaluate((hash) => { location.hash = hash }, new URL(reference(baseURL!, catalog.startId)).hash)
   await expect(page.locator('.details h2')).toHaveText('Permanent Slayer')
-  await expect.poll(() => page.url()).toBe(baseURL)
+  await expect.poll(() => page.url()).toBe(new URL('ascension/', baseURL).toString())
   const hidden = catalog.upgrades.find((upgrade) => !visibility(catalog, initial).ids.has(upgrade.id))!
   await page.evaluate((hash) => { location.hash = hash }, new URL(reference(baseURL!, hidden.id)).hash)
   await expect(page.locator('.toast')).toContainText('unavailable under your current spoiler setting')

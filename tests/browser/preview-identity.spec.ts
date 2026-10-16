@@ -25,7 +25,7 @@ for (const operation of ['purchase', 'removal', 'reset'] as const) {
     if (operation === 'purchase') delete profile.purchases[selected.id]
     await page.addInitScript(({ key, profile }) => localStorage.setItem(key, JSON.stringify(profile)), { key: PROFILE_STORAGE_KEY, profile })
     await page.setViewportSize({ width: 320, height: 568 })
-    await page.goto('./')
+    await page.goto('./ascension/')
     await expect(page.locator('.toolbar')).toBeVisible()
     let affected: string[]
     if (operation === 'reset') {
@@ -41,12 +41,12 @@ for (const operation of ['purchase', 'removal', 'reset'] as const) {
       await page.getByRole('button', { name: operation === 'purchase' ? 'Record purchase…' : 'Remove purchase…', exact: true }).click()
       affected = operation === 'purchase' ? [selected.id] : planRemoval(catalog, profile, selected.id).removed.filter((id) => keys.some((node) => node.id === id))
     }
-    const rows = page.getByRole('dialog').locator('li').filter({ hasText: 'Astral Key' })
+    const rows = (operation === 'reset' ? page.getByRole('region', { name: 'Ascension reset effects', exact: true }) : page.getByRole('dialog')).locator('li').filter({ hasText: 'Astral Key' })
     await expect(rows).toHaveCount(affected.length)
     expect(await rows.evaluateAll((elements) => elements.map((element) => ({ id: element.getAttribute('data-upgrade-id'), cost: element.querySelector('[role=math]')?.getAttribute('aria-label') })))).toEqual(affected.map(label))
     expect(new Set(await rows.allTextContents()).size).toBe(affected.length)
     for (const row of await rows.all()) expect(await row.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
-    await page.getByRole('button', { name: 'Cancel', exact: true }).click()
-    expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), PROFILE_STORAGE_KEY)).toEqual(profile)
+    await page.getByRole('button', { name: operation === 'reset' ? 'Cancel preview' : 'Cancel', exact: true }).click()
+    expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY)).toEqual(profile)
   })
 }

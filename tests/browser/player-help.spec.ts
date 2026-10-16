@@ -15,10 +15,10 @@ test.beforeEach(async ({ page }) => {
 for (const viewport of [{ width: 1280, height: 800 }, { width: 320, height: 568 }, { width: 844, height: 390 }]) {
   test(`optional help guides explicit setup without changing progress at ${viewport.width}x${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport)
-    await page.goto('./')
+    await page.goto('./ascension/')
     await expect(page.locator('.react-flow__node').first()).toBeVisible()
     await expect(page.getByRole('dialog')).toHaveCount(0)
-    const before = await page.evaluate((key) => localStorage.getItem(key), profileKey)
+    const before = await page.evaluate((key) => window.__readMapProfileText(key), profileKey)
     await openHelp(page)
     const help = page.getByRole('dialog', { name: 'Map help', exact: true })
     await expect(help).toBeVisible()
@@ -40,7 +40,7 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 320, height: 568 
     const options = page.getByRole('dialog', { name: 'Map options', exact: true })
     await expect(options.getByRole('checkbox', { name: 'Show spoilers', exact: true })).not.toBeChecked()
     await expect(options).toContainText('Ultra Ascensions 0')
-    expect(await page.evaluate((key) => localStorage.getItem(key), profileKey)).toBe(before)
+    expect(await page.evaluate((key) => window.__readMapProfileText(key), profileKey)).toBe(before)
     await options.getByRole('button', { name: 'Close dialog', exact: true }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     await expect(page.locator('.map-summary')).toContainText('Ultra Ascensions 0')

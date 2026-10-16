@@ -4,12 +4,14 @@ import { compareProgress } from './progress-comparison'
 import { planUltraAscension, visibility } from './rules'
 import { sameRecordedProfile } from './checkpoints'
 import type { HistoryAction } from './profile-history'
+import { companionResetProofMatches } from './companion-reset-proof'
 
 /** Only the actual current visit's bounded session history is evidence. Portable snapshots supply no operation claims. */
 export function checkpointHistory(catalog: Catalog, first: Profile, second: Profile, current: Profile, past: ProfileHistoryEntry[], future: ProfileHistoryEntry[]) {
   const undone = [...future].reverse()
   const states = [...past.map((entry) => entry.profile), current, ...undone.map((entry) => entry.profile)]
-  const actions = [...past.map((entry) => entry.action), ...undone.map((entry) => entry.action)]
+  const entries = [...past, ...undone]
+  const actions = entries.map((entry) => entry.action)
   const firstMatches = states.flatMap((profile, index) => sameRecordedProfile(profile, first) ? [index] : [])
   const secondMatches = states.flatMap((profile, index) => sameRecordedProfile(profile, second) ? [index] : [])
   if (sameRecordedProfile(first, second) || firstMatches.length !== 1 || secondMatches.length !== 1) return null
@@ -19,9 +21,11 @@ export function checkpointHistory(catalog: Catalog, first: Profile, second: Prof
   const cleared = new Set<string>(), activated = new Set<string>()
   for (let index = Math.min(from, to); index < Math.max(from, to); index++) {
     const before = states[index], after = states[index + 1], action = actions[index]
-    const reset = action === 'ultra_ascension' ? planUltraAscension(catalog, before) : null
+    const resetAction = action === 'ultra_ascension' || action === 'companion_reset'
+    const reset = resetAction ? planUltraAscension(catalog, before) : null
     // A label alone is insufficient: an alleged reset must exactly match the native plan.
-    if (action === 'ultra_ascension' && (!reset || !sameRecordedProfile(reset.profile, after))) return null
+    if (resetAction && (!reset || !sameRecordedProfile(reset.profile, after))) return null
+    if (action === 'companion_reset' && !companionResetProofMatches(entries[index], before, after, catalog.revision)) return null
     const changes = compareProgress(catalog, before, after, current)
     if (changes.upgrades.length || changes.milestones.length || before.epoch !== after.epoch || before.showSpoilers !== after.showSpoilers) steps.push(action)
     if (reset && !reversed) {

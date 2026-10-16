@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('arrow selection opens a non-first result through native button focus', async ({ page }, info) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   await input.fill('Soul')
   const region = page.getByRole('region', { name: 'Visible upgrade results', exact: true })
@@ -66,11 +66,11 @@ test('arrow selection opens a non-first result through native button focus', asy
   await expect(page.locator('.details h2')).toHaveText(title)
   await expect(page.locator('.details h2')).toBeFocused()
   await expect(page.locator('.react-flow__node.selected')).toHaveAttribute('data-id', id!)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('text editing, native Tab and Space remain available alongside arrow selection', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   await input.fill('Soul')
   await input.press('Home')
@@ -94,7 +94,7 @@ test('text editing, native Tab and Space remain available alongside arrow select
 })
 
 test('Escape and disclosure expose closed state, then arrows reopen candidates', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox'), toggle = page.getByRole('button', { name: 'Toggle search results', exact: true })
   await input.fill('Soul'); await input.press('ArrowDown')
   await page.keyboard.press('Escape')
@@ -115,7 +115,7 @@ test('Escape and disclosure expose closed state, then arrows reopen candidates',
 })
 
 test('filter and query announce current visible counts and clear previous candidates', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   await input.fill('Soul'); await input.press('ArrowDown')
   await page.getByRole('combobox', { name: 'Progress state', exact: true }).selectOption('pending')
@@ -131,12 +131,12 @@ test('filter and query announce current visible counts and clear previous candid
   await expect(page.locator('.search-result[aria-current="true"]')).toHaveCount(0)
   await page.locator('.search-result').nth(1).click()
   await expect(page.getByRole('region', { name: 'Visible upgrade results', exact: true })).toHaveCount(0)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 
 test('modified input shortcuts preserve native editing and composing text', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   await input.fill('Soul')
   await input.evaluate((element) => (element as HTMLInputElement).setSelectionRange(2, 2))
@@ -159,11 +159,11 @@ test('modified input shortcuts preserve native editing and composing text', asyn
   await expect(first).toBeFocused()
   await first.press('Shift+ArrowDown')
   await expect(first).toBeFocused()
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('deferred reopening cannot steal later Tab focus or override a newer candidate', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   await input.fill('Soul')
   await input.press('Escape')
@@ -194,12 +194,12 @@ test('deferred reopening cannot steal later Tab focus or override a newer candid
   await expect(input).toBeFocused()
   await expect(page.locator('.search-result')).toHaveCount(0)
   await expect(page.locator('[aria-current="true"].search-result')).toHaveCount(0)
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 
 test('Escape in a populated native search field closes results without clearing or reopening the query', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   const region = page.getByRole('region', { name: 'Visible upgrade results', exact: true })
   const toggle = page.getByRole('button', { name: 'Toggle search results', exact: true })
@@ -222,7 +222,7 @@ test('Escape in a populated native search field closes results without clearing 
   await input.press('Escape')
   await expect(region).toHaveCount(0)
   await expect(input).toHaveValue('')
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })
 
 test('candidate positions and status exclude matching hidden upgrades', async ({ page }) => {
@@ -231,7 +231,7 @@ test('candidate positions and status exclude matching hidden upgrades', async ({
   const hidden = catalog.upgrades.find((node) => !visible.ids.has(node.id))!
   const augmented = { ...catalog, upgrades: catalog.upgrades.map((node) => node.id === hidden.id ? { ...node, title: visible.upgrades[0].title, description: 'PRIVATE-HIDDEN-CANDIDATE' } : node) }
   await page.route('**/catalog.json', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(augmented) }))
-  await page.goto('./')
+  await page.goto('./ascension/')
   const input = page.getByRole('searchbox')
   const status = page.getByRole('status', { name: 'Search result state', exact: true })
   await input.focus()
@@ -253,5 +253,5 @@ test('candidate positions and status exclude matching hidden upgrades', async ({
     await expect(page.locator('.details')).toHaveCount(0)
   }
   await expect(status).not.toContainText('PRIVATE-HIDDEN-CANDIDATE')
-  expect(await page.evaluate(() => localStorage.getItem('idle-slayer-ascension-map.profile.v1'))).toBeNull()
+  expect(await page.evaluate(() => window.__readMapProfileText('idle-slayer-ascension-map.profile.v1'))).toBeNull()
 })

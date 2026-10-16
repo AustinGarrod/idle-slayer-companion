@@ -197,7 +197,7 @@ describe('Steam game-save snapshot import', () => {
   it.each(['7.1.0', '7.2.1', '7.2.0 ', null])('rejects an unsupported or null version without echoing it: %s', (version) => {
     const value = model('3')
     value.StringData[0].Value = version
-    expect(importGameSave(catalog, initial, encode(value))).toEqual({ ok: false, error: 'Only a reviewed Idle Slayer 7.2.0 save can be imported. Map progress was not changed.' })
+    expect(importGameSave(catalog, initial, encode(value))).toEqual({ ok: false, error: 'Only reviewed Idle Slayer 7.2.0 or 7.3.4 Steam saves can be imported. Map progress was not changed.' })
   })
 
   it('rejects a missing version and an incompatible native catalog', () => {

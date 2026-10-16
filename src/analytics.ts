@@ -1,6 +1,7 @@
 /** Bounded, optional Umami integration. Progress persistence never depends on telemetry. */
 import { isAnalyticsEventName, isAnalyticsLayout, sanitizeAnalyticsProperties } from './analytics-contract'
 import type { AnalyticsEventName, AnalyticsLayout, AnalyticsTrackEvent } from './analytics-contract'
+import { sectionAtPath, sectionPath } from './domain/companion-navigation'
 export type { AnalyticsEventName, AnalyticsOperation, AnalyticsProperties, AnalyticsTrackEvent } from './analytics-contract'
 export { analyticsPosition } from './analytics-contract'
 
@@ -8,7 +9,7 @@ export const ANALYTICS_PREFERENCE_KEY = 'idle-slayer-ascension-map.analytics.v1'
 export const ANALYTICS_WEBSITE_ID = 'f5c9bfd4-7ab5-4f82-a543-9357dcea1566'
 export const ANALYTICS_HOST = 'https://analytics.garrod.house'
 export const ANALYTICS_CALLBACK = 'ascensionMapBeforeSend'
-const APP_VERSION = '0.1.0'
+const APP_VERSION = '0.2.0'
 const QUEUE_LIMIT = 100
 const QUEUE_TTL = 30_000
 
@@ -81,7 +82,7 @@ export function createAnalyticsController(environment: AnalyticsEnvironment) {
   function disabledReason(): string | undefined {
     if (!environment.production) return 'development'
     if (win.location.hostname.toLowerCase() !== environment.hostname.toLowerCase() ||
-      ![environment.basePath, environment.basePath.replace(/\/$/, '')].includes(win.location.pathname)) return 'unsupported-origin'
+      sectionAtPath(win.location.pathname, environment.basePath) === null && win.location.pathname !== environment.basePath.replace(/\/$/, '')) return 'unsupported-origin'
     try { if (win.self !== win.top) return 'embedded' } catch { return 'embedded' }
     const signals = win.navigator as Navigator & { globalPrivacyControl?: boolean; msDoNotTrack?: string }
     if (signals.globalPrivacyControl === true) return 'global-privacy-control'
@@ -114,6 +115,8 @@ export function createAnalyticsController(environment: AnalyticsEnvironment) {
   }
   function trackerURL() {
     const url = new URL(appURL)
+    const section = sectionAtPath(win.location.pathname, environment.basePath)
+    if (section) url.pathname = sectionPath(section, environment.basePath)
     url.search = campaigns.toString()
     return url.toString()
   }
@@ -130,7 +133,7 @@ export function createAnalyticsController(environment: AnalyticsEnvironment) {
     if (disabledReason() || !payload || !['event', 'identify', 'performance'].includes(type)) return null
     const safe: Payload = {
       website: environment.websiteId, hostname: environment.hostname, url: trackerURL(),
-      title: 'Idle Slayer Ascension Map', referrer: cleanReferrer(payload.referrer),
+      title: environment.basePath === '/idle-slayer-companion/' ? 'Idle Slayer Companion' : 'Idle Slayer Ascension Map', referrer: cleanReferrer(payload.referrer),
     }
     if (typeof payload.screen === 'string' && /^\d{1,5}x\d{1,5}$/.test(payload.screen)) safe.screen = payload.screen
     if (typeof payload.language === 'string' && /^[a-zA-Z0-9-]{1,35}$/.test(payload.language)) safe.language = payload.language
@@ -179,6 +182,8 @@ export function createAnalyticsController(environment: AnalyticsEnvironment) {
       // Let the browser retain its native cross-origin rejection semantics.
       if (requested.origin !== origin) return value
       const clean = new URL(appURL)
+      const section = sectionAtPath(requested.pathname, environment.basePath)
+      if (section) clean.pathname = sectionPath(section, environment.basePath)
       if (requested.hash === '#analytics=off') {
         suspendSession()
         clean.hash = 'analytics=off'
@@ -275,7 +280,10 @@ export function createAnalyticsController(environment: AnalyticsEnvironment) {
       const value = currentURL.searchParams.get(key)
       if (value && /^[a-zA-Z0-9._~-]{1,64}$/.test(value)) campaigns.set(key, value)
     }
-    try { win.history.replaceState(win.history.state, '', appURL.toString()) } catch {
+    const cleanStartup = new URL(appURL)
+    const startupSection = sectionAtPath(win.location.pathname, environment.basePath)
+    if (startupSection) cleanStartup.pathname = sectionPath(startupSection, environment.basePath)
+    try { win.history.replaceState(win.history.state, '', cleanStartup.toString()) } catch {
       // Without a clean address, recorder URLs cannot satisfy the privacy contract.
       scriptFailed = true
       return
@@ -373,7 +381,7 @@ export function createAnalyticsController(environment: AnalyticsEnvironment) {
 let singleton: ReturnType<typeof createAnalyticsController> | undefined
 function controller() {
   singleton ??= createAnalyticsController({ window, production: import.meta.env.PROD, hostname: 'austingarrod.github.io',
-    basePath: '/idle-slayer-ascension-map/', host: ANALYTICS_HOST, websiteId: ANALYTICS_WEBSITE_ID })
+    basePath: '/idle-slayer-companion/', host: ANALYTICS_HOST, websiteId: ANALYTICS_WEBSITE_ID })
   return singleton
 }
 export const initializeAnalytics = () => controller().initializeAnalytics()

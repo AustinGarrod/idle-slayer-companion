@@ -1,7 +1,7 @@
 import { expect, test } from './fixtures'
 
 test('sequential keyboard navigation skips backing file inputs while visible picker buttons work', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
   const footerPrivacy = page.locator('footer').getByRole('button', { name: 'Privacy & tracking', exact: true })
   const lastVisible = await footerPrivacy.isVisible() ? footerPrivacy : page.getByRole('button', { name: 'Map navigation', exact: true })
@@ -18,8 +18,11 @@ test('sequential keyboard navigation skips backing file inputs while visible pic
   await progress.click()
   const restorePicker = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: 'Restore JSON backup…', exact: true }).click()
-  expect((await restorePicker).isMultiple()).toBe(false)
-  const gamePicker = page.waitForEvent('filechooser')
+  const restore = await restorePicker
+  expect(restore.isMultiple()).toBe(false)
+  await restore.setFiles([])
   await page.getByRole('button', { name: 'Import game save…', exact: true }).click()
+  const gamePicker = page.waitForEvent('filechooser')
+  await page.getByRole('dialog', { name: 'Import game save', exact: true }).getByLabel('Choose game save', { exact: true }).click()
   expect((await gamePicker).isMultiple()).toBe(false)
 })

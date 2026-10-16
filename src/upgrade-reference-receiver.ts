@@ -1,4 +1,5 @@
 import { parseUpgradeReference, type UpgradeReference } from './domain/upgrade-reference'
+import { sectionAtPath, sectionPath } from './domain/companion-navigation'
 
 type Delivery = { sequence: number; reference: UpgradeReference }
 let current: Delivery | null = null
@@ -18,6 +19,8 @@ export function initializeUpgradeReferences(win: Window, basePath: string) {
   }
   function cleanAddress() {
     const clean = new URL(canonical)
+    const section = sectionAtPath(win.location.pathname, basePath)
+    if (section) clean.pathname = sectionPath(section, basePath)
     // This bounded opt-out sentinel must survive a failed preference write.
     if (win.location.hash === '#analytics=off') clean.hash = 'analytics=off'
     if (clean.toString() === win.location.href) return

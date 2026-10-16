@@ -1,5 +1,7 @@
 # Local progress transfer
 
+Companion compatibility: this format remains **Ascension progress and layout only**. Full tracked progress uses Companion JSON; goals and recipe plans use the intentions export. New links use `/idle-slayer-companion/`; the prepared old-address bridge forwards recognized legacy links without analytics. See [site migration](site-migration.md).
+
 Open **Progress → Transfer to another device… → Create transfer snapshot**. The desktop browser generates a QR code locally. Scan it with the phone's normal camera, open the link, review the replacement, then choose **Apply transfer**. **Copy transfer link** supplies the fallback: open the map on the other device, choose **Progress → Receive transfer…**, and paste the link. Clipboard permission failures select the link for manual copying.
 
 This is a snapshot of the current in-memory map profile and its Game/Detailed Layout preference. Ownership, exact purchase epochs, Astral activation, Ultra Ascension count, milestones, catalog revision, spoiler preference and unrecognized IDs are included. A tracking preference, native game file or unrelated native preference is never included. There are no accounts, transfer server, external QR service or continuing synchronization. Possession of a code or link allows its recipient to copy that profile; the UI asks users to share it privately.
