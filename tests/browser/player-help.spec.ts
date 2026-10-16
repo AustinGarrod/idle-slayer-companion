@@ -1,12 +1,7 @@
 import { expect, test } from './fixtures'
-import type { Page } from '@playwright/test'
+import { openAction } from './helpers/app'
 
 const profileKey = 'idle-slayer-ascension-map.profile.v1'
-async function openHelp(page: Page) {
-  const help = page.getByRole('button', { name: 'Map help…', exact: true })
-  if (!await help.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await help.click()
-}
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('idle-slayer-ascension-map.analytics.v1', 'disabled'))
   await page.route('https://analytics.garrod.house/**', (route) => route.abort())
@@ -19,7 +14,7 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 320, height: 568 
     await expect(page.locator('.react-flow__node').first()).toBeVisible()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     const before = await page.evaluate((key) => window.__readMapProfileText(key), profileKey)
-    await openHelp(page)
+    await openAction(page, 'Map help…')
     const help = page.getByRole('dialog', { name: 'Map help', exact: true })
     await expect(help).toBeVisible()
     await expect(help.locator('dt')).toHaveText(['+ Available', '◇ Locked', '✓ Purchased and active', '◷ Owned · awaiting activation'])
@@ -31,7 +26,9 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 320, height: 568 
     const progress = page.getByRole('dialog', { name: 'Your progress', exact: true })
     await expect(progress.getByRole('button', { name: 'Import game save…', exact: true })).toBeVisible()
     await expect(progress.getByRole('spinbutton', { name: 'Previous Ultra Ascensions', exact: true })).toHaveValue('0')
-    await progress.getByRole('button', { name: 'Map help…', exact: true }).click()
+    await expect(progress.getByRole('button', { name: 'Map help…', exact: true })).toHaveCount(0)
+    await progress.getByRole('button', { name: 'Close dialog', exact: true }).click()
+    await openAction(page, 'Map help…')
     await help.getByRole('button', { name: 'Open Milestones', exact: true }).click()
     const milestones = page.getByRole('dialog', { name: 'Milestones', exact: true })
     await expect(milestones).toContainText('No milestone controls are currently revealed')

@@ -53,7 +53,7 @@ test('catalog retry keeps unsaved progress until cancellation or both recovery e
   if (await menu.isVisible()) await menu.click()
   await page.getByRole('button', { name: 'Achievements', exact: true }).click()
   await page.getByRole('button', { name: 'Retry catalogs', exact: true }).click()
-  const settings = page.getByRole('dialog', { name: 'Settings & privacy', exact: true })
+  const settings = page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })
   const warning = settings.getByRole('region', { name: 'Reload with unsaved progress', exact: true })
   await expect(warning).toBeVisible()
   await warning.getByRole('button', { name: 'Cancel reload', exact: true }).click()

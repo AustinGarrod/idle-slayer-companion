@@ -1,4 +1,5 @@
 import { expect, test } from './fixtures'
+import { openAction as openSharedAction } from './helpers/app'
 import type { Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { emptyProfile, type Catalog } from '../../src/domain/types'
@@ -8,9 +9,7 @@ const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catal
 
 async function openAction(page: Page, name: string) {
   await expect(page.locator('.toolbar')).toBeVisible()
-  const action = page.getByRole('button', { name, exact: true })
-  if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await action.click()
+  await openSharedAction(page, name)
 }
 async function assertLocalFeedback(page: Page, text: string) {
   const dialog = page.getByRole('dialog')
@@ -168,7 +167,7 @@ test('shared conflict and reload dialogs keep export feedback and move review in
   await backups.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await openAction(page, 'Privacy & tracking')
   await page.getByRole('button', { name: 'Disable tracking and reload', exact: true }).click()
-  const settings = page.getByRole('dialog', { name: 'Settings & privacy', exact: true })
+  const settings = page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })
   const reload = settings.getByRole('region', { name: 'Reload with unsaved progress', exact: true })
   await expect(reload).toBeVisible()
   await expect(reload.getByRole('button', { name: 'Export backups and reload', exact: true })).toBeVisible()

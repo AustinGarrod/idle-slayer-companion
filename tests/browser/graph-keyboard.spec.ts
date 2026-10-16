@@ -3,6 +3,7 @@ import type { Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { visibility } from '../../src/domain/rules'
 import { emptyProfile, type Catalog } from '../../src/domain/types'
+import { openAction as openCompanionAction } from './helpers/app'
 
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf8')) as Catalog
 const key = 'idle-slayer-ascension-map.profile.v1'
@@ -50,11 +51,6 @@ async function settledCameraPosition(page: Page) {
     return proof.stable
   }).toBe(true)
   return position
-}
-async function openAction(page: Page, name: string) {
-  const action = page.getByRole('button', { name, exact: true })
-  if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await action.click()
 }
 async function showSpoilers(page: Page, enabled: boolean) {
   const checkbox = page.getByRole('checkbox', { name: 'Show spoilers', exact: true })
@@ -267,14 +263,15 @@ for (const layout of ['Game Layout', 'Detailed Layout'] as const) {
 
 test('keyboard help is discoverable in responsive menus and restores its trigger focus', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 }); await page.goto('./ascension/')
-  await openAction(page, 'Map help…')
+  await openCompanionAction(page, 'Map help…')
   const help = page.getByRole('dialog', { name: 'Map help', exact: true })
   await expect(help).toContainText('one Tab stop')
   await expect(help).toContainText('catalog order')
   await expect(help).toContainText('interaction mode')
   await page.keyboard.press('Escape')
   await expect(help).toHaveCount(0)
-  await openAction(page, 'About & sources')
+  await expect(page.getByRole('button', { name: 'Menu', exact: true })).toBeFocused()
+  await openCompanionAction(page, 'About & sources')
   await page.getByRole('button', { name: 'Map help…', exact: true }).click()
   await expect(help).toBeVisible()
 })

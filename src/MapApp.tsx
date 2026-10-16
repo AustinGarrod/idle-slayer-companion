@@ -77,10 +77,21 @@ const graphKeyboardHelp = 'Arrow Right or Down: next visible upgrade. Arrow Left
 const wikiPriorities = { schemaVersion, source: wikiSource, rows: wikiRows }
 const cost = (value: string) => presentCost(value).exact
 
+export interface MapActions {
+  openHelp: () => boolean
+  openInstall: () => boolean
+  openReferences: () => boolean
+  openProgress: () => boolean
+  undo: () => void
+  redo: () => void
+}
+
 interface MapAppProps {
   catalog: Catalog
   transferInbox: ProgressTransferInbox
   active?: boolean
+  embedded?: boolean
+  onActions?: (actions: MapActions | null) => void
   requestedUpgrade?: { id: string; sequence: number }
   onCompanionImport?: () => void
   onCompanionReset?: () => void
@@ -89,7 +100,7 @@ interface MapAppProps {
   onReferenceGuard?: (guard: () => boolean) => void
   onCompanionRecovery?: () => void
 }
-function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onCompanionImport, onCompanionReset, onCompanionExport, onCompanionTrackingChange, onReferenceGuard, onCompanionRecovery }: MapAppProps) {
+function Atlas({ catalog, transferInbox, active = true, embedded = false, onActions, requestedUpgrade, onCompanionImport, onCompanionReset, onCompanionExport, onCompanionTrackingChange, onReferenceGuard, onCompanionRecovery }: MapAppProps) {
   const { session: profileSession, state: sessionState, loaded } = useProfileSession(catalog.revision, {
     onState: (state) => { currentProfile.current = state.profile },
     onErrorChange: (state, recovered) => {
@@ -106,6 +117,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
       setConflictReview(null); setTrackingReload(null); setMenuState(null); setRequirementReview(null)
       setForecast(null)
       setRecentOpen(false)
+      setReferencesOpen(false)
       setRoutesOpen(false); setRoadmap(null)
       setMessage(state.conflict ? 'Saved progress changed. This session was kept for recovery.' : 'Progress updated from another tab. Previous previews, Undo and Redo were cleared.')
     },
@@ -115,6 +127,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
   const [conflictReview, setConflictReview] = useState<{ version: number; snapshot: StoredSnapshot } | null>(null)
   const intentions = useGoals()
   const [goalTarget, setGoalTarget] = useState<string | null>(null)
+  const focusGoals = useRef(false)
   const [forecast, setForecast] = useState<{ event: HypotheticalEvent; profile: Profile } | null>(null)
   const currentForecast = forecast?.profile === profile ? forecast : null
   useEffect(() => { if (forecast && forecast.profile !== profile) setForecast(null) }, [forecast, profile])
@@ -137,6 +150,11 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
   const [menu, setMenuStateValue] = useState<Menu>(null)
   const menuRef = useRef<Menu>(null)
   function setMenuState(next: Menu) { menuRef.current = next; setMenuStateValue(next) }
+  useEffect(() => {
+    if (menu !== 'progress' || !focusGoals.current) return
+    focusGoals.current = false
+    document.getElementById('goals-heading')?.focus()
+  }, [menu])
   const [routesOpen, setRoutesOpen] = useState(false)
   const [routeInitialId, setRouteInitialId] = useState<string | undefined>()
   const [roadmap, setRoadmap] = useState<{ profile: Profile; catalog: Catalog; initialId?: string } | null>(null)
@@ -148,6 +166,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
   const [checkpointsOpen, setCheckpointsOpen] = useState(false)
   const comparison = useComparisonSession()
   const [comparisonOpen, setComparisonOpen] = useState(false)
+  const [referencesOpen, setReferencesOpen] = useState(false)
   const [comparisonInitialId, setComparisonInitialId] = useState<string | undefined>()
   const [gameImport, setGameImport] = useState<{ result: GameSaveImportPreview; original: Profile } | null>(null)
   const [gameImportError, setGameImportError] = useState('')
@@ -309,6 +328,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     ?? (currentForecast ? 'Forward impact' : null)
     ?? (checkpointsOpen ? 'Progress checkpoints' : null)
     ?? (comparisonOpen ? 'Saved upgrade comparison' : null)
+    ?? (referencesOpen ? 'Ascension references' : null)
     ?? (recentOpen ? 'Recent upgrades' : null)
     ?? (menu ? menuTitles[menu] : null)
   const recommendations = useMemo(() => recommendUpgrades(catalog, profile, wikiPriorities), [catalog, profile])
@@ -357,6 +377,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     setForecast(null)
     setRecentOpen(false)
     setCheckpointsOpen(false); setComparisonOpen(false)
+    setReferencesOpen(false)
     const previous = menuRef.current
     if (next === previous) return
     if (previous === 'progress') restoreRequest.current++
@@ -374,6 +395,31 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     if (!interruptAppReload()) return
     setMenu(null); setSearchOpen(false); setComparisonInitialId(id); setComparisonOpen(true)
   }
+  function openCompanionTool(target: 'keyboard-help' | 'install' | 'references' | 'progress') {
+    if (!loaded) { setMessage('The Ascension map is still loading. Try this action again when it is ready.'); return false }
+    if (appReloadOperation.current?.committed) return false
+    // A queued install click must never discard an in-flight purchase, import,
+    // transfer or reference preview. These are the same guards as setMenu.
+    if (target === 'install' && (preview || purchaseTarget || gameImportLoading || conflictReview || trackingReload !== null
+      || menuRef.current === 'transfer' || checkpointsOpen || comparisonOpen || routesOpen || currentRoadmap || currentForecast || appReloadState.current !== null)) {
+      setMessage('Finish or cancel the current map action before opening Install & offline.')
+      return false
+    }
+    if (!interruptAppReload()) return false
+    invalidatePendingFiles()
+    setMenu(null); setPreviewState(null); setPurchaseTarget(null); setChoices({})
+    setGameImport(null); setGameImportLoading(false); setGameImportError('')
+    setConflictReview(null); setTrackingReload(null); setSearchOpen(false)
+    if (target === 'references') setReferencesOpen(true)
+    else setMenu(target)
+    return true
+  }
+  // The shell owns app-wide entry points; register fresh closures without
+  // exposing map progress or rendering a second set of global controls.
+  useLayoutEffect(() => {
+    onActions?.({ openHelp: () => openCompanionTool('keyboard-help'), openInstall: () => openCompanionTool('install'), openReferences: () => openCompanionTool('references'), openProgress: () => openCompanionTool('progress'), undo, redo })
+    return () => onActions?.(null)
+  })
   function openRoadmap(id?: string) {
     if (!interruptAppReload()) return
     const latest = profileSession.getState().profile
@@ -493,7 +539,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     transferRequest.current++
   }
   function reviewConflict() {
-    if (onCompanionRecovery) { onCompanionRecovery(); return }
+    if (onCompanionRecovery) { setMenu(null); setConflictReview(null); onCompanionRecovery(); return }
     cancelAppReload(true)
     setMessage('')
     const current = profileSession.getState()
@@ -587,10 +633,11 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     setMenuState(null); setSearchOpen(false); setPreviewState(null); setPurchaseTarget(null)
     setRecentOpen(false); setRoutesOpen(false); setRoadmap(null); setForecast(null)
     setCheckpointsOpen(false); setComparisonOpen(false)
+    setReferencesOpen(false)
     invalidatePendingFiles()
   }, [active])
   useEffect(() => {
-    const close = () => { setMenuState(null); setPreviewState(null); setPurchaseTarget(null); setRecentOpen(false); setRoutesOpen(false); setRoadmap(null); setForecast(null); setCheckpointsOpen(false); setComparisonOpen(false); invalidatePendingFiles() }
+    const close = () => { setMenuState(null); setPreviewState(null); setPurchaseTarget(null); setRecentOpen(false); setRoutesOpen(false); setRoadmap(null); setForecast(null); setCheckpointsOpen(false); setComparisonOpen(false); setReferencesOpen(false); invalidatePendingFiles() }
     window.addEventListener('companion-panel', close)
     return () => window.removeEventListener('companion-panel', close)
   }, [])
@@ -803,7 +850,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     window.location.reload()
   }
   async function requestTrackingChange(enabled: boolean) {
-    if (onCompanionTrackingChange) { onCompanionTrackingChange(enabled); return }
+    if (onCompanionTrackingChange) { setMenu(null); onCompanionTrackingChange(enabled); return }
     if (!interruptAppReload()) return
     const request = ++trackingChangeRequest.current
     const current = profileSession.getState()
@@ -1111,23 +1158,24 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
     </div>
     {currentRoadmap && <Dialog title="Hypothetical UA roadmap" close={() => setRoadmap(null)}><UARoadmapPanel catalog={catalog} profile={currentRoadmap.profile} getProfile={() => profileSession.getState().profile} initialId={currentRoadmap.initialId} /></Dialog>}
     {routesOpen && <Dialog title="Prerequisite routes" close={() => { setRoutesOpen(false); setRoadmap(null) }}><PrerequisiteRoutesPanel catalog={catalog} profile={profile} visible={visible} goals={intentions.goals} initialId={routeInitialId} /></Dialog>}
-    <footer><span>Unofficial companion · {progressStatus}</span>{historyControls}<button onClick={() => setMenu('keyboard-help')}>Map help…</button><button onClick={() => setMenu('about')}>About & sources</button><button aria-label="Install & offline" onClick={() => setMenu('install')}>{pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline'}</button><button onClick={() => setMenu('privacy')}>Privacy & tracking</button></footer>
+    {!embedded && <footer><span>Unofficial companion · {progressStatus}</span>{historyControls}<button onClick={() => setMenu('keyboard-help')}>Map help…</button><button onClick={() => setMenu('about')}>About & sources</button><button aria-label="Install & offline" onClick={() => setMenu('install')}>{pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline'}</button><button onClick={() => setMenu('privacy')}>Privacy & tracking</button></footer>}
     {!activeDialogTitle && <p className="sr-only" role="status" aria-label="Map action feedback">{message === storageError ? '' : message}</p>}{!activeDialogTitle && message !== storageError && message && toastVisible && <div className="toast" onClick={() => setMessage('')}>{message}<button aria-label="Dismiss status" onClick={() => setMessage('')}>×</button></div>}
     <input className="sr-only telemetry-private rr-block" tabIndex={-1} aria-label="Map progress JSON backup" ref={fileInput} type="file" accept="application/json,.json" onChange={(event) => { const file = event.target.files?.[0]; if (file) void restore(file); else restoreRequest.current++; event.target.value = '' }} />
     <input className="sr-only telemetry-private rr-block" tabIndex={-1} aria-label="Idle Slayer game save" ref={gameFileInput} type="file" accept=".sav" onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void readGameSave(file) }} />
     {currentForecast && <Dialog title="Forward impact" close={closeForecast}><ForwardImpactPanel catalog={catalog} profile={profile} event={currentForecast.event} /><div className="dialog-actions"><button className="forward-impact-close" onClick={closeForecast}>{currentForecast.event.kind === 'milestone' ? 'Back to Milestones' : 'Return to details'}</button></div></Dialog>}
     {recentOpen && <Dialog title="Recent upgrades" close={() => setRecentOpen(false)}><RecentUpgrades upgrades={visibleRecent.map((id) => index.get(id)!)} visibleUpgrades={visible.upgrades} selected={detail?.id ?? null} onSelect={returnToRecentUpgrade} onClear={() => setRecent([])} /></Dialog>}
+    {referencesOpen && <Dialog title="Ascension references" close={() => setReferencesOpen(false)}><div className="telemetry-private rr-block"><p>Checkpoints, saved comparisons and progression goals have separate storage and exports. They are not included in a progress backup.</p>{referenceRecovery.length > 0 && <p role="status">Some local references need recovery before closing or reloading. Review each collection below.</p>}<div className="dialog-actions"><button onClick={openCheckpoints}>Progress checkpoints…</button><button onClick={() => openComparison()}>Saved upgrade comparison…</button><button onClick={() => { focusGoals.current = true; setGoalTarget(null); setMenu('progress') }}>Progression goals…</button><button onClick={() => setMenu('progress')}>Map data tools…</button></div></div></Dialog>}
     {checkpointsOpen && <Dialog title="Progress checkpoints" close={() => setCheckpointsOpen(false)}><CheckpointPanel catalog={catalog} profile={profile} history={history} redoHistory={redoHistory} state={checkpoints.state} session={checkpoints.session} currentProfile={() => profileSession.getState().profile} /></Dialog>}
     {comparisonOpen && <Dialog title="Saved upgrade comparison" close={() => setComparisonOpen(false)}><SavedComparisonPanel catalog={catalog} profile={profile} getProfile={() => profileSession.getState().profile} visible={visible} session={comparison.session} state={comparison.state} initialId={comparisonInitialId}
       onInspect={(id) => { setComparisonOpen(false); setRequirementReview(null); center(id, 'neighbor', true, false) }}
       onReview={(route, origin) => { setComparisonOpen(false); reviewRequirement(route, origin, true) }} /></Dialog>}
     {menu === 'game-import' && <Dialog title="Import game progress" close={closeGameImport}>{gameImport ? <GameSaveImportPanel catalog={catalog} currentProfile={gameImport.original} preview={gameImport.result} onApply={applyGameImport} onCancel={closeGameImport} /> : <div className="game-save-picker">{gameImportLoading ? <p role="status">Reading game save…</p> : <><p className="telemetry-private rr-block" role="alert">{gameImportError}</p><p>Choose <b>savedata.sav</b> or <b>backup.sav</b> from a reviewed Idle Slayer 7.3.4 or legacy 7.2.0 Steam save. The selected file is read locally in your browser.</p><p className="game-save-path">%USERPROFILE%\AppData\LocalLow\Pablo Leban\Idle Slayer\</p></>}<div className="dialog-actions">{!gameImportLoading && <button className="primary" onClick={chooseGameSave}>Choose game save…</button>}<button onClick={closeGameImport}>Cancel</button></div></div>}</Dialog>}
     {menu === 'recommendations' && <Dialog title="Suggested next upgrade" close={() => setMenu(null)}><RecommendationPanel catalog={catalog} recommendations={recommendations} onSelect={(id) => selectSuggestion(id)} onPurchase={(id) => selectSuggestion(id, true)} blockedUpgrade={blockedRecommendation} onReviewRequirements={reviewBlockedRecommendation} /></Dialog>}
-    {menu === 'options' && <Dialog title="Map options" close={() => setMenu(null)}><div className="map-options"><p><b>{visible.owned} / {visible.total}</b> visible upgrades owned · Ultra Ascensions {profile.epoch}<br />{profile.showSpoilers ? 'Spoilers shown' : 'Spoilers hidden'}</p><label className="spoiler-control"><input type="checkbox" disabled={saving} checked={profile.showSpoilers} onChange={(event) => toggleSpoilers(event.target.checked)} />Show spoilers</label><button onClick={() => openRoutes()}>Compare prerequisite routes…</button><button onClick={() => openRoadmap()}>Plan hypothetical UAs…</button><button onClick={openRecentUpgrades}>Recent upgrades…</button><button onClick={() => openComparison()}>Saved upgrade comparison…</button><button onClick={showOverview} disabled={!visible.ids.size}>Overview visible map</button><button onClick={(event) => refocusSelection(event.detail === 0)} disabled={!detail}>Refocus selected upgrade</button><small>Overview fits only currently visible upgrades. Refocus returns your selection to inspection size without changing progress.</small><button onClick={() => setMenu('milestones')}>Milestones</button><button onClick={() => setMenu('progress')}>Progress</button><button onClick={() => setMenu('reference-sheet')}>Reference sheet</button>{historyControls}<button onClick={() => setMenu('keyboard-help')}>Map help…</button><button onClick={() => setMenu('about')}>About & sources</button><button aria-label="Install & offline" onClick={() => setMenu('install')}>{pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline'}</button><button onClick={() => setMenu('privacy')}>Privacy & tracking</button><small>Unofficial companion · {progressStatus}</small></div></Dialog>}
+    {menu === 'options' && <Dialog title="Map options" close={() => setMenu(null)}><div className="map-options"><p><b>{visible.owned} / {visible.total}</b> visible upgrades owned · Ultra Ascensions {profile.epoch}<br />{profile.showSpoilers ? 'Spoilers shown' : 'Spoilers hidden'}</p><label className="spoiler-control"><input type="checkbox" disabled={saving} checked={profile.showSpoilers} onChange={(event) => toggleSpoilers(event.target.checked)} />Show spoilers</label><button onClick={() => openRoutes()}>Compare prerequisite routes…</button><button onClick={() => openRoadmap()}>Plan hypothetical UAs…</button><button onClick={openRecentUpgrades}>Recent upgrades…</button><button onClick={() => openComparison()}>Saved upgrade comparison…</button><button onClick={showOverview} disabled={!visible.ids.size}>Overview visible map</button><button onClick={(event) => refocusSelection(event.detail === 0)} disabled={!detail}>Refocus selected upgrade</button><small>Overview fits only currently visible upgrades. Refocus returns your selection to inspection size without changing progress.</small><button onClick={() => setMenu('milestones')}>Milestones</button><button onClick={() => setMenu('progress')}>Progress</button><button onClick={() => setMenu('reference-sheet')}>Reference sheet</button>{historyControls}{!embedded && <><button onClick={() => setMenu('keyboard-help')}>Map help…</button><button onClick={() => setMenu('about')}>About & sources</button><button aria-label="Install & offline" onClick={() => setMenu('install')}>{pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline'}</button><button onClick={() => setMenu('privacy')}>Privacy & tracking</button></>}<small>Unofficial companion · {progressStatus}</small></div></Dialog>}
     {menu === 'reference-sheet' && <Dialog title="Upgrade reference sheet" close={() => setMenu(null)}><ReferenceSheetPanel catalog={catalog} ids={visibleSheetIds} getIds={() => menuRef.current === 'reference-sheet' ? sheetSelectionRef.current.ids : []} viewer={profile} getViewer={() => profileSession.getState().profile} remove={(id) => setSheetSelection((current) => ({ ids: current.ids.filter((entry) => entry !== id), feedback: '' }))} clear={() => setSheetSelection({ ids: [], feedback: '' })} /></Dialog>}
     {menu === 'milestones' && <Dialog title="Milestones" close={() => setMenu(null)}><p>Record the required item received or purchased in the game.</p>{requirementReturn}{visible.milestones.map((item) => <div key={item.id}><label className="milestone"><input data-requirement-milestone={item.id} type="checkbox" disabled={saving} checked={profile.milestones[item.id] === true} onChange={(event) => { if (event.target.checked) { if (change({ ...profile, milestones: { ...profile.milestones, [item.id]: true } }, 'Milestone recorded.', false, 'milestone')) trackEvent('milestone_changed', { milestone_id: item.id, recorded: true }) } else { setMenu(null); previewRemoval(item.id, true) } }} /><span>{item.title}<small>{item.description}</small></span></label>{!profile.milestones[item.id] && <div className="telemetry-private rr-block"><button className="forward-impact-trigger" data-forward-milestone={item.id} aria-label={`Analyze receipt of ${item.title}`} onClick={() => startForecast({ kind: 'milestone', id: item.id })}>Analyze item receipt…</button></div>}</div>)}{!visible.milestones.length && <div><p>No milestone controls are currently revealed. Controls follow the game's reveal rules. To enter existing progress on an isolated branch, you can explicitly choose Show spoilers in Map options, then return here. Record only the required item actually received, crafted or purchased.</p><button onClick={() => setMenu('options')}>Review spoiler setting</button></div>}</Dialog>}
     {menu === 'progress' && <Dialog title="Your progress" close={() => setMenu(null)}>
-      <p>One local profile. Keep a backup when changing browsers or devices.</p><button onClick={() => setMenu('keyboard-help')}>Map help…</button>{requirementReturn}
+      <p>One local profile. Keep a backup when changing browsers or devices.</p>{!embedded && <button onClick={() => setMenu('keyboard-help')}>Map help…</button>}{requirementReturn}
       <button onClick={openCheckpoints}>Progress checkpoints…</button><small>Keep named read-only references and compare visible progress. Separate from active progress and visit-only Undo/Redo.</small>
       <section className="session-history" aria-label="Undo and redo"><h3>Undo &amp; redo</h3>{historyControls}<p>Up to 20 changes are available during this visit, including spoiler settings. Undo restores progress before the action; Redo restores the undone change. A new change clears Redo. Reloading or an external progress change clears both. Export a JSON backup to keep progress beyond this visit.</p></section>
       <div className="progress-actions">
@@ -1144,7 +1192,7 @@ function Atlas({ catalog, transferInbox, active = true, requestedUpgrade, onComp
       </div>
     <GoalsPanel catalog={catalog} profile={profile} targetId={goalTarget} intentions={intentions} onInspect={(id) => { setMenu(null); center(id, 'neighbor') }} /></Dialog>}
     {menu === 'transfer' && <Dialog title="Transfer map progress" close={closeTransfer}><ProgressTransferPanel catalog={catalog} profile={profile} layout={layoutMode} mode={transferMode} busy={transferBusy || saving} generated={transferGenerated} preview={transferPreview} onGenerate={() => { void generateTransfer() }} onReceive={(input) => { void receiveTransfer(input) }} onApply={applyTransfer} onCancel={closeTransfer} onBackup={backup} /></Dialog>}
-    {menu === 'about' && <Dialog title="About this map" close={() => setMenu(null)}><p>Unofficial Idle Slayer companion. Game assets belong to their respective rights holders. Application code and asset attribution are documented separately.</p><p>Game {catalog.gameVersion} · Steam build {catalog.steamBuild}<br />Catalog {catalog.revision}</p><p>All map data and icons are bundled locally. No account or application backend is required.</p><p className="progress-save-status">{progressStatus}</p><p>{trackingDisclosure}</p><button aria-label="Install & offline" onClick={() => setMenu('install')}>{pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline'}</button><button onClick={() => setMenu('keyboard-help')}>Map help…</button><button onClick={() => setMenu('privacy')}>Privacy & tracking</button><a onClick={() => trackEvent('source_link_opened', { source: 'about', action: 'github' })} href="https://github.com/AustinGarrod/idle-slayer-ascension-map">Source and extraction documentation</a><a className="software-license-link" target="_blank" rel="noreferrer" onClick={() => trackEvent('source_link_opened', { source: 'about', action: 'license' })} href={`${import.meta.env.BASE_URL}licenses/index.html`}>Bundled software licenses</a></Dialog>}
+    {menu === 'about' && <Dialog title="About this map" close={() => setMenu(null)}><p>Unofficial Idle Slayer companion. Game assets belong to their respective rights holders. Application code and asset attribution are documented separately.</p><p>Game {catalog.gameVersion} · Steam build {catalog.steamBuild}<br />Catalog {catalog.revision}</p><p>All map data and icons are bundled locally. No account or application backend is required.</p><p className="progress-save-status">{progressStatus}</p><p>{trackingDisclosure}</p><button aria-label="Install & offline" onClick={() => setMenu('install')}>{pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline'}</button><button onClick={() => setMenu('keyboard-help')}>Map help…</button><button onClick={() => setMenu('privacy')}>Privacy & tracking</button><a onClick={() => trackEvent('source_link_opened', { source: 'about', action: 'github' })} href="https://github.com/AustinGarrod/idle-slayer-companion">Source and extraction documentation</a><a className="software-license-link" target="_blank" rel="noreferrer" onClick={() => trackEvent('source_link_opened', { source: 'about', action: 'license' })} href={`${import.meta.env.BASE_URL}licenses/index.html`}>Bundled software licenses</a></Dialog>}
     {menu === 'keyboard-help' && <Dialog title="Map help" close={() => setMenu(null)}><MapHelpPanel onProgress={() => setMenu('progress')} onMilestones={() => setMenu('milestones')} onSpoilers={() => setMenu('options')} /><h3>Keyboard map navigation</h3><p>The map has one Tab stop for its visible upgrades. All visible upgrades remain available by keyboard.</p><ul><li>From the toolbar, Tab reaches the map shortcut. Press Enter to skip directly to camera controls, or Tab again to explore upgrades.</li><li>Arrow Right / Down browses the next upgrade; Left / Up browses the previous. Home / End jumps to the first / last visible upgrade. Browsing follows catalog order and wraps at its ends.</li><li>Enter / Space selects the focused upgrade and opens its details. Escape deselects it. Focus browsing preserves recorded progress and fixed positions.</li><li>Tab leaves upgrades for camera controls; Shift+Tab returns to the map shortcut and toolbar. Camera controls provide zoom, return to start and directional panning. Entering keyboard exploration closes the directional pan controls so upgrades remain unobscured. Use Map navigation to reopen them.</li><li>Search selection by keyboard goes directly to details. Closing those details returns to search.</li></ul><p>Screen-reader users may need their reader's interaction mode to send arrow keys to the focused upgrade. The focused upgrade announces its title, state, cost and keyboard instructions.</p></Dialog>}
     {menu === 'privacy' && <Dialog title="Privacy & tracking" close={() => setMenu(null)}><PrivacyPanel status={getTrackingStatus()} onChange={requestTrackingChange} progressStatus={progressStatus} /></Dialog>}
     {menu === 'install' && appReload === null && <Dialog title="Install & offline" close={() => setMenu(null)}>{referenceRecovery.length > 0 && <div className="telemetry-private rr-block"><p>Local references need recovery before closing or reloading. A progress backup does not include these separate collections.</p><div className="dialog-actions">{referenceRecovery.includes('checkpoints') && <button onClick={openCheckpoints}>Review checkpoint recovery</button>}{referenceRecovery.includes('comparison') && <button onClick={() => openComparison()}>Review comparison recovery</button>}{referenceRecovery.includes('goals') && <button onClick={() => setMenu('progress')}>Review goal recovery</button>}</div></div>}<InstallPanel onReload={() => { void requestAppReload('update') }} onRepair={() => { void requestAppReload('repair') }} progressStatus={progressStatus} /></Dialog>}

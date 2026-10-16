@@ -28,7 +28,7 @@ async function open(page: Page, name: string) {
   await action.click()
 }
 async function history(page: Page, direction: 'Undo' | 'Redo', label: string) {
-  let action = page.locator('footer').getByRole('button', { name: direction, exact: true })
+  let action = page.locator('.companion-session-status').getByRole('button', { name: direction, exact: true })
   if (!await action.isVisible()) {
     await page.getByRole('button', { name: 'Map options', exact: true }).click()
     action = page.getByRole('dialog').getByRole('button', { name: direction, exact: true })
@@ -163,7 +163,7 @@ test('a pending Redo write disables both history directions until coordinated sa
   await purchase(page)
   await history(page, 'Undo', 'Purchase recording')
   await page.evaluate(() => { (window as Window & { holdHistoryWrite?: boolean }).holdHistoryWrite = true })
-  let redo = page.locator('footer').getByRole('button', { name: 'Redo', exact: true })
+  let redo = page.locator('.companion-session-status').getByRole('button', { name: 'Redo', exact: true })
   if (!await redo.isVisible()) { await page.getByRole('button', { name: 'Map options', exact: true }).click(); redo = page.getByRole('dialog').getByRole('button', { name: 'Redo', exact: true }) }
   await redo.click()
   await expect(page.locator('.atlas')).toHaveAttribute('aria-busy', 'true')
@@ -202,16 +202,16 @@ for (const layout of ['Game Layout', 'Detailed Layout']) test(`${layout} preserv
 })
 
 
-for (const width of [1101, 1280, 1440, 1920]) test(`${width}px action captions retain footer and map geometry through history, Undo and Redo`, async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop', 'Phone history lives in the options dialog; the footer is desktop only.')
+for (const width of [1101, 1280, 1440, 1920]) test(`${width}px action captions retain status and map geometry through history, Undo and Redo`, async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'These geometry cases cover desktop widths; compact history has separate phone coverage.')
     // The map's available width excludes the companion navigation rail.
     await page.setViewportSize({ width: width + 236, height: 900 })
     await page.goto('./ascension/')
     await expect(page.locator('.react-flow__node')).not.toHaveCount(0)
-    await expect(page.locator('footer')).toBeVisible()
+    await expect(page.locator('.companion-session-status')).toBeVisible()
     await page.evaluate(async () => { await document.fonts.ready; for (let i = 0; i < 8; i++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve())) })
     const geometry = () => page.evaluate(() => {
-      const footer = document.querySelector('footer')!.getBoundingClientRect(), map = document.querySelector('.map')!.getBoundingClientRect()
+      const footer = document.querySelector('.companion-session-status')!.getBoundingClientRect(), map = document.querySelector('.map')!.getBoundingClientRect()
       return { footerHeight: footer.height, mapHeight: map.height }
     })
     const before = await geometry()
@@ -226,8 +226,8 @@ for (const width of [1101, 1280, 1440, 1920]) test(`${width}px action captions r
     await expect.poll(geometry).toEqual(before)
     await history(page, 'Redo', 'Previous ascension history')
     await expect.poll(geometry).toEqual(before)
-    expect(await page.locator('footer').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true)
-    for (const button of await page.locator('footer .session-history-controls button').all()) {
+    expect(await page.locator('.companion-session-status').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true)
+    for (const button of await page.locator('.companion-session-status .session-history-controls button').all()) {
       expect(await button.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
       const bounds = await button.boundingBox()
       expect(bounds!.width).toBeGreaterThanOrEqual(44)

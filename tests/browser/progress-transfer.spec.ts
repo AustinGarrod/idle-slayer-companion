@@ -38,7 +38,7 @@ test('desktop snapshot opens a mobile preview, cancels safely, then applies and 
   await page.addInitScript(({ key, layout, tracking, source }) => {
     localStorage.setItem(key, JSON.stringify(source)); localStorage.setItem(layout, 'web'); localStorage.setItem(tracking, 'disabled')
   }, { key: PROFILE_STORAGE_KEY, layout: LAYOUT_PREFERENCE_KEY, tracking: ANALYTICS_PREFERENCE_KEY, source })
-  await page.goto('./ascension/'); await expect(page.locator('footer')).not.toContainText('Checking saved progress'); await openTransfer(page, 'send')
+  await page.goto('./ascension/'); await expect(page.locator('.companion-session-status')).not.toContainText('Checking saved progress'); await openTransfer(page, 'send')
   await page.getByRole('button', { name: 'Create transfer snapshot', exact: true }).click()
   await expect(page.getByRole('img', { name: 'Progress transfer QR code', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Transfer snapshot ready', exact: true })).toBeFocused()
@@ -199,7 +199,7 @@ test('an incoming transfer respects current spoiler preview boundaries and remov
 
 test('clipboard refusal selects a private manual-copy fallback without changing progress', async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(navigator, 'clipboard', { value: { writeText: async () => { throw new DOMException('Synthetic clipboard refusal', 'NotAllowedError') } } }))
-  await page.goto('./ascension/'); await expect(page.locator('footer')).not.toContainText('Checking saved progress'); await openTransfer(page, 'send')
+  await page.goto('./ascension/'); await expect(page.locator('.companion-session-status')).not.toContainText('Checking saved progress'); await openTransfer(page, 'send')
   await page.getByRole('button', { name: 'Create transfer snapshot', exact: true }).click()
   await page.getByRole('button', { name: 'Copy transfer link', exact: true }).click()
   const field = page.getByRole('textbox', { name: 'Private transfer link', exact: true })

@@ -1,4 +1,5 @@
 import { installProfileTestHelpers } from './fixtures'
+import { openAction } from './helpers/app'
 import { chromium, expect, test as base, type BrowserContext, type Page } from '@playwright/test'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -89,8 +90,7 @@ test('single-event forward impact wraps every text line and preserves native con
 test('optional map help remains readable and actionable at the actual 200% font', async ({ page }) => {
   await page.goto('./ascension/')
   await expect(page.locator('html')).toHaveCSS('font-size', '32px')
-  await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Map help…', exact: true }).click()
+  await openAction(page, 'Map help…')
   const help = page.getByRole('dialog', { name: 'Map help', exact: true })
   await expect(help).toBeVisible()
   expect(await help.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true)

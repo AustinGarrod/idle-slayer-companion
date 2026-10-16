@@ -2,6 +2,8 @@
 
 Idle Slayer Companion is a static React/TypeScript application. Its seven routes are the Overview root plus `ascension/`, `achievements/`, `crafting/`, `quests/`, `bestiary/`, and `divinities/`. Every route has a built HTML entry for direct links and offline reopening. Navigation does not reload the application or discard the mounted Ascension canvas.
 
+The Companion navigation owns **Privacy & tracking**, **About & sources**, and **Install & offline**. **Map help…** is available from About & sources. The embedded map omits its former app-wide footer and duplicate app-wide menu actions. Ascension-specific progress, checkpoint, comparison, transfer and planning controls remain in the map. **Review Ascension references** opens the actual reference collections; it does not merely navigate to an already-open route. The shell uses the map's guarded action controller for help, reference recovery and installation, preserving purchase/transfer previews and save-before-reload protections. Its shared Undo/Redo also uses that controller while the map is mounted, retaining transfer layout restoration, pending-preview invalidation, feedback and camera handling across sections.
+
 ## Actual observations
 
 `CompanionProgress` contains the existing Ascension profile and seven typed record collections: achievement, craft, material, quest, village, enemy, and divinity. Each collection has an explicit tracked state. A missing field means **unrecorded**, not false or zero. Decimal counters remain strings; calculations use integer arithmetic. Observation timestamps describe recording in this utility, not authenticated gameplay dates.

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import './CompanionShell.css'
+import { usePwaStatus } from './pwa'
 
 export const companionSections = [
   { id: 'overview', title: 'Overview', short: 'Home', symbol: '◈', description: 'Progress summary' },
@@ -23,21 +24,28 @@ export interface CompanionShellProps {
   onBackup: () => void
   onSettings?: () => void
   onHelp?: () => void
+  onInstall?: () => void
   status?: ReactNode
 }
 
 /** Navigation owns no player data. Keeping the map mounted preserves its visit-only state. */
-export function CompanionShell({ section, onNavigate, children, ascension, onImport, onBackup, onSettings, onHelp, status }: CompanionShellProps) {
+export function CompanionShell({ section, onNavigate, children, ascension, onImport, onBackup, onSettings, onHelp, onInstall, status }: CompanionShellProps) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobile, setMobile] = useState(() => matchMedia('(max-width: 900px)').matches)
   const [largeText, setLargeText] = useState(() => parseFloat(getComputedStyle(document.documentElement).fontSize) > 20)
+  const pwaStatus = usePwaStatus()
   const menuButton = useRef<HTMLButtonElement>(null)
   const topbar = useRef<HTMLElement>(null)
   const navigation = useRef<HTMLElement>(null)
   const sidebar = useRef<HTMLElement>(null)
+  const content = useRef<HTMLElement>(null)
   const current = companionSections.find((item) => item.id === section) ?? companionSections[0]
   const navigationModal = mobile && mobileOpen
+
+  useLayoutEffect(() => {
+    if (content.current) { content.current.scrollTop = 0; content.current.scrollLeft = 0 }
+  }, [section])
 
   useEffect(() => {
     const observer = new ResizeObserver(() => setLargeText(parseFloat(getComputedStyle(document.documentElement).fontSize) > 20))
@@ -101,11 +109,12 @@ export function CompanionShell({ section, onNavigate, children, ascension, onImp
       </nav>
       <div className="companion-sidebar-bottom">
         <div className="companion-local-note"><span aria-hidden="true">◉</span><span>Stored in this browser<small>Export a backup.</small></span></div>
-        {onSettings && <button type="button" onClick={() => openFromNavigation(onSettings)} title={collapsed ? 'Settings & privacy' : undefined}><span aria-hidden="true">⚙</span><span className="companion-nav-label">Settings & privacy</span></button>}
-        {onHelp && <button type="button" onClick={() => openFromNavigation(onHelp)} title={collapsed ? 'Help & sources' : undefined}><span aria-hidden="true">?</span><span className="companion-nav-label">Help & sources</span></button>}
+        {onSettings && <button type="button" onClick={() => openFromNavigation(onSettings)} title={collapsed ? 'Privacy & tracking' : undefined}><span aria-hidden="true">⚙</span><span className="companion-nav-label">Privacy & tracking</span></button>}
+        {onHelp && <button type="button" onClick={() => openFromNavigation(onHelp)} title={collapsed ? 'About & sources' : undefined}><span aria-hidden="true">?</span><span className="companion-nav-label">About & sources</span></button>}
+        {onInstall && <button type="button" aria-label="Install & offline" onClick={() => openFromNavigation(onInstall)} title={collapsed ? pwaStatus.update ? 'Install & offline · Update ready' : 'Install & offline' : undefined}><span aria-hidden="true">↓</span><span className="companion-nav-label">Install & offline{pwaStatus.update && <small>Update ready</small>}</span></button>}
       </div>
     </aside>
-    <main id="companion-content" className="companion-content" tabIndex={-1} aria-label={current.title} inert={navigationModal}>
+    <main ref={content} id="companion-content" className="companion-content" tabIndex={-1} aria-label={current.title} inert={navigationModal}>
       {status && <div className="companion-session-status telemetry-private rr-block">{status}</div>}
       <div className="companion-map-container" hidden={section !== 'ascension'}>{ascension}</div>
       {section !== 'ascension' && children}

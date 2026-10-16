@@ -157,6 +157,17 @@
 .companion-empty-state h2 { color: #cbb386; font-size: .75rem; }
 .companion-empty-state p { max-width: 480px; margin: 0 auto 20px; color: #a99a80; font-size: .8125rem; }
 .companion-load-more { display: block; margin: 28px auto 0; font-size: .8125rem; }
+.companion-import-form, .companion-backup-form { display: grid; gap: 20px; min-width: 0; font-size: .9375rem; }
+.companion-import-form p, .companion-backup-form p { margin: 0; }
+.companion-dialog-section { display: grid; gap: 12px; min-width: 0; }
+.companion-dialog-section h3 { margin: 0; color: var(--bright-gold); }
+.companion-backup-form > .companion-dialog-section + .companion-dialog-section { padding-top: 20px; border-top: 1px solid #574631; }
+.companion-save-location { display: block; min-width: 0; padding: 12px; border: 1px solid #665234; border-radius: 5px; background: var(--canvas); font-size: .8125rem; line-height: 1.6; overflow-wrap: anywhere; user-select: all; }
+.companion-file-field { display: grid; gap: 8px; min-width: 0; color: #d4c3a4; font-size: .875rem; line-height: 1.5; }
+.companion-file-field input[type='file'] { width: 100%; max-width: 100%; min-width: 0; min-height: 48px; margin: 0; padding: 6px; font-size: .8125rem; }
+.companion-file-field input[type='file']::file-selector-button { min-height: 36px; margin-right: 12px; padding: 6px 10px; border: 1px solid #79603b; border-radius: 3px; color: #f8efd9; background: var(--raised); font: inherit; cursor: pointer; }
+.companion-dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.companion-dialog-actions > button { max-width: 100%; margin: 0; overflow-wrap: anywhere; }
 @media (min-width: 1600px) {
   .companion-page { padding-top: 52px; }
   .companion-journey-card { min-height: 228px; }

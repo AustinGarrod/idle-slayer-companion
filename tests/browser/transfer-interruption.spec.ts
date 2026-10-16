@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from './fixtures'
+import { openAction as openSharedAction } from './helpers/app'
 import { readFileSync } from 'node:fs'
 import { emptyProfile, type Catalog } from '../../src/domain/types'
 import { encodeProgressTransfer, progressTransferLink } from '../../src/domain/progress-transfer'
@@ -24,9 +25,7 @@ type DeferredWindow = Window & { releaseRead?: () => void; readFinished?: boolea
 async function saved(page: Page) { return page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), PROFILE_STORAGE_KEY) }
 async function openAction(page: Page, name: string) {
   await expect(page.locator('.toolbar')).toBeVisible()
-  const action = page.getByRole('button', { name, exact: true })
-  if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await action.click()
+  await openSharedAction(page, name)
 }
 async function seed(page: Page) {
   await page.addInitScript(({ key, layout, initial }) => {

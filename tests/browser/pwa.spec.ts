@@ -17,7 +17,7 @@ import { upgradeReferenceURL } from '../../src/domain/upgrade-reference'
 import { CHECKPOINT_STORAGE_KEY } from '../../src/domain/checkpoints'
 import { COMPARISON_STORAGE_KEY } from '../../src/domain/saved-comparison'
 import { COMPANION_WORKSPACE_KEY as GOALS_STORAGE_KEY } from '../../src/useCompanionWorkspace'
-import { openProgress } from './helpers/app'
+import { openAction, openProgress } from './helpers/app'
 
 test.use({ serviceWorkers: 'allow', appServiceWorkers: true })
 const base = '/idle-slayer-companion/'
@@ -33,9 +33,7 @@ async function replaceMapProgress(page: Page, profile: Profile) {
 }
 async function openInstall(page: Page) {
   await expect(page.locator('.toolbar')).toBeVisible()
-  const button = page.getByRole('button', { name: 'Install & offline', exact: true }).first()
-  if (!await button.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await page.getByRole('button', { name: 'Install & offline', exact: true }).first().click()
+  await openAction(page, 'Install & offline')
 }
 async function offlineReady(page: Page) {
   await openInstall(page)
@@ -84,12 +82,12 @@ test('a queued installation opener cannot replace a purchase or transfer preview
   await page.goto('./ascension/'); await offlineReady(page)
   await page.getByRole('button', { name: 'Return to start', exact: true }).click()
   await page.getByRole('button', { name: 'Record purchase…', exact: true }).click()
-  await page.locator('footer button[aria-label="Install & offline"]').evaluate((button: HTMLButtonElement) => button.click())
+  await page.locator('.companion-sidebar-bottom').getByRole('button', { name: 'Install & offline', exact: true, includeHidden: true }).evaluate((button: HTMLButtonElement) => button.click())
   await expect(page.getByRole('dialog', { name: 'Record purchase?', exact: true })).toBeVisible()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
   await page.getByRole('button', { name: 'Cancel', exact: true }).click()
   await openProgress(page); await page.getByRole('button', { name: 'Receive transfer…', exact: true }).click()
-  await page.locator('footer button[aria-label="Install & offline"]').evaluate((button: HTMLButtonElement) => button.click())
+  await page.locator('.companion-sidebar-bottom').getByRole('button', { name: 'Install & offline', exact: true, includeHidden: true }).evaluate((button: HTMLButtonElement) => button.click())
   await expect(page.getByRole('dialog', { name: 'Transfer map progress', exact: true })).toBeVisible()
   await expect(page.locator('dialog[open]')).toHaveCount(1)
 })
@@ -216,6 +214,7 @@ test('an incoming private transfer aborts startup repair while catalog files are
   await page.reload()
   await expect(page.getByRole('heading', { name: 'Ascension catalog unavailable', exact: true })).toBeVisible()
   await deferRepair(page, 'checking')
+  await openAction(page, 'Install & offline')
   await page.getByRole('button', { name: 'Repair offline files and reload…', exact: true }).click()
   await expect.poll(() => page.evaluate(() => Boolean((window as Window & { releasePwaRepair?: () => Promise<void> }).releasePwaRepair))).toBe(true)
   const incoming = emptyProfile(catalog.revision); incoming.purchases['startup-private-unknown'] = { epoch: 0, active: true }
@@ -600,9 +599,7 @@ test('updates stay waiting for late windows, then naturally activate after all c
     const reopened = await context.newPage(); await reopened.goto(reopenURL)
     await expect(reopened.locator('.toolbar')).toBeVisible()
     await expect.poll(() => reopened.evaluate(async () => await caches.keys())).toEqual(['idle-slayer-companion-public-' + release.version])
-    const about = reopened.getByRole('button', { name: 'About & sources', exact: true })
-    if (!await about.isVisible()) await reopened.getByRole('button', { name: 'Map options', exact: true }).click()
-    await about.click()
+    await openAction(reopened, 'About & sources')
     await expect(reopened.getByRole('dialog')).toContainText(updatedCatalog.revision)
     const saved = await reopened.evaluate((key) => JSON.parse(localStorage.getItem(key)!).progress.ascension, PROFILE_STORAGE_KEY)
     expect(saved.purchases['future-unknown']).toEqual({ epoch: 2, active: false })

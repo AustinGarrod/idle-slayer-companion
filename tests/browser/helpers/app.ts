@@ -10,6 +10,19 @@ export async function exposeMapAction(page: Page, action: Locator) {
 }
 
 export async function openAction(page: Page, name: string) {
+  if (name === 'Map help…') {
+    await openAction(page, 'About & sources')
+    await page.getByRole('dialog', { name: 'About & sources', exact: true }).getByRole('button', { name, exact: true }).click()
+    return
+  }
+  if (['About & sources', 'Privacy & tracking', 'Install & offline'].includes(name)) {
+    const current = page.locator('dialog[open]')
+    if (await current.count()) await current.getByRole('button', { name: 'Close dialog', exact: true }).click()
+    const action = page.getByRole('button', { name, exact: true })
+    if (!await action.isVisible()) await page.getByRole('button', { name: 'Menu', exact: true }).click()
+    await action.click()
+    return
+  }
   const action = page.getByRole('button', { name, exact: true })
   await exposeMapAction(page, action)
   await action.click()

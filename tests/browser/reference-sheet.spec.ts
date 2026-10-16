@@ -89,7 +89,7 @@ test('a selected spoiler is pruned from counts and output after hiding and never
   const html = await dialog.locator('iframe').getAttribute('srcdoc')
   expect(html).not.toContain(hidden.id); expect(html).not.toContain(hidden.title)
   await page.keyboard.press('Escape')
-  let undo = page.locator('footer').getByRole('button', { name: 'Undo', exact: true })
+  let undo = page.locator('.companion-session-status').getByRole('button', { name: 'Undo', exact: true })
   if (!await undo.isVisible()) {
     if (await menu.isVisible()) await menu.click(); else await page.getByRole('button', { name: 'Map view…', exact: true }).click()
     undo = page.getByRole('dialog', { name: 'Map options', exact: true }).getByRole('button', { name: 'Undo', exact: true })

@@ -1,4 +1,5 @@
 import { expect, test } from './fixtures'
+import { openAction } from './helpers/app'
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import type { NoticeManifest } from '../../scripts/runtime-notices'
@@ -7,9 +8,7 @@ const manifest = JSON.parse(readFileSync('public/licenses/notices.json', 'utf8')
 test('About opens the deployed index and all complete runtime notices', async ({ page, request }) => {
   await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
-  const about = page.getByRole('button', { name: 'About & sources', exact: true })
-  if (!await about.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await about.click()
+  await openAction(page, 'About & sources')
   const link = page.getByRole('link', { name: 'Bundled software licenses', exact: true })
   const [index] = await Promise.all([page.waitForEvent('popup'), link.click()])
   await expect(index.getByRole('heading', { name: 'Bundled software licenses', exact: true })).toBeVisible()

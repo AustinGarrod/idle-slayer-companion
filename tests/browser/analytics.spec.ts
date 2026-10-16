@@ -1,4 +1,4 @@
-import { openProgress } from './helpers/app'
+import { openAction, openProgress } from './helpers/app'
 import { expect, test } from './fixtures'
 import type { BrowserContext, Page, Request } from '@playwright/test'
 import { createHash } from 'node:crypto'
@@ -317,9 +317,7 @@ test('local production preview stays untracked and has usable privacy controls',
   const capture = await installLocalRoutes(context, new URL(baseURL!).origin)
   await page.goto('./ascension/')
   await expect(page.locator('.toolbar')).toBeVisible()
-  const action = page.getByRole('button', { name: 'Privacy & tracking', exact: true })
-  if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await action.click()
+  await openAction(page, 'Privacy & tracking')
   await expect(page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })).toBeVisible()
   expect(capture.scriptRequests).toEqual([])
   expect(capture.submissions).toEqual([])
@@ -714,8 +712,8 @@ for (const startup of ['loading', 'network-error'] as const) {
       }
       const menu = page.getByRole('button', { name: 'Menu', exact: true })
       if (await menu.isVisible()) await menu.click()
-      await page.getByRole('button', { name: 'Settings & privacy', exact: true }).click()
-      return page.getByRole('dialog', { name: 'Settings & privacy', exact: true })
+      await page.getByRole('button', { name: 'Privacy & tracking', exact: true }).click()
+      return page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })
     }
     const privacy = await openPrivacy()
     await expect(privacy).toContainText('self-hosted Umami')
@@ -1263,12 +1261,10 @@ test('unsaved progress and intentions opt-out preserves cancellation and exports
   await backups.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await expect(page.locator('.companion-session-status').getByRole('status').filter({ hasText: 'Intentions could not be saved' })).toBeVisible()
   expect(await page.evaluate((key) => localStorage.getItem(key), workspaceKey)).toBeNull()
-  const action = page.getByRole('button', { name: 'Privacy & tracking', exact: true })
-  if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await action.click()
+  await openAction(page, 'Privacy & tracking')
   const privacy = page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })
   await privacy.getByRole('button', { name: 'Disable tracking and reload', exact: true }).click()
-  const settings = page.getByRole('dialog', { name: 'Settings & privacy', exact: true })
+  const settings = page.getByRole('dialog', { name: 'Privacy & tracking', exact: true })
   const warning = settings.getByRole('region', { name: 'Reload with unsaved progress', exact: true })
   await expect(warning).toContainText('Companion progress and intentions')
   await warning.getByRole('button', { name: 'Cancel reload', exact: true }).click()
@@ -1277,8 +1273,7 @@ test('unsaved progress and intentions opt-out preserves cancellation and exports
   expect(await page.evaluate((key) => JSON.parse(window.__readMapProfileText(key)!), profileKey)).toEqual(initial)
   await settings.getByRole('button', { name: 'Close dialog', exact: true }).click()
   await expect(purchased).toBeVisible()
-  if (!await action.isVisible()) await page.getByRole('button', { name: 'Map options', exact: true }).click()
-  await action.click()
+  await openAction(page, 'Privacy & tracking')
   await privacy.getByRole('button', { name: 'Disable tracking and reload', exact: true }).click()
   await expect(warning).toBeVisible()
   capture.scriptRequests.length = 0
